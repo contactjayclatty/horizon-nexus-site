@@ -19,7 +19,7 @@ before(async () => {
 });
 
 test("every required page is built", async () => {
-  for (const p of ["index.html", "features/index.html", "architecture/index.html", "docs/index.html", "roadmap/index.html", "changelog/index.html", "downloads/index.html", "faq/index.html", "contributing/index.html", "releases/index.html", "404.html",
+  for (const p of ["index.html", "features/index.html", "architecture/index.html", "docs/index.html", "roadmap/index.html", "changelog/index.html", "downloads/index.html", "faq/index.html", "contributing/index.html", "releases/index.html", "docs/glossary/index.html", "404.html",
     ...["system-lifecycle", "execution-stages", "typed-events", "engine-integration", "api-limitations", "planned-extensibility", "security-model", "mod-packaging", "installation-architecture", "developer-setup"].map((s) => `docs/${s}/index.html`)])
     assert.ok((await stat(join(dist, p))).isFile(), p);
 });
@@ -142,3 +142,26 @@ test("old docs URLs redirect to existing pages", async () => {
   }
 });
 test("no unrendered template placeholders", () => { for (const [f, s] of html) assert.doesNotMatch(s, /\$\{/, f); });
+
+test("readability: docs, features and architecture are written for players first", () => {
+  const strip = (x) => x.replace(/<[^>]+>/g, " ").replace(/&[a-z#0-9]+;/g, " ").replace(/\s+/g, " ").trim();
+  const sentences = (x) => strip(x).split(/(?<=[.!?])\s+(?=[A-Z0-9"'])/).filter((s) => /[a-z]/i.test(s));
+  const targets = html.filter(([f]) => /dist-test\/(features|architecture|docs(\/[^/]+)?)\/index\.html$/.test(f));
+  assert.ok(targets.length >= 13, `found ${targets.length} pages`);
+  for (const [f, s] of targets) {
+    const main = s.slice(s.indexOf("<main"), s.indexOf("</main>"));
+    const leads = [...main.matchAll(/<p class="lead-plain">([^]*?)<\/p>/g)].map((m) => m[1]);
+    assert.ok(leads.length >= 1, `${f} has no plain lead`);
+    for (const l of leads) {
+      const ss = sentences(l);
+      assert.ok(ss.length <= 2, `${f} lead has ${ss.length} sentences: ${strip(l)}`);
+      assert.ok(strip(l).split(" ").length <= 40, `${f} lead too long: ${strip(l)}`);
+    }
+    assert.match(main, /What this means for you/, `${f} missing "What this means for you"`);
+    const devAt = main.indexOf('<section class="for-devs"');
+    const plain = (devAt > 0 ? main.slice(0, devAt) : main).replace(/<details[^]*?<\/details>/g, "").replace(/<table[^]*?<\/table>/g, "");
+    for (const [, p] of plain.matchAll(/<p(?: class="(?:lead-plain|caption|term)")?>([^]*?)<\/p>/g))
+      for (const sn of sentences(p)) assert.ok(sn.split(" ").length <= 30, `${f} long plain sentence: ${sn}`);
+    if (!/developer-setup|glossary/.test(f)) assert.ok(/<p class="lead-plain">/.test(main.slice(0, main.indexOf("<h2") > 0 ? main.indexOf("<h2") : undefined)), `${f} lead must come before the first heading`);
+  }
+});

@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { writeArt } from "./scripts/art.mjs";
 import { MILESTONES, LATEST, AUDIT, UPDATED, FOCUS, STABILIZATION, IMPLEMENTED, TARGETS, MODULES, NOTICE, USER_PROVIDED, DEFINITION, NO_RELEASE, NO_JAVA, OUT_OF_SCOPE, REPO, HORIZON, HORIZON_SITE, HORIZON_MODS } from "./src/content.mjs";
 import { icon } from "./src/icons.mjs";
-import { DOCS } from "./src/docs.mjs";
+import { DOCS, lead, you, devs } from "./src/docs.mjs";
 
 const root = dirname(fileURLToPath(import.meta.url));
 const BASE = (process.env.BASE ?? "/horizon-nexus-site/").replace(/\/?$/, "/");
@@ -100,10 +100,10 @@ const head = (kicker, title, text = "", id = "") => `<div class="section-head re
 const card = ({ ic, title, body, b, extra = "", cls = "" }) => `<section class="panel card reveal ${cls}"><div class="card-top">${ic ? icon(ic, 40) : ""}${b ? badge(b) : ""}</div><h3 class="panel-title">${esc(title)}</h3>${body ? `<p>${body}</p>` : ""}${extra}</section>`;
 const ticks = (xs, cls = "") => `<ul class="ticks ${cls}">${xs.map((i) => `<li>${esc(i)}</li>`).join("")}</ul>`;
 const commit = (c) => `<p class="commit"><span class="micro">Commit</span> <code>${c}</code> <span class="micro">developer-reported, not an upstream link</span></p>`;
-const diagram = (nodes, title, img, alt, b) => `<section class="panel reveal diagram"><div class="panel-head"><h3 class="panel-title">${esc(title)}</h3>${badge(b)}</div>${flow(nodes, title)}<img src="${u(`media/${img}`)}" alt="${esc(alt)}" width="960" height="200" loading="lazy" class="diagram-img"></section>`;
-const DIAGRAMS = () => `${diagram(CURRENT, "Current runtime", "architecture-current.svg", "Horizon, then Nexus Runtime, then Registered Systems, then Typed Event Dispatcher", "now")}
-${diagram(FRAMEWORK, "Planned framework", "architecture-framework.svg", "Horizon Engine, then Nexus APIs, hooks and registries, then mod systems", "planned")}
-${diagram(LOADER, "Loader pipeline", "architecture-loader.svg", ".nmod, Validation and Dependencies (done in v0.4a), then Native Build and Registration (planned), then Horizon", "goal")}`;
+const diagram = (nodes, title, img, alt, b, cap = "") => `<section class="panel reveal diagram"><div class="panel-head"><h3 class="panel-title">${esc(title)}</h3>${badge(b)}</div>${flow(nodes, title)}<img src="${u(`media/${img}`)}" alt="${esc(alt)}" width="960" height="200" loading="lazy" class="diagram-img">${cap ? `<p class="caption">${cap}</p>` : ""}</section>`;
+const DIAGRAMS = () => `${diagram(CURRENT, "Current runtime", "architecture-current.svg", "Horizon, then Nexus Runtime, then Registered Systems, then Typed Event Dispatcher", "now", "Works today. The game runs Nexus, Nexus runs the systems, and the systems pass messages.")}
+${diagram(FRAMEWORK, "Planned framework", "architecture-framework.svg", "Horizon Engine, then Nexus APIs, hooks and registries, then mod systems", "planned", "Planned. Mods will plug into the game through ready-made commands and plug-in points.")}
+${diagram(LOADER, "Loader pipeline", "architecture-loader.svg", ".nmod, Validation and Dependencies (done in v0.4a), then Native Build and Registration (planned), then Horizon", "goal", "Part done. Nexus can already find and check mod packages. Building them and adding them to the game is planned.")}`;
 const moduleCard = (m) => card({ ic: m.icon, title: m.name, b: "idea", cls: "module", body: esc(m.body), extra: m.note ? `<p class="note">${esc(m.note)}</p>` : "" });
 
 const pages = {};
@@ -151,16 +151,22 @@ pages[""] = {
 };
 
 pages["features/"] = {
-  title: "Features", description: "What Nexus does now, and what it is intended to enable.",
+  title: "Features", description: "What Nexus does now, and what it is meant to make possible, in plain words.",
   body: `<div class="container page-main">
 <p class="kicker">Features</p><h1 class="display page-title">What Nexus does</h1>
-<p class="lede">Two questions, answered separately: what works now, and what Nexus is meant to enable.</p>
-<nav class="jump" aria-label="On this page"><a class="button small" href="#now">Works now</a><a class="button small" href="#targets">Intended to enable</a><a class="button small" href="#future">Future possibilities</a></nav>
+${lead("Nexus is a toolkit for changing Horizon. This page shows what works today, what is planned, and what is only an idea.")}
+${you("You cannot install Nexus or its mods yet. The \"Works today\" list is what exists inside development builds of Horizon.")}
+<nav class="jump" aria-label="On this page"><a class="button small" href="#now">Works today</a><a class="button small" href="#targets">Planned</a><a class="button small" href="#future">Ideas</a></nav>
 <section class="section band now" aria-labelledby="now">${head("Implemented · developer-reported", "What Nexus does now", "", "now")}
-<div class="grid four">${IMPLEMENTED.map((f) => card({ ic: f.icon, title: f.name, b: "now", body: `${esc(f.body)} <span class="micro">${f.ms}</span>` })).join("")}</div></section>
-<section class="section band" aria-labelledby="targets">${head("Engineering targets", "What Nexus is intended to enable", "These are goals for the full framework. They are not implemented today, and not every area will necessarily get an API.", "targets")}
+${lead("These are the building blocks that already work. Each card says it in plain words first.")}
+<p class="muted">A <b>system</b> is a mini machine that runs every game tick. An <b>event</b> is a message one system leaves for another. More words are in the <a href="${u("docs/glossary/")}">glossary</a>.</p>
+<div class="grid four">${IMPLEMENTED.map((f) => card({ ic: f.icon, title: f.name, b: "now", body: esc(f.plain), extra: `<details class="dev-detail"><summary>For developers</summary><p>${esc(f.body)} <span class="micro">${f.ms}</span></p></details>` })).join("")}</div></section>
+<section class="section band" aria-labelledby="targets">${head("Engineering targets", "What Nexus is meant to make possible", "", "targets")}
+${lead("These are parts of the game Nexus aims to let mods change. None of them work yet.")}
+${you("Think of this as a wish list for the finished toolkit. Not every area will get support.")}
 <ul class="chips big reveal">${TARGETS.map((t) => `<li>${esc(t)}</li>`).join("")}</ul></section>
-<section class="section band" aria-labelledby="future">${head("Ideas", "Future possibilities", "Modules that show what the framework could make possible. They are not built, and not promised for v0.4.", "future")}
+<section class="section band" aria-labelledby="future">${head("Ideas", "Future possibilities", "", "future")}
+${lead("These are example mod packs the toolkit could one day allow. They are not built and not promised for v0.4.")}
 <div class="grid four">${MODULES.map(moduleCard).join("")}</div></section>
 </div>`,
 };
@@ -204,17 +210,20 @@ ${m.note ? `<div class="callout warn"><p>${esc(m.note)}</p></div>` : ""}</articl
 };
 
 pages["architecture/"] = {
-  title: "Architecture", description: "The current Nexus runtime, the planned framework layers and the loader pipeline.",
+  title: "Architecture", description: "How the parts of Nexus fit together, explained simply.",
   body: `<div class="container page-main">
 <p class="kicker">Architecture</p><h1 class="display page-title">How Nexus fits together</h1>
-<p class="lede">The runtime that works today, the framework layers planned around it, and the loader pipeline.</p>
+${lead("This page shows how the parts of Nexus connect, like a map of a machine. Each picture has a plain caption.")}
+${you("Nexus sits inside the game and runs mods for it. Today it runs built-in systems only. Adding your own mods comes later.")}
+<div class="plain-steps section"><div><b>1. The game</b><span>Horizon runs the world.</span></div><div><b>2. Nexus</b><span>Built into the game. It runs the systems.</span></div><div><b>3. Systems</b><span>Mini machines that each do one job, every tick.</span></div><div><b>4. Messages</b><span>Systems leave events for each other.</span></div></div>
 <div class="stack section">${DIAGRAMS()}</div>
-<div class="grid two section">
-<section class="panel reveal"><div class="panel-head"><h2 class="panel-title">Today</h2>${badge("now")}</div>${ticks(["The Nexus runtime is compiled into Horizon.", "Registered systems run on a deterministic schedule.", "Typed events are offered to enabled systems of the same stage, in a fixed order.", "v0.4a validates and resolves .nmod packages. It does not compile or run them."])}</section>
-<section class="panel reveal"><div class="panel-head"><h2 class="panel-title">Two depths of modding</h2>${badge("goal")}</div><div class="layers"><div class="layer"><b>High-level APIs</b><span>everyday mods</span></div><div class="layer"><b>Engine hooks</b><span>deeper behaviour changes</span></div><div class="layer deep"><b>Trusted native source changes</b><span>when a mod must change the engine itself</span></div></div></section>
+<section class="section"><div class="panel reveal"><div class="panel-head"><h2 class="panel-title">Trust comes first</h2>${icon("shield", 32)}</div>
+<p>Nexus mods are real programs. They are not locked in a safe box. You must approve a mod before it is built, because building it can run code. Checks catch broken mods, not bad ones.</p></div></section>
+${devs(`<div class="grid two">
+<section class="panel reveal"><div class="panel-head"><h3 class="panel-title">Today</h3>${badge("now")}</div>${ticks(["The Nexus runtime is compiled into Horizon.", "Registered systems run on a deterministic schedule. This orders Nexus's own work; it does not make the whole game deterministic.", "Typed events are offered to enabled systems of the same stage, in a fixed order. There is no automatic type-based subscription.", "v0.4a validates and resolves .nmod packages. It does not compile or run them."])}</section>
+<section class="panel reveal"><div class="panel-head"><h3 class="panel-title">Two depths of modding</h3>${badge("goal")}</div><div class="layers"><div class="layer"><b>High-level APIs</b><span>everyday mods</span></div><div class="layer"><b>Engine hooks</b><span>deeper behaviour changes</span></div><div class="layer deep"><b>Trusted native source changes</b><span>when a mod must change the engine itself</span></div></div></section>
 </div>
-<section class="section"><div class="panel reveal"><div class="panel-head"><h2 class="panel-title">Trusted native code</h2>${icon("shield", 32)}</div>
-<p>Nexus mods are native Rust. They are not sandboxed, and compiling them can run code. Trust must be approved before compilation. Package validation catches broken or conflicting mods; it does not make untrusted code safe.</p></div></section>
+<p>Nexus mods are native Rust. They are not sandboxed, and compiling them can run code. Trust must be approved before compilation. Package validation catches broken or conflicting mods; it does not make untrusted code safe.</p>`)}
 </div>`,
 };
 

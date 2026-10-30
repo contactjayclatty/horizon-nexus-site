@@ -51,14 +51,14 @@ export const FOCUS = { ver: "v0.4b.1", name: "Native system registration", statu
 export const STABILIZATION = ["Review all code and architecture", "Fix defects", "Improve existing implementations", "Strengthen security", "Benchmark performance", "Test real mod workflows", "Test client/server behaviour", "Improve documentation", "Verify future maintainability"];
 
 export const IMPLEMENTED = [
-  { name: "Native Rust system framework", icon: "runtime", ms: "v0.1", body: "Game logic as Rust systems that Nexus runs inside Horizon." },
-  { name: "Registration and lifecycle", icon: "lifecycle", ms: "v0.1", body: "Systems are registered, initialised, ticked and shut down by the runtime." },
-  { name: "Deterministic scheduling", icon: "schedule", ms: "v0.1", body: "Systems run in a fixed order. This orders Nexus's own work; it does not make the whole game deterministic." },
-  { name: "Typed event dispatch", icon: "events", ms: "v0.3", body: "Events are offered to enabled systems in the same stage, in a fixed order. Each system checks them and handles what is relevant." },
-  { name: "Independent event consumers", icon: "fanout", ms: "v0.3", body: "Publishers and consumers do not need to know about each other." },
-  { name: "Server/client separation", icon: "sides", ms: "v0.1", body: "Server and client work are kept apart. Validated on integrated and dedicated servers." },
-  { name: "Controlled engine actions", icon: "engine", ms: "v0.2", body: "Systems request engine commands through a controlled path instead of reaching into internals." },
-  { name: ".nmod validation and resolution", icon: "package", ms: "v0.4a", body: "A library that parses manifests, finds packages, resolves dependencies and checks versions. It does not install or build mods." },
+  { name: "Native Rust system framework", plain: "Mods are built from small machines, called systems, that run inside the game.", icon: "runtime", ms: "v0.1", body: "Game logic as Rust systems that Nexus runs inside Horizon." },
+  { name: "Registration and lifecycle", plain: "Nexus switches each system on, keeps it running and switches it off cleanly.", icon: "lifecycle", ms: "v0.1", body: "Systems are registered, initialised, ticked and shut down by the runtime." },
+  { name: "Deterministic scheduling", plain: "Systems always take their turns in the same order.", icon: "schedule", ms: "v0.1", body: "Systems run in a fixed order. This orders Nexus's own work; it does not make the whole game deterministic." },
+  { name: "Typed event dispatch", plain: "Systems can leave messages for each other, like notes on a board.", icon: "events", ms: "v0.3", body: "Events are offered to enabled systems in the same stage, in a fixed order. Each system checks them and handles what is relevant." },
+  { name: "Independent event consumers", plain: "Two mods can react to each other without being made for each other.", icon: "fanout", ms: "v0.3", body: "Publishers and consumers do not need to know about each other." },
+  { name: "Server/client separation", plain: "Work for the server and work for your screen are kept apart.", icon: "sides", ms: "v0.1", body: "Server and client work are kept apart. Validated on integrated and dedicated servers." },
+  { name: "Controlled engine actions", plain: "Mods ask the game to do things through a safe front door.", icon: "engine", ms: "v0.2", body: "Systems request engine commands through a controlled path instead of reaching into internals." },
+  { name: ".nmod validation and resolution", plain: "Nexus can read and check mod packages. It cannot install them yet.", icon: "package", ms: "v0.4a", body: "A library that parses manifests, finds packages, resolves dependencies and checks versions. It does not install or build mods." },
 ];
 export const TARGETS = ["Blocks and items", "Entities and AI", "World generation", "Chunks and dimensions", "Gameplay rules", "Engine behaviour overrides", "Physics hooks", "Camera and rendering hooks", "HUD and UI", "Audio", "Input", "Multiplayer and networking", "Data and persistence", "Registries and extensible APIs", "Trusted native source-level extensions"];
 export const MODULES = [

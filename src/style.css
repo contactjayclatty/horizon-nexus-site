@@ -419,3 +419,23 @@ table.data td { background: var(--panel); }
 .road-icon { display: block; height: 18px; line-height: 0; }
 .legend .pix { vertical-align: middle; }
 .road li.current { border-color: var(--warn); }
+
+/* Plain-language docs */
+.lead-plain { font-size: clamp(18px, 1.7vw, 21px); line-height: 1.5; color: var(--ink); max-width: 62ch; margin: 0 0 16px; }
+.callout.you { border-left: 4px solid var(--good, #5fd39a); }
+.you-title { font: 600 15px/1.2 var(--pixel); color: var(--highlight); margin: 0 0 6px; }
+.term { margin: 0 0 8px; }
+.caption { font-size: 14px; color: var(--muted); margin: 8px 0 0; }
+.plain-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 8px; margin: 16px 0; }
+.plain-steps > div { background: var(--panel); border: 2px solid var(--outline); box-shadow: var(--panel-edges); padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.plain-steps b { font: 600 16px/1.2 var(--pixel); color: var(--highlight); }
+.plain-steps span { font-size: 15px; color: var(--ink-soft); }
+.for-devs { margin-top: 40px; padding: 20px; border: 2px dashed var(--border); background: color-mix(in srgb, var(--well) 70%, transparent); }
+.for-devs > h2 { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 0; font-size: 20px; }
+.glossary { display: grid; gap: 8px; margin: 0; }
+.glossary > div { background: var(--panel); border: 2px solid var(--outline); padding: 12px 14px; }
+.glossary dt { font: 600 17px/1.2 var(--pixel); color: var(--highlight); }
+.glossary dd { margin: 4px 0 0; color: var(--ink-soft); }
+.dev-detail { margin-top: 10px; font-size: 14px; }
+.dev-detail summary { cursor: pointer; color: var(--muted); min-height: 32px; display: flex; align-items: center; }
+.dev-detail p { color: var(--ink-soft); margin: 6px 0 0; }

@@ -34,3 +34,4 @@ To add an agent: copy an existing profile, keep every section (role, responsibil
 1. Update `MILESTONES` in `src/content.mjs` (state, commit, items, validation).
 2. Add the release to the changelog in `build.mjs` and update affected docs in `src/docs.mjs`.
 3. Run the checks, open a pull request, merge to `main`. The Pages workflow deploys.
+- **Plain language first.** Docs, Features and Architecture open with a short plain lead (`lead()`), a "What this means for you" box (`you()`), then keep full technical detail in a "For developers" section (`devs()`). New terms go in the glossary (`GLOSSARY` in `src/docs.mjs`). The readability test enforces short leads and sentences.
