@@ -40,9 +40,9 @@ export const MILESTONES = [
     note: "Registration infrastructure is implemented, but external .nmod package installation is not available yet. Capability metadata is declarative: command-boundary enforcement is still planned." },
   { ver: "v0.4b.2", name: "Secure package loading and installation foundations", state: "current", icon: "package",
     summary: "In development. Safe .nmod package processing: archive validation, source staging and, later, installation.",
-    items: ["ZIP 9.0.5 dependency migration", "ZIP structural integrity checks", "Unsafe filenames, unsupported compression, encryption and special-file checks", "Cross-entry filename collision and manifest validation", "Deterministic archive metadata report", "Archive entry count and declared decompressed-size limits", "Encoded archive input-size limit", "Nonzero-size directory entries rejected", "Security review"],
-    validation: ["84 passing tests at the latest reported checkpoint", "Strict Clippy clean"],
-    note: "v0.4b.2 is not finished. The secure ZIP preflight exists, but complete .nmod installation is not available. Archive extraction and source staging are still planned." },
+    items: ["ZIP 9.0.5 dependency migration", "ZIP structural integrity checks", "Unsafe filenames, unsupported compression, encryption and special-file checks", "Cross-entry filename collision and manifest validation", "Deterministic archive metadata report", "Archive entry count and declared decompressed-size limits", "Encoded archive input-size limit", "Nonzero-size directory entries rejected", "Security review", "Whole-archive SHA-256 identity, with PinnedPreflight binding identity, size and metadata, and archive mutation detection (4.1b)", "Declared CRC-32 and compressed-size metadata in preflight reports, with tests for Stored, Deflate and empty entries (4.2a)", "Private archive custody: exclusive creation of a private copy with restrictive Unix permissions, independent SHA-256, size and metadata re-verification, and cleanup of failed or incomplete copies (4.2b)", "Deterministic extraction plans with validated root-relative destination components, nested files, directories and implicit parents, and defensive checks against unsafe paths and file/directory conflicts (4.2c-a)", "Capability-based filesystem boundary with cap-std 4.0.3: exclusive snapshot-directory creation, directory-handle-relative operations, symlink-escape prevention and restrictive Unix permissions (4.2c-b)"],
+    validation: ["115/115 tests passing at the latest verified checkpoint (94 loader, 21 runtime)", "Strict Clippy clean", "Formatting and git diff checks clean", "14 development checkpoints completed"],
+    note: "v0.4b.2 is not finished. Archive validation, private custody, extraction planning and the filesystem boundary are implemented. Actual ZIP extraction and mod installation are not implemented yet." },
   { ver: "v0.4c", name: "Expanded gameplay and engine modding APIs", state: "planned", icon: "engine",
     summary: "Planned. Wider APIs for gameplay and engine modding.", items: [] },
   { ver: "v0.4d", name: "SDK, package tooling, mod profiles, versioning, rollback and broader extensibility", state: "planned", icon: "tools",
@@ -59,13 +59,15 @@ export const HIGHLIGHT = { title: "v0.4b.1 complete: native mod registration fou
 export const CHECKPOINTS = [
   ["3.1", "ZIP dependency migration", "done"], ["3.2", "Archive consistency gate", "done"], ["3.3", "Entry metadata security validation", "done"],
   ["3.4a", "Collision and manifest checks", "done"], ["3.4b", "Resource limits and preflight report", "done"], ["4.0", "Security review", "done"],
-  ["4.1a", "Archive-size cap and directory rules", "done"], ["4.1b", "SHA-256 archive identity", "next"],
-  ["", "Bounded extraction", "planned"], ["", "Snapshot validation", "planned"], ["", "Explicit trust approval", "planned"], ["", "Source compilation and installation integration", "planned"],
+  ["4.1a", "Archive-size cap and directory rules", "done"], ["4.1b", "SHA-256 archive identity", "done"],
+  ["4.2a", "CRC-32 and compressed size", "done"], ["4.2b", "Private archive custody", "done"], ["4.2c-a", "Extraction path planning", "done"], ["4.2c-b", "Capability-based filesystem security", "done"],
+  ["", "Bounded extraction (actually unpacking files)", "planned"], ["", "Snapshot validation", "planned"], ["", "Explicit trust approval", "planned"], ["", "Source compilation and installation integration", "planned"],
 ];
-export const NEXT_CHECKPOINT = { id: "4.1b", body: "Add SHA-256 archive identity verification and bind preflight results to the inspected archive. Authorised, not yet reported as passing." };
-export const STATUS = [["Latest completed", "v0.4b.1"], ["In development", "v0.4b.2"], ["Internal tests", "84 passing at latest verified checkpoint"], ["Public availability", "Not yet released"]];
+export const REMAINING = "Still to do: actually unpacking ZIP archives (bounded extraction), checking the unpacked snapshot, your explicit trust approval, then source compilation and installation. None of these are implemented yet.";
+export const PLAIN_PROGRESS = "Mod archives are now checked, fingerprinted, copied privately and planned for safe unpacking inside a locked-down folder. Unpacking and installing mods are not done yet.";
+export const STATUS = [["Latest completed", "v0.4b.1"], ["In development", "v0.4b.2"], ["Internal tests", "115 passing at latest verified checkpoint"], ["Public availability", "Not yet released"]];
 export const AVAILABILITY = "Currently in active development. Public downloads will become available after installation support and security validation are complete.";
-export const TESTS_NOTE = "Passing internal tests show the finished checkpoints work as reported. They do not mean Nexus is ready for public use.";
+export const TESTS_NOTE = "Passing internal tests show the finished checkpoints work as reported. They do not mean Nexus is ready for public use. Results are reported by the development agent.";
 export const SECURITY_PLAIN = [".nmod packages are inspected and their structure is checked before anything else happens.", "You must make an explicit trust decision before any native code is compiled or run.", "Native Rust mods are real programs. They are not sandboxed, so only use mods from people you trust."];
 export const DEV_NOTES = ["The broader Horizon workspace still has older ZIP dependencies under security review."];
 export const SCOPE = ["Blocks, items and entities", "World generation and AI", "Physics and gameplay systems", "Shaders, rendering and camera systems", "HUD and UI extensions", "Audio and input", "Networking and persistence", "Native registration hooks and advanced source-based extensions"];

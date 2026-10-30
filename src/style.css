@@ -631,6 +631,7 @@ a.button:active, button.button:active { transform: translateY(2px); }
 .status-list dt { color: var(--muted); font-size: 14px; }
 .status-list dd { margin: 0; color: var(--ink); font-weight: 600; font-size: 15px; }
 .status-note { margin: 0; font-size: 14px; color: var(--ink-soft); line-height: 1.5; }
+.status-plain { margin: 0; font-size: 14px; line-height: 1.5; }
 .status-link { font: 600 14px/1 var(--pixel); color: var(--highlight); padding: 6px 0; display: inline-flex; min-height: 28px; align-items: center; }
 @media (max-width: 480px) { .status-list > div { grid-template-columns: 1fr; gap: 2px; } }
 .checklist { list-style: none; margin: 8px 0 12px; padding: 0; display: grid; gap: 4px; }
