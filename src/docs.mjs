@@ -4,7 +4,7 @@
 // function signatures, stage names or install commands appear.
 import { DEFINITION, NO_JAVA, OUT_OF_SCOPE, MILESTONES } from "./content.mjs";
 const UP = `<div class="callout"><p><b>Source:</b> developer-reported, from an independent Horizon development branch. Not verified against public upstream. There is no public API reference yet, so these pages describe behaviour, not signatures.</p></div>`;
-const PLAN = `<div class="callout warn"><p><b>Planned, not built.</b> v0.4b.2 is next and not started. v0.4b.3, v0.4b.4 and v0.4c to d are planned. Details can change.</p></div>`;
+const PLAN = `<div class="callout warn"><p><b>Planned, not built.</b> v0.4b.2 is in development. v0.4b.3, v0.4b.4 and v0.4c to d are planned. Details can change.</p></div>`;
 const v4a = MILESTONES.find((m) => m.ver === "v0.4a");
 const list = (xs) => `<ul class="ticks">${xs.map((x) => `<li>${x}</li>`).join("")}</ul>`;
 export const lead = (t) => `<p class="lead-plain">${t}</p>`;
@@ -31,7 +31,7 @@ export const GLOSSARY = [
   ["Dependency", "Another mod that a mod needs in order to work."],
   ["Registrar", "The front desk where a mod signs in its systems. In Nexus it is called NexusRegistrar. It lets mods sign in without handing them the keys to everything."],
   ["Capability metadata", "A label on each system saying what it says it needs. Today it is only a label: Nexus does not yet enforce it."],
-  ["Staging", "Getting a mod package unpacked and checked in a safe place before it is used. Planned for v0.4b.2."],
+  ["Staging", "Getting a mod package unpacked and checked in a safe place before it is used. Being built in v0.4b.2."],
   ["Native code", "Real program code that runs directly on your computer, with your permissions."],
   ["Sandbox", "A locked box that stops code from touching the rest of your computer. Nexus mods do not have one."],
   ["Compile", "Turn a mod's source code into a program the computer can run. This step can itself run code."],
@@ -51,7 +51,7 @@ ${term("System:", G("System"))}${term("Event:", G("Event"))}${term("Tick:", G("T
 <p>Every other term is in the <a href="${u("docs/glossary/")}">glossary</a>.</p>
 <h2>Where things stand</h2>
 <p>Each block below is one step of the project. Filled blocks are done, the hot block is being worked on, and outlined blocks are planned.</p>
-${flow([["v0.1", "Systems Runtime", "done"], ["v0.2", "Engine Integration", "done"], ["v0.3", "Typed Inter-System Events", "done"], ["v0.4a", "Manifests and resolution", "done"], ["Audit", "Pre-v0.4b", "done"], ["v0.4b.1", "Registration", "done"], ["v0.4b.2", "next", "planned"], ["v0.4b.3 to d", "planned", "planned"]], "Milestones")}
+${flow([["v0.1", "Systems Runtime", "done"], ["v0.2", "Engine Integration", "done"], ["v0.3", "Typed Inter-System Events", "done"], ["v0.4a", "Manifests and resolution", "done"], ["Audit", "Pre-v0.4b", "done"], ["v0.4b.1", "Registration", "done"], ["v0.4b.2", "building", "hot"], ["v0.4b.3 to d", "planned", "planned"]], "Milestones")}
 <p>v0.4 is the last planned feature step. After it comes a long round of testing and fixing, then a pause. See the <a href="${u("roadmap/")}">roadmap</a>.</p>
 <h2>What it is not</h2><ul><li>Not something you can install today.</li><li>${NO_JAVA}</li><li>Not an official Mojang or Microsoft product, and not an officially endorsed part of upstream Horizon.</li></ul>
 ${devs(`${UP}<p>${DEFINITION}</p>
@@ -139,11 +139,11 @@ ${devs(`${UP}
 <p><b>Nexus mods are trusted native code.</b> Native Rust source mods are not sandboxed and run with the player's permissions. Compiling them can execute code (build scripts, procedural macros), so trust approval must come <b>before</b> compilation.</p>
 <h3>In place</h3><ul class="ticks"><li>Controlled engine command requests (v0.2).</li><li>Server/client separation (v0.1).</li><li>v0.4a: filesystem path and symlink checks during discovery, strict TOML validation, conflict detection, and explicit native-code trust assumptions.</li></ul>
 <p>Validation rejects broken or conflicting packages. It does not make untrusted code safe.</p>
-<h3>Completed: pre-v0.4b audit</h3><p>The audit (8f809e822, developer-reported) fixed an event-queue resource issue, added regression coverage and verified 33/33 tests.</p><h3>Completed: v0.4b.1</h3><p>NexusRegistrar exposes registration without unrestricted runtime access (9198d320e, developer-reported). Capability metadata is declarative; command-boundary enforcement is still planned.</p><h3>Next: v0.4b.2</h3><p>Secure .nmod package staging and generated registration. Not started.</p>`)}` },
+<h3>Completed: pre-v0.4b audit</h3><p>The audit (8f809e822, developer-reported) fixed an event-queue resource issue, added regression coverage and verified 33/33 tests.</p><h3>Completed: v0.4b.1</h3><p>NexusRegistrar exposes registration without unrestricted runtime access (9198d320e, developer-reported). Capability metadata is declarative; command-boundary enforcement is still planned.</p><h3>In development: v0.4b.2</h3><p>Secure .nmod package validation and staging, SHA-256 content integrity verification and deterministic automatic registration. Not finished; installation and native compilation do not work yet.</p>`)}` },
   { slug: "mod-packaging", title: "Mod packages", description: "What a .nmod package is and how Nexus will handle it.", body: ({ flow }) => `
 ${lead("A Nexus mod will come as one package file, called a .nmod. Inside is the mod plus a label saying what it is and what it needs.")}
 ${you("Later, you will get mods as .nmod files and Nexus will sort out the rest. Today Nexus can read and check these files, but not install them.")}
-${flow([[".nmod", "package", "done"], ["Validation", "v0.4a", "done"], ["Dependencies", "v0.4a", "done"], ["Staging", "v0.4b.2", "planned"], ["Native Build", "v0.4b.3", "planned"], ["Registration", "seam v0.4b.1", "done"], ["Horizon", "", "done"]], "Loader pipeline")}
+${flow([[".nmod", "package", "done"], ["Validation", "v0.4a", "done"], ["Dependencies", "v0.4a", "done"], ["Staging", "v0.4b.2 building", "hot"], ["Native Build", "v0.4b.3", "planned"], ["Registration", "seam v0.4b.1", "done"], ["Horizon", "", "done"]], "Loader pipeline")}
 <p class="caption">Filled blocks work today. Outlined blocks are planned.</p>
 <p>Nexus reads the label, checks it, and works out which other mods are needed. It then puts them in a sensible order. Building and adding them to the game comes later.</p>
 ${devs(`${UP}

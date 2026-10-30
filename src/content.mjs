@@ -11,7 +11,7 @@ export const NO_RELEASE = "No public standalone Nexus release is available yet."
 export const OUT_OF_SCOPE = "Fabric, Forge and NeoForge compatibility are out of scope.";
 export const NO_JAVA = "Nexus is a native Rust modding platform for Horizon and does not load Java Fabric or Forge mods.";
 
-// state: done | next | planned
+// state: done | current | planned
 export const MILESTONES = [
   { ver: "v0.1", name: "Systems Runtime", state: "done", commit: "0fcc557b1", icon: "runtime",
     summary: "The foundation: Rust systems that Nexus registers, schedules and runs inside Horizon.",
@@ -38,8 +38,10 @@ export const MILESTONES = [
     items: ["Native Nexus registration interface for future external mods", "NexusRegistrar: registration without unrestricted runtime access", "Deterministic system registration", "Rejects duplicate identities and invalid side or stage", "Versioned capability metadata for registered systems", "Per-Game runtime ownership and lifecycle preserved", "Compatible with existing native hooks, without unnecessary API changes"],
     validation: ["35/35 distinct tests passing", "Strict Clippy clean", "Default and Nexus-enabled client checks passing"],
     note: "Registration infrastructure is implemented, but external .nmod package installation is not available yet. Capability metadata is declarative: command-boundary enforcement is still planned." },
-  { ver: "v0.4b.2", name: "Secure .nmod package staging and generated registration", state: "next", icon: "package",
-    summary: "Next, not started. Safely preparing .nmod packages and registering their systems automatically.", items: [] },
+  { ver: "v0.4b.2", name: "Secure .nmod package staging and generated registration", state: "current", icon: "package",
+    summary: "In development. Secure mod packaging, verified staging and automatic native mod registration.",
+    items: ["Secure .nmod package validation and staging", "ZIP and development-directory package support", "Dependency-aware mod installation preparation", "SHA-256 content integrity verification", "Deterministic automatic mod registration", "Integration testing with horizon-mixins", "Preparing the foundation for native launcher compilation"],
+    note: "In development, not finished. Standalone mod installation and native compilation do not work yet." },
   { ver: "v0.4b.3", name: "Launcher integration and native compilation", state: "planned", icon: "workflow",
     summary: "Planned. Building mods through Horizon Launcher.", items: [] },
   { ver: "v0.4b.4", name: "First real gameplay-changing .nmod", state: "planned", icon: "engine",
@@ -50,9 +52,9 @@ export const MILESTONES = [
 export const LATEST = MILESTONES.filter((m) => m.state === "done").at(-1);
 export const AUDIT = MILESTONES.find((m) => m.ver === "Audit");
 export const UPDATED = "30 October 2026";
-export const NEXT = MILESTONES.find((m) => m.state === "next");
+export const CURRENT_MS = MILESTONES.find((m) => m.state === "current");
 export const HIGHLIGHT = { title: "v0.4b.1 Complete: Native Mod Registration Foundation", body: "Nexus can now expose a dedicated registration interface for future native mods. Next up: secure package staging and automatic registration." };
-export const NEXT_PLAIN = "Safely preparing mod packages and adding their systems to Nexus automatically. Not started yet.";
+export const BUILDING = { title: "NOW BUILDING: NEXUS v0.4b.2", body: "Secure mod packaging, verified staging and automatic native mod registration are currently in development." };
 export const STABILIZATION = ["Review all code and architecture", "Fix defects", "Improve existing implementations", "Strengthen security", "Benchmark performance", "Test real mod workflows", "Test client/server behaviour", "Improve documentation", "Verify future maintainability"];
 
 export const IMPLEMENTED = [

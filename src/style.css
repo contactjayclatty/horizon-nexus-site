@@ -442,7 +442,7 @@ table.data td { background: var(--panel); }
 
 /* Live "now building" banner (home): construction yellow, indeterminate progress */
 .build-banner { position: relative; background: #f5c062; color: #1a1200; border-bottom: 2px solid var(--outline); box-shadow: inset 0 -4px 0 #c8902e; }
-.build-banner::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 6px; background: repeating-linear-gradient(45deg, #1a1200 0 8px, #f5c062 8px 16px); background-size: 22.6px 6px; }
+.build-banner::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 6px; background: repeating-linear-gradient(45deg, #1a1200 0 8px, #f5c062 8px 16px); background-size: 22.6px 6px; animation: stripe 3s linear infinite; }
 .build-inner { display: flex; align-items: center; gap: 14px; padding-top: 16px; padding-bottom: 12px; }
 .build-icon { line-height: 0; flex: none; }
 .build-text { margin: 0; flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
