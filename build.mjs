@@ -114,8 +114,8 @@ pages[""] = {
 <aside class="build-banner" aria-label="Now building">
   <div class="container build-inner">
     <span class="build-icon">${icon("construction", 28)}</span>
-    <span class="live-dot" aria-hidden="true"></span>
     <p class="build-text"><b>Now building: ${FOCUS.ver}, ${esc(FOCUS.name.toLowerCase())}</b><span>${esc(FOCUS.plain)}</span></p>
+    <div class="build-progress"><span class="build-label"><span class="live-dot" aria-hidden="true"></span>Building...</span><span class="indet" role="progressbar" aria-label="In progress, no completion estimate" aria-valuetext="In progress"><i></i><i></i><i></i></span></div>
     <a class="button small" href="${u("roadmap/")}#current">See the roadmap</a>
   </div>
 </aside>

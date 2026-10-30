@@ -175,5 +175,7 @@ test("home has a live now-building banner driven by the current milestone", asyn
   assert.ok(banner.includes(`Now building: ${FOCUS.ver}`), "banner uses FOCUS");
   assert.match(banner, /roadmap\//); assert.doesNotMatch(banner, /\d+\s*%/, "no fake progress");
   const css = readFileSync(new URL("../src/style.css", import.meta.url), "utf8");
-  assert.match(css, /prefers-reduced-motion: reduce\) \{ \.build-banner::before, \.live-dot \{ animation: none/);
+  assert.match(css, /prefers-reduced-motion: reduce\) \{ \.build-banner::before, \.live-dot, \.indet i \{ animation: none/);
+  assert.match(banner, /role="progressbar"/); assert.doesNotMatch(banner, /aria-valuenow/, "progress must be indeterminate");
+  assert.match(banner, /Building\.\.\./);
 });
