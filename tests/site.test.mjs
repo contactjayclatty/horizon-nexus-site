@@ -212,3 +212,20 @@ test("v4.0: roadmap has jump links and folds long completed lists", () => {
   for (const id of ["completed", "current", "planned"]) { assert.ok(road.includes(`href="#${id}"`)); assert.ok(road.includes(`id="${id}"`)); }
   assert.match(road, /<details class="more-items"><summary>What it added \(\d+\)<\/summary>/);
 });
+
+test("v5 phase 1: source note once, no filler, footer folds, tables stack, joke only in banner", () => {
+  const docs = html.filter(([f]) => f.includes("dist-test/docs/") && !/http-equiv="refresh"/.test(html.find(([g]) => g === f)[1]));
+  const full = docs.filter(([, s]) => s.includes("Not verified against public upstream. There is no public API reference yet"));
+  assert.equal(full.length, 1, "full source note appears on one doc page only");
+  for (const [f, s] of html) {
+    if (/http-equiv="refresh"/.test(s)) continue;
+    assert.doesNotMatch(s, /<span>example<\/span>|<th>Goals<\/th>/, f);
+    assert.match(s, /<details class="foot-links-fold" data-fold-wide><summary>Site links<\/summary>/, f);
+    assert.doesNotMatch(s, /<table>/, `${f} has an unstacked table`);
+  }
+  const road = html.find(([f]) => f.endsWith("dist-test/roadmap/index.html"))[1];
+  const panel = road.slice(road.indexOf('class="panel current-panel'));
+  assert.doesNotMatch(panel.slice(0, 2000), /went for a little wander/);
+  const faq = html.find(([f]) => f.endsWith("dist-test/faq/index.html"))[1];
+  assert.equal((faq.match(/being built\?/g) || []).length, 0);
+});

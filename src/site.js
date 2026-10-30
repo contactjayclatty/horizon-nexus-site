@@ -22,3 +22,5 @@ if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: re
 // Docs list: open on wide screens, folded on phones so the page starts with the content.
 const toc = document.querySelector("[data-docs-toc]");
 if (toc) { const wide = matchMedia("(min-width: 901px)"); const sync = () => { toc.open = wide.matches; }; sync(); wide.addEventListener("change", sync); }
+// Folds that are open on wide screens and closed on phones (footer links).
+document.querySelectorAll("[data-fold-wide]").forEach((d) => { const wide = matchMedia("(min-width: 761px)"); const sync = () => { d.open = wide.matches; }; sync(); wide.addEventListener("change", sync); });

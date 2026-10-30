@@ -81,10 +81,10 @@ ${body}
 <footer class="footer">
   <div class="container">
     <img class="footer-logo" src="${u("media/nexus-logo.svg")}" alt="Horizon Nexus" width="256" height="44">
-    <div class="footer-cols">
+    <details class="foot-links-fold" data-fold-wide><summary>Site links</summary><div class="footer-cols">
       <div><h2>Nexus</h2><ul class="foot-links">${[...NAV.slice(1), ...MORE].map(([p, l]) => `<li><a href="${u(p)}">${l}</a></li>`).join("")}</ul></div>
       <div><h2>Source</h2><ul><li><a href="${REPO}">Website source</a></li><li><a href="${HORIZON}">Horizon upstream</a></li><li><a href="${HORIZON_SITE}">playhorizon.dev</a></li></ul></div>
-    </div>
+    </div></details>
     <p class="foot-status"><span class="badge dev">${icon("construction", 14)}In development</span> Now building ${CURRENT_MS.ver}. ${esc(NO_RELEASE)} <a href="#top">Back to top</a></p>
     <p class="disclaimer">${esc(NOTICE)} Minecraft is a trademark of Mojang Synergies AB. This site contains no Minecraft code, textures or assets; all artwork is original and drawn in code. Milestone details are developer-reported.</p>
         <p class="footer-word" aria-hidden="true">NEXUS</p>
@@ -93,7 +93,8 @@ ${body}
 </body>
 </html>
 `;
-  return html.replace(/<a ([^>]*?)href="(https?:\/\/[^"]+)"/g, (m, pre, url) => `<a ${pre}href="${url}" rel="noopener"`);
+  const html2 = html.replace(/<table>([^]*?)<\/table>/g, (t, inner) => { const ths = [...inner.matchAll(/<th>([^<]*)<\/th>/g)].map((m) => m[1]); return `<table class="stack">${inner.replace(/<tr>([^]*?)<\/tr>/g, (r, cells) => { let n = 0; return `<tr>${cells.replace(/<td>/g, () => `<td data-label="${ths[n++] ?? ""}">`)}</tr>`; })}</table>`; });
+  return html2.replace(/<a ([^>]*?)href="(https?:\/\/[^"]+)"/g, (m, pre, url) => `<a ${pre}href="${url}" rel="noopener"`);
 }
 
 const BADGE = { done: ["done", "Completed"], planned: ["planned", "Planned"], progress: ["dev", "In development"], idea: ["idea", "Idea, not promised"], dev_reported: ["user", "Developer-reported"], goal: ["planned", "Goal"], now: ["done", "Works today"], none: ["", "Not available"] };
@@ -205,7 +206,7 @@ ${you("Nothing here can be installed yet. v0.4 is the last planned feature step,
 
 <section class="section" aria-labelledby="current">${head("02", "In development", "", "current")}
 <p class="muted">Updated ${UPDATED}. This step is being built now and is not finished.</p>
-<section class="panel current-panel reveal"><div class="panel-head"><h3 class="panel-title">${CURRENT_MS.ver}: ${esc(CURRENT_MS.name)}</h3><span class="tags">${badge("progress")}${badge("dev_reported")}</span></div><p>${esc(BUILDING.body)}</p><h4 class="h-small">Focus</h4>${ticks(CURRENT_MS.items)}<div class="callout warn"><p>${esc(CURRENT_MS.note)}</p></div></section>
+<section class="panel current-panel reveal"><div class="panel-head"><h3 class="panel-title">${CURRENT_MS.ver}: ${esc(CURRENT_MS.name)}</h3><span class="tags">${badge("progress")}${badge("dev_reported")}</span></div><p>${esc(BUILDING.sub)}</p><h4 class="h-small">Focus</h4>${ticks(CURRENT_MS.items)}<div class="callout warn"><p>${esc(CURRENT_MS.note)}</p></div></section>
 <div class="callout you"><p class="you-title">Just finished</p><p><b>${esc(HIGHLIGHT.title)}.</b> ${esc(HIGHLIGHT.body)}</p></div></section>
 
 <section class="section" aria-labelledby="planned">${head("03", "Planned", "These come after. None of this exists yet.", "planned")}
@@ -274,7 +275,7 @@ const FAQ = [
   ["Can I install it?", `Not yet. ${NO_RELEASE}`, "The runtime is compiled into Horizon, and standalone <code>.nmod</code> installation is not implemented."],
   ["What works today?", `The core: systems (mini machines that run every tick), their order, and messages between them. Nexus can also read and check mod packages, but not install them.`, "v0.1 to v0.3: systems, scheduling, lifecycle, engine integration and typed events. v0.4a validates and resolves <code>.nmod</code> manifests; it does not build, install or run mods."],
   ["What happened with v0.4b.2?", `Development paused briefly so the repository state could be checked. The work was recovered, and ${CURRENT_MS.ver} is back in development. It is not finished.`, ""],
-  ["What just finished, and what is being built?", `v0.4b.1 is done: mods now have a proper front desk for signing in their systems. ${CURRENT_MS.ver} is being built now: secure mod packaging and automatic registration. It is not finished.`, "v0.4b.1 added NexusRegistrar and versioned capability metadata. Capability metadata is declarative; command-boundary enforcement is planned. External .nmod installation is not available yet."],
+  ["What finished most recently?", `v0.4b.1: mods now have a proper front desk for signing in their systems.`, "v0.4b.1 added NexusRegistrar and versioned capability metadata. Capability metadata is declarative; command-boundary enforcement is planned. External .nmod installation is not available yet."],
   ["How much of the game can mods change?", `The goal is a lot: blocks, items, creatures, worlds, rules, sound, controls and more. None of that works yet.`, "Blocks, items, entities, world generation, rules, physics, rendering, HUD, audio, input, networking and saved data are engineering targets, not current features."],
   ["Can mods change the engine itself?", `That is the plan, for mods you trust.`, "Beyond APIs and hooks, Nexus aims to support trusted native source-level extensions."],
   ["Are mods safe?", `Only as safe as the person who made them. Nexus mods are real programs and are not locked in a safe box. You will approve each mod before it is built.`, "Native Rust source mods are not sandboxed, and compiling them can run code. Trust must be approved before compilation."],

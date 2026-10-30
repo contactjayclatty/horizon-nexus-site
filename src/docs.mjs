@@ -4,6 +4,7 @@
 // function signatures, stage names or install commands appear.
 import { DEFINITION, NO_JAVA, OUT_OF_SCOPE, MILESTONES } from "./content.mjs";
 const UP = `<div class="callout"><p><b>Source:</b> developer-reported, from an independent Horizon development branch. Not verified against public upstream. There is no public API reference yet, so these pages describe behaviour, not signatures.</p></div>`;
+const UPTAG = `<p class="src-tag"><span class="badge user">Developer-reported</span> Not checked against public upstream. Behaviour, not signatures. Details on Start here.</p>`;
 const PLAN = `<div class="callout warn"><p><b>Planned, not built.</b> v0.4b.2 is in development. v0.4b.3, v0.4b.4 and v0.4c to d are planned. Details can change.</p></div>`;
 const v4a = MILESTONES.find((m) => m.ver === "v0.4a");
 const list = (xs) => `<ul class="ticks">${xs.map((x) => `<li>${x}</li>`).join("")}</ul>`;
@@ -54,7 +55,7 @@ ${term("System:", G("System"))}${term("Event:", G("Event"))}${term("Tick:", G("T
 ${flow([["v0.1", "Systems Runtime", "done"], ["v0.2", "Engine Integration", "done"], ["v0.3", "Typed Inter-System Events", "done"], ["v0.4a", "Manifests and resolution", "done"], ["Audit", "Pre-v0.4b", "done"], ["v0.4b.1", "Registration", "done"], ["v0.4b.2", "building", "hot"], ["v0.4b.3 to d", "planned", "planned"]], "Milestones")}
 <p>v0.4 is the last planned feature step. After it comes a long round of testing and fixing, then a pause. See the <a href="${u("roadmap/")}">roadmap</a>.</p>
 <h2>What it is not</h2><ul><li>Not something you can install today.</li><li>${NO_JAVA}</li><li>Not an official Mojang or Microsoft product, and not an officially endorsed part of upstream Horizon.</li></ul>
-${devs(`${UP}<p>${DEFINITION}</p>
+${devs(`<div id="source">${UP}</div><p>${DEFINITION}</p>
 <table><thead><tr><th>Part</th><th>What it is</th><th>Today</th></tr></thead><tbody>
 <tr><td>Nexus Framework</td><td>The runtime, systems, events and, later, the APIs, hooks and registries mods build on.</td><td>Working core, compiled into Horizon (v0.1 to v0.3).</td></tr>
 <tr><td>Nexus Mod Loader</td><td>Finds, checks, orders, builds and registers <code>.nmod</code> packages.</td><td>Package library done (v0.4a). It validates and resolves, but cannot build, install or run mods yet.</td></tr></tbody></table>
@@ -69,18 +70,16 @@ ${you("Mods will be made of systems. Because Nexus starts and stops them in a ti
 <h2>The four steps</h2>
 ${flow([["Register", "Nexus learns it exists"], ["Initialize", "it gets ready"], ["Tick", "it runs every tick", "hot"], ["Shutdown", "it cleans up"]], "Lifecycle")}
 <p>Think of a machine in a factory. First it is added to the list. Then it warms up. Then it runs once every tick. When you quit, it is switched off.</p>
-${devs(`${UP}
+${devs(`${UPTAG}
 <p>Systems are Rust units that the runtime registers and owns (v0.1). Each one is initialised, ticked on its schedule and shut down. The runtime is only active when activation gating allows it.</p>
 <p>v0.3 added session lifecycle cleanup, so ending a session tidies up systems and pending events.</p>
 <div class="callout warn"><p>Hook names are not published, so none are shown.</p></div>`)}` },
   { slug: "execution-stages", title: "Execution stages", description: "Why Nexus systems run in a set order, and what that does and does not promise.", body: () => `
 ${lead("Every tick is split into stages, like rounds in a board game. Systems always take their turns in the same order.")}
 ${you("Mods run in a predictable order, so the same mods should behave the same way each time. It does not mean the whole game plays out identically every time.")}
-<div class="stages" aria-label="Illustration: stages run in a fixed order"><div><b>Stage 1</b><span>example</span></div><div><b>Stage 2</b><span>example</span></div><div><b>Stage 3</b><span>example</span></div><div><b>Stage N</b><span>example</span></div></div>
-<p class="caption">Picture only. The real stage names are not published.</p>
 <h2>What a fixed order does not promise</h2>
 <p>Nexus keeps its own work in order. Other things can still change from run to run, such as timing, your inputs and the network.</p>
-${devs(`${UP}
+${devs(`${UPTAG}
 <p>Systems run in stages, in a deterministic order (v0.1). v0.2 added more simulation stages tied to Horizon's gameplay lifecycle. Events are delivered within a stage in a fixed order (v0.3).</p>
 <p>A deterministic system schedule fixes the order of Nexus's own work. It does not guarantee full-game determinism: the engine, timing, input, networking and each system's code can still vary.</p>
 <div class="callout warn"><p>Real stage names are not published. The labels above are placeholders.</p></div>`)}` },
@@ -91,7 +90,7 @@ ${you("Two mods can work together without being built for each other. One leaves
 ${flow([["Publisher", "a system emits a typed event", "hot"], ["Dispatcher", "same stage, fixed order"], ["Enabled systems", "each checks the event"], ["Handled", "where relevant"]], "Event dispatch")}
 <p>The message is shown to each switched-on system in the same stage, one at a time, in a fixed order. Each system reads it and decides whether it cares.</p>
 <p>A system does not sign up for certain kinds of message in advance. It is simply shown each one.</p>
-${devs(`${UP}
+${devs(`${UPTAG}
 <p>Systems publish typed events. The v0.3 dispatcher offers each event to the <b>enabled systems of the same stage, in a deterministic order</b>. Each system checks what it is offered and handles what is relevant.</p>
 <p>There is no automatic, type-based subscription registry yet. An event's type does not by itself decide who receives it.</p>
 <table><thead><tr><th>Rule</th><th>Detail</th></tr></thead><tbody>
@@ -110,14 +109,14 @@ ${flow([["Horizon", "the engine", "done"], ["Nexus Runtime", "compiled in", "hot
 <p>Since v0.4b.1, mods have a front desk for signing in their systems. You still cannot install a .nmod.</p>
 <h2>A note for server owners</h2>
 <p>On a dedicated server, chat announcements from Nexus are written to the log and not shown in game.</p>
-${devs(`${UP}
+${devs(`${UPTAG}
 <p>The Nexus runtime is compiled into Horizon. v0.2 connected it to the game: extra simulation stages, world day/night events, gameplay lifecycle integration, server-side execution and controlled engine command requests.</p>
 <p>Dedicated servers do not have the integrated owner-console adapter that Nexus <code>/say</code> announcements need. Such requests are logged and dropped safely.</p>`)}` },
   { slug: "api-limitations", title: "What it cannot do yet", description: "The current limits of Nexus, in plain words.", body: ({ u }) => `
 ${lead("Nexus is still being built. This page lists what it cannot do today, so nobody is surprised.")}
 ${you("You cannot download or install Nexus mods yet. Most parts of the game cannot be changed by Nexus mods yet either.")}
 <ul class="ticks"><li>There is no installer and no download.</li><li>The mod loader can check mods, but cannot add them to the game yet.</li><li>Most areas of the game have no Nexus plug-in point yet.</li><li>Mods are not locked in a safe box. Only use mods you trust.</li><li>${NO_JAVA}</li></ul>
-${devs(`${UP}
+${devs(`${UPTAG}
 <ul class="ticks"><li>No public API reference, SDK or Nexus source yet.</li><li>The runtime is compiled into Horizon. There is no standalone build or installer.</li><li>v0.4a validates and resolves packages, but does not compile, install or run them.</li><li>No automatic type-based event subscription registry.</li><li>Most engine areas have no Nexus API or hook yet. See <a href="${u("docs/planned-extensibility/")}">Planned extensibility</a>.</li><li>Dedicated servers drop Nexus <code>/say</code> requests (logged), for lack of an owner-console adapter.</li><li>Native code is not sandboxed.</li></ul>`)}` },
   { slug: "planned-extensibility", title: "Planned extensibility", description: "The kinds of changes Nexus is meant to allow later.", body: ({ flow, TARGETS }) => `
 ${lead("This page is about the future. It shows the kinds of changes Nexus aims to let mods make.")}
@@ -135,7 +134,7 @@ ${you("Only use mods from people you trust. Nexus will ask you to approve a mod 
 <div class="callout warn"><p><b>Mods are not locked in a safe box.</b> They run with your permissions. Approve trust before anything is compiled.</p></div>
 <h2>What Nexus already checks</h2>
 <p>Nexus checks that a mod package is well formed and does not clash with other mods. That stops broken mods. It does not make a bad mod safe.</p>
-${devs(`${UP}
+${devs(`${UPTAG}
 <p><b>Nexus mods are trusted native code.</b> Native Rust source mods are not sandboxed and run with the player's permissions. Compiling them can execute code (build scripts, procedural macros), so trust approval must come <b>before</b> compilation.</p>
 <h3>In place</h3><ul class="ticks"><li>Controlled engine command requests (v0.2).</li><li>Server/client separation (v0.1).</li><li>v0.4a: filesystem path and symlink checks during discovery, strict TOML validation, conflict detection, and explicit native-code trust assumptions.</li></ul>
 <p>Validation rejects broken or conflicting packages. It does not make untrusted code safe.</p>
@@ -146,12 +145,11 @@ ${you("Later, you will get mods as .nmod files and Nexus will sort out the rest.
 ${flow([[".nmod", "package", "done"], ["Validation", "v0.4a", "done"], ["Dependencies", "v0.4a", "done"], ["Staging", "v0.4b.2 building", "hot"], ["Native Build", "v0.4b.3", "planned"], ["Registration", "seam v0.4b.1", "done"], ["Horizon", "", "done"]], "Loader pipeline")}
 <p class="caption">Filled blocks work today. Outlined blocks are planned.</p>
 <p>Nexus reads the label, checks it, and works out which other mods are needed. It then puts them in a sensible order. Building and adding them to the game comes later.</p>
-${devs(`${UP}
+${devs(`${UPTAG}
 <h3>Done: v0.4a .nmod manifest validation, discovery and resolution</h3>${list(v4a.items)}
 <p class="muted">${v4a.note}</p>
 <h3>Planned</h3>
-<table><thead><tr><th>Milestone</th><th>Goals</th></tr></thead><tbody>
-${MILESTONES.filter((m) => m.state === "planned").map((m) => `<tr><td>${m.ver}: ${m.name}</td><td>${m.items.join("; ")}.</td></tr>`).join("")}</tbody></table>
+${list(MILESTONES.filter((m) => m.state === "planned").map((m) => `<b>${m.ver}:</b> ${m.name}`))}
 <h3>Compatibility metadata</h3><p>Three things are kept apart: the Nexus API version a mod needs, the Horizon source/API range it supports, and the exact Horizon revision a compiled install used. v0.4a checks Nexus API compatibility.</p>
 <p>Horizon's existing <code>.hnmod</code> format remains an architectural consideration.</p>`)}` },
   { slug: "installation-architecture", title: "How installing will work", description: "The planned steps for installing a Nexus mod.", body: () => `
@@ -164,7 +162,7 @@ ${devs(`<ol><li>Discover packages, with path and symlink checks (v0.4a).</li><li
   { slug: "developer-setup", title: "Developer setup", description: "Building Horizon and working on this website.", body: () => `
 ${lead("This page is for people who write code. If you only want to play, you can skip it.")}
 ${you("Nothing here is needed to play Horizon. There are no Nexus install steps because there is nothing to install yet.")}
-${devs(`${UP}
+${devs(`${UPTAG}
 <h3>Nexus</h3><p>The Nexus branch is not public, so there are no Nexus build steps. Horizon documents its build in its <a href="https://github.com/horizon-rust/horizon#readme">README</a>. Nexus and its mods need a Rust toolchain.</p>
 <h3>This website</h3>
 <pre><code>node build.mjs                 # dist/, base /horizon-nexus-site/
