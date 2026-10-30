@@ -19,15 +19,19 @@ export const MILESTONES = [
   { ver: "v0.2", name: "Engine Integration", state: "done", commit: "52aedd384", icon: "engine",
     summary: "Nexus systems hooked into Horizon's gameplay and simulation.",
     items: ["Additional simulation stages", "World day/night events", "Controlled engine command requests", "Gameplay lifecycle integration", "Server-side execution"] },
-  { ver: "v0.3", name: "Inter-System Events", state: "done", commit: "2a01521ee", icon: "events",
+  { ver: "v0.3", name: "Typed Inter-System Events", state: "done", commit: "2a01521ee", icon: "events",
     summary: "Systems can talk to each other through typed events.",
     items: ["Typed inter-system events", "Independent publishers and consumers", "Deterministic same-stage delivery", "Bounded 64-event dispatch batches", "Deferred reentrant events", "Session lifecycle cleanup", "Integrated and dedicated server validation"],
     validation: ["18/18 Nexus runtime tests passed"] },
-  { ver: "v0.4a", name: "Package Foundation", state: "done", commit: "fb43e5954", icon: "package",
+  { ver: "v0.4a", name: ".nmod manifest validation, discovery and deterministic dependency resolution", state: "done", commit: "fb43e5954", icon: "package",
     summary: "A library that reads, checks and orders .nmod packages. It does not yet install or run mods.",
     items: ["horizon-nexus-loader crate", "Schema-1 .nmod manifest parser", "Strict TOML validation", "Mod discovery", "Dependency resolution", "Conflict detection", "Semantic version validation", "Nexus API compatibility checks", "Client/server stage validation", "Deterministic dependency ordering", "Filesystem path and symlink checks", "Explicit native-code trust assumptions"],
     validation: ["14 loader tests passing", "18 Nexus runtime tests passing", "32/32 total tests passing", "Strict Clippy clean", "Default and Nexus-feature client checks passed", "Locked workspace validation passed"],
     note: "Committed locally on the developer's branch: nine files, 1,336 insertions. v0.4a is a metadata, discovery and resolution library. It does not install or execute independently packaged mods." },
+  { ver: "Audit", name: "Pre-v0.4b audit and hardening", state: "done", commit: "8f809e822", icon: "shield",
+    summary: "A review and hardening pass over everything through v0.4a, before v0.4b work starts.",
+    items: ["Fixed an event-queue resource issue", "Added regression coverage"],
+    validation: ["33/33 tests passed"] },
   { ver: "v0.4b", name: "Framework and Loader Integration", state: "planned", icon: "framework",
     summary: "Connect packages to Horizon's build, and widen what mods can reach.",
     items: ["Connect package discovery to Horizon's launcher compilation pipeline", "Generated Nexus system registration", "Extend framework API and engine hook coverage", "A reliable path for native mods to modify gameplay"] },
@@ -39,7 +43,11 @@ export const MILESTONES = [
     items: ["SDK and developer tooling", "Developer documentation", "Example gameplay mods", "Mod profiles", "Compatibility diagnostics", "Update and rollback mechanisms", "Final broad framework and loader feature completion"] },
 ];
 export const LATEST = MILESTONES.filter((m) => m.state === "done").at(-1);
-export const AUDIT = { name: "Pre-v0.4b audit and hardening", status: "Requested", body: "A full audit and hardening pass to validate everything through v0.4a has been requested before v0.4b work starts. It has not been completed." };
+export const AUDIT = MILESTONES.find((m) => m.ver === "Audit");
+export const UPDATED = "30 October 2026";
+export const FOCUS = { ver: "v0.4b.1", name: "Native system registration", status: "Architecture reviewed, implementation authorized",
+  body: "The first step of v0.4b. It is planned and authorized. It is not completed and not yet reported as underway.",
+  items: ["Native Nexus system registration hooks", "Connecting external mod registration to the Nexus runtime", "Deterministic registration and lifecycle behavior", "Preparing the foundation for independently installable .nmod mods"] };
 export const STABILIZATION = ["Review all code and architecture", "Fix defects", "Improve existing implementations", "Strengthen security", "Benchmark performance", "Test real mod workflows", "Test client/server behaviour", "Improve documentation", "Verify future maintainability"];
 
 export const IMPLEMENTED = [

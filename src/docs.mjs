@@ -13,7 +13,7 @@ export const DOCS = [
 <tr><td>Nexus Framework</td><td>The runtime, systems, events and, later, the APIs, hooks and registries mods build on.</td><td>Working core, compiled into Horizon (v0.1 to v0.3).</td></tr>
 <tr><td>Nexus Mod Loader</td><td>Finds, checks, orders, builds and registers <code>.nmod</code> packages.</td><td>Package library done (v0.4a). It validates and resolves, but cannot build, install or run mods yet.</td></tr></tbody></table>
 <h2>Where things stand</h2>
-${flow([["v0.1", "Systems Runtime", "done"], ["v0.2", "Engine Integration", "done"], ["v0.3", "Inter-System Events", "done"], ["v0.4a", "Package Foundation", "done"], ["v0.4b to d", "planned", "planned"]], "Milestones")}
+${flow([["v0.1", "Systems Runtime", "done"], ["v0.2", "Engine Integration", "done"], ["v0.3", "Typed Inter-System Events", "done"], ["v0.4a", "Manifests and resolution", "done"], ["Audit", "Pre-v0.4b", "done"], ["v0.4b.1", "authorized", "planned"], ["v0.4b to d", "planned", "planned"]], "Milestones")}
 <p>v0.4 is the final planned feature milestone. Then stabilization, then a pause. See the <a href="${u("roadmap/")}">roadmap</a>.</p>
 <h2>What it is not</h2><ul><li>Not installable today. The runtime is compiled into Horizon and standalone <code>.nmod</code> installation is not implemented.</li><li>${NO_JAVA}</li><li>Not an official Mojang or Microsoft product, and not an officially endorsed part of upstream Horizon.</li></ul>` },
   { slug: "system-lifecycle", title: "System lifecycle", description: "How Nexus registers, starts, ticks and stops systems.", body: ({ flow }) => `${UP}
@@ -56,10 +56,10 @@ ${flow([["Horizon Engine", "", "done"], ["Nexus APIs / Hooks / Registries", "pla
 <div class="callout warn"><p><b>Nexus mods are trusted native code.</b> Native Rust source mods are not sandboxed and run with the player's permissions. Compiling them can execute code (build scripts, procedural macros), so trust approval must come <b>before</b> compilation.</p></div>
 <h2>In place</h2><ul class="ticks"><li>Controlled engine command requests (v0.2).</li><li>Server/client separation (v0.1).</li><li>v0.4a: filesystem path and symlink checks during discovery, strict TOML validation, conflict detection, and explicit native-code trust assumptions.</li></ul>
 <p>Validation rejects broken or conflicting packages. It does not make untrusted code safe.</p>
-<h2>Requested</h2><p>A pre-v0.4b audit and hardening pass has been requested. It has not been completed.</p>` },
+<h2>Completed: pre-v0.4b audit</h2><p>The audit (8f809e822, developer-reported) fixed an event-queue resource issue, added regression coverage and verified 33/33 tests.</p><h2>Next: v0.4b.1</h2><p>Native system registration hooks and connecting external mod registration to the runtime. Architecture reviewed and implementation authorized; not completed.</p>` },
   { slug: "mod-packaging", title: "Mod packaging roadmap", description: ".nmod packaging from v0.4a to v0.4d.", body: ({ flow }) => `${UP}
 ${flow([[".nmod", "package", "done"], ["Validation", "v0.4a", "done"], ["Dependencies", "v0.4a", "done"], ["Native Build", "v0.4b/c", "planned"], ["Registration", "v0.4b", "planned"], ["Horizon", "", "done"]], "Loader pipeline")}
-<h2>Done: v0.4a Package Foundation</h2>${list(v4a.items)}
+<h2>Done: v0.4a .nmod manifest validation, discovery and resolution</h2>${list(v4a.items)}
 <p class="muted">${v4a.note}</p>
 <h2>Planned</h2>
 <table><thead><tr><th>Milestone</th><th>Goals</th></tr></thead><tbody>
