@@ -196,3 +196,19 @@ test("home banner shows the in-development milestone with an indeterminate bar",
   assert.match(css, /prefers-reduced-motion: reduce\) \{ \.build-banner::before, \.live-dot, \.indet i, \.buddy, \.sweat, \.phew \{ animation: none/);
   for (const [f, s] of html) assert.doesNotMatch(s, /(?:mod installation|native compilation) (?:works|is available)/i, f);
 });
+
+test("v4.0: docs list folds on phones, footer shows live status, social meta is complete", () => {
+  for (const [f, s] of html) {
+    if (f.includes("/docs/") && !f.includes("redirect") && s.includes('class="docs-nav"')) assert.match(s, /<details class="docs-toc" data-docs-toc><summary>[^]*?All docs \(\d+\)/, f);
+    if (/http-equiv="refresh"/.test(s)) continue;
+    for (const m of ["twitter:title", "twitter:description", "twitter:image", 'name="color-scheme"']) assert.ok(s.includes(m), `${f} missing ${m}`);
+    assert.match(s, /class="foot-status"[^]*?Now building v0\.4b\.2/, f);
+    assert.doesNotMatch(s, /\d+\s*%\s*(?:done|complete)/i, f);
+  }
+});
+
+test("v4.0: roadmap has jump links and folds long completed lists", () => {
+  const road = html.find(([f]) => f.endsWith("dist-test/roadmap/index.html"))[1];
+  for (const id of ["completed", "current", "planned"]) { assert.ok(road.includes(`href="#${id}"`)); assert.ok(road.includes(`id="${id}"`)); }
+  assert.match(road, /<details class="more-items"><summary>What it added \(\d+\)<\/summary>/);
+});

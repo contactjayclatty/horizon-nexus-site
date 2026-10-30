@@ -51,6 +51,10 @@ function layout({ path, title, description, body, bodyClass = "" }) {
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Horizon Nexus: a blue block portal in a pixel-art night landscape, with the line Change the Game. Extend the Engine.">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${esc(fullTitle)}">
+<meta name="twitter:description" content="${esc(description)}">
+<meta name="twitter:image" content="${SITE}og.png">
+<meta name="color-scheme" content="dark">
 <link rel="preload" href="${u("fonts/PixelifySans-Bold.woff2")}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${u("fonts/Geist-Regular.woff2")}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${u("assets/tokens.css")}?v=${HASH["tokens.css"]}">
@@ -58,7 +62,7 @@ function layout({ path, title, description, body, bodyClass = "" }) {
 <script>document.documentElement.classList.replace("no-js","js")</script>
 <script type="module" src="${u("assets/site.js")}?v=${HASH["site.js"]}"></script>
 </head>
-<body class="${bodyClass}">
+<body class="${bodyClass}" id="top">
 <a class="skip" href="#main">Skip to the content</a>
 <header class="nav">
   <div class="container nav-inner">
@@ -70,7 +74,7 @@ function layout({ path, title, description, body, bodyClass = "" }) {
     </div>
   </div>
 </header>
-<div class="menu" id="menu" hidden><nav aria-label="Main (menu)"><ul>${links}</ul><p class="micro menu-label">More</p><ul>${more}</ul></nav></div>
+<div class="menu" id="menu" hidden><nav aria-label="Main (menu)"><ul>${links}</ul><p class="micro menu-label">More</p><ul>${more}</ul><p class="menu-status">${icon("construction", 16)} Now building ${CURRENT_MS.ver}. <a href="${u("roadmap/")}#current">See the roadmap</a></p></nav></div>
 <main id="main">
 ${body}
 </main>
@@ -81,6 +85,7 @@ ${body}
       <div><h2>Nexus</h2><ul class="foot-links">${[...NAV.slice(1), ...MORE].map(([p, l]) => `<li><a href="${u(p)}">${l}</a></li>`).join("")}</ul></div>
       <div><h2>Source</h2><ul><li><a href="${REPO}">Website source</a></li><li><a href="${HORIZON}">Horizon upstream</a></li><li><a href="${HORIZON_SITE}">playhorizon.dev</a></li></ul></div>
     </div>
+    <p class="foot-status"><span class="badge dev">${icon("construction", 14)}In development</span> Now building ${CURRENT_MS.ver}. ${esc(NO_RELEASE)} <a href="#top">Back to top</a></p>
     <p class="disclaimer">${esc(NOTICE)} Minecraft is a trademark of Mojang Synergies AB. This site contains no Minecraft code, textures or assets; all artwork is original and drawn in code. Milestone details are developer-reported.</p>
         <p class="footer-word" aria-hidden="true">NEXUS</p>
   </div>
@@ -191,10 +196,11 @@ pages["roadmap/"] = {
 ${lead("This page shows what is finished, what is being built now, and what comes next. Each block is one step of the project.")}
 ${you("Nothing here can be installed yet. v0.4 is the last planned feature step, then comes testing and fixing. No v0.5 or v1.0 features are planned, and there are no dates.")}
 <ol class="road reveal" aria-label="Roadmap at a glance">${MILESTONES.map((m) => `<li class="${m.state}"><span class="road-block" aria-hidden="true"></span><b>${m.ver}</b><span>${m.state === "done" ? "Done" : m.state === "current" ? "Building" : "Planned"}</span></li>`).join("").replace('<li class="current"><span class="road-block" aria-hidden="true"></span>', `<li class="current"><span class="road-icon">${icon("construction", 18)}</span>`)}<li class="planned"><span class="road-block" aria-hidden="true"></span><b>Then</b><span>Stabilize</span></li></ol>
+<nav class="jump" aria-label="On this page"><a href="#completed">Completed</a><a href="#current">Building now</a><a href="#planned">Planned</a></nav>
 <p class="legend micro"><span class="key done"></span> Completed ${icon("construction", 14)} In development <span class="key planned"></span> Planned</p>
 
 <section class="section" aria-labelledby="completed">${head("01", "Completed", "These steps are done. The developer reported them from their own copy of Horizon.", "completed")}
-<div class="grid two">${[...DONE].reverse().map((m) => card({ ic: m.icon, title: `${m.ver}: ${m.name}`, b: "done", body: esc(m.summary), extra: `${ticks(m.items, "done")}${commit(m.commit)}` })).join("")}</div>
+<div class="grid two">${[...DONE].reverse().map((m) => card({ ic: m.icon, title: `${m.ver}: ${m.name}`, b: "done", body: esc(m.summary), extra: `<details class="more-items"><summary>What it added (${m.items.length})</summary>${ticks(m.items, "done")}</details>${commit(m.commit)}` })).join("")}</div>
 <p class="more-link"><a href="${u("releases/")}">Validation results are on the Releases page</a></p></section>
 
 <section class="section" aria-labelledby="current">${head("02", "In development", "", "current")}
@@ -307,7 +313,7 @@ node --test tests/*.test.mjs</code></pre>
 </div>`,
 };
 
-const docNav = (slug) => `<nav class="docs-nav" aria-label="Documentation"><p class="micro">Docs</p><ul>${DOCS.map((d) => `<li><a href="${u(d.slug ? `docs/${d.slug}/` : "docs/")}"${d.slug === slug ? ' aria-current="page"' : ""}>${esc(d.title)}</a></li>`).join("")}</ul></nav>`;
+const docNav = (slug) => `<nav class="docs-nav" aria-label="Documentation"><details class="docs-toc" data-docs-toc><summary><span class="micro">All docs (${DOCS.length})</span><b>${esc(DOCS.find((d) => d.slug === slug)?.title ?? "")}</b></summary><ul>${DOCS.map((d) => `<li><a href="${u(d.slug ? `docs/${d.slug}/` : "docs/")}"${d.slug === slug ? ' aria-current="page"' : ""}>${esc(d.title)}</a></li>`).join("")}</ul></details></nav>`;
 DOCS.forEach((d, i) => {
   const prev = DOCS[i - 1], next = DOCS[i + 1];
   const href = (x) => u(x.slug ? `docs/${x.slug}/` : "docs/");

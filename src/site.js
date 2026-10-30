@@ -19,3 +19,6 @@ if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: re
   }), { rootMargin: "0px 0px -40px 0px" });
   items.forEach((el) => io.observe(el));
 } else items.forEach((el) => el.classList.add("in"));
+// Docs list: open on wide screens, folded on phones so the page starts with the content.
+const toc = document.querySelector("[data-docs-toc]");
+if (toc) { const wide = matchMedia("(min-width: 901px)"); const sync = () => { toc.open = wide.matches; }; sync(); wide.addEventListener("change", sync); }
