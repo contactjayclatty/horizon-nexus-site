@@ -148,11 +148,13 @@ pages[""] = {
   </div>
 </div></section>
 <section class="section"><div class="container">
-  <section class="panel raised status-strip reveal" aria-labelledby="latest">
-    <div>${icon("construction", 48)}</div>
-    <div class="status-text"><p class="micro">Latest Development, ${UPDATED}</p><h2 class="panel-title" id="latest">Building ${CURRENT_MS.ver} now</h2>
-    <p>Everything up to v0.4b.1 is complete. v0.4 is the final planned feature milestone, followed by stabilization.</p>
-    <p class="tags">${badge("done")} <span class="micro">v0.1 to v0.4b.1</span> ${badge("progress")} <span class="micro">${CURRENT_MS.ver}</span> ${badge("planned")} <span class="micro">rest of v0.4</span></p></div>
+  <section class="panel raised tracker reveal" aria-labelledby="latest">
+    <div class="tracker-head"><p class="micro">Latest Development, ${UPDATED}</p><h2 class="panel-title" id="latest">Where Nexus is now</h2></div>
+    <ol class="track" aria-label="Development progress, by step">
+      <li class="t-done"><span class="t-mark" aria-hidden="true"></span><span class="t-state">Done</span><span class="t-what">${DONE[0].ver} to ${DONE.at(-1).ver}</span></li>
+      <li class="t-current" aria-current="step"><span class="t-mark">${icon("construction", 20)}</span><span class="t-state">Building now</span><span class="t-what">${CURRENT_MS.ver}: secure mod packaging</span></li>
+      <li class="t-planned"><span class="t-mark" aria-hidden="true"></span><span class="t-state">Planned</span><span class="t-what">${PLANNED[0].ver} to ${PLANNED.at(-1).ver.replace(/c to d$/, "d")}, then stabilization</span></li>
+    </ol>
     <a class="button primary" href="${u("roadmap/")}">View development roadmap</a>
   </section>
 </div></section>`,

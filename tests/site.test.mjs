@@ -171,6 +171,14 @@ test("readability: docs, features and architecture are written for players first
   }
 });
 
+test("home tracker lists done, building and planned in order", () => {
+  const home = html.find(([f]) => f.endsWith("dist-test/index.html"))[1];
+  const tr = home.slice(home.indexOf('class="track"'), home.indexOf("</ol>", home.indexOf('class="track"')));
+  const at = ["Done", "Building now", "Planned"].map((x) => tr.indexOf(`<span class="t-state">${x}</span>`));
+  assert.ok(at.every((x) => x > 0) && at[0] < at[1] && at[1] < at[2], "tracker order");
+  assert.match(tr, /aria-current="step"[^]*v0\.4b\.2/); assert.doesNotMatch(tr, /%/);
+});
+
 test("home banner shows the in-development milestone with an indeterminate bar", async () => {
   const { CURRENT_MS } = await import("../src/content.mjs");
   assert.equal(CURRENT_MS.ver, "v0.4b.2");

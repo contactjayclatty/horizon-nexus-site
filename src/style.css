@@ -469,3 +469,26 @@ table.data td { background: var(--panel); }
 .road li.next { border-color: var(--warn); border-style: dashed; }
 .road .next .road-block, .key.next { background: var(--well); border: 2px dashed var(--warn); box-shadow: none; }
 .build-state { flex: none; }
+
+/* Home mini progress tracker */
+.tracker { display: grid; gap: 18px; }
+.tracker-head .panel-title { margin: 4px 0 0; }
+.track { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+.track li { max-width: none; position: relative; display: grid; grid-template-columns: 28px 1fr; grid-template-rows: auto auto; column-gap: 10px; row-gap: 2px; align-items: center; padding: 12px 14px; background: var(--well); border: 2px solid var(--outline); }
+.track li + li { border-left: 0; }
+.t-mark { grid-row: 1 / 3; width: 24px; height: 24px; display: grid; place-items: center; line-height: 0; border: 2px solid var(--outline); }
+.t-done .t-mark { background: var(--face); box-shadow: inset 0 2px 0 var(--face-bevel); }
+.t-current .t-mark { border: 0; width: auto; height: auto; }
+.t-planned .t-mark { background: transparent; border: 2px dashed var(--border); }
+.t-state { font: 600 12px/1.1 var(--pixel); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.t-what { font-size: 15px; color: var(--ink); }
+.track .t-current { background: #f5c062; border-color: #1a1200; box-shadow: inset 0 -4px 0 #c8902e; }
+.t-current .t-state, .t-current .t-what { color: #1a1200; }
+.t-current .t-what { font-weight: 600; }
+.tracker .button { justify-self: start; }
+@media (max-width: 760px) {
+  .track { grid-template-columns: 1fr; }
+  .track li + li { border-left: 2px solid var(--outline); border-top: 0; }
+  .track .t-current { border-color: #1a1200; }
+  .tracker .button { justify-self: stretch; text-align: center; }
+}
