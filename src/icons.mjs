@@ -19,7 +19,6 @@ const G = {
   qol: ["............", "..oo....oo..", ".oeeo..oeeo.", ".oeeeooeeeo.", ".oeeeeeeheo.", ".oeeeeeeeeo.", "..oeeeeeeo..", "...oeeeeo...", "....oeeo....", ".....oo.....", "............", "............"],
   shield: ["............", ".oooooooooo.", ".obbbbbbbbo.", ".obbbhhbbbo.", ".obbbhhbbbo.", ".obbbbbbbbo.", "..obbhhbbo..", "..obbbbbbo..", "...obbbbo...", "....oooo....", "............", "............"],
   construction: ["..o......o..", ".oyo....oyo.", "oooooooooooo", "oyyyoyyyoyyo", "oyyoyyyoyyyo", "oyoyyyoyyyoo", "oooooooooooo", ".oro....oro.", ".oro....oro.", ".oro....oro.", "oooooooooooo", "............"],
-  warning: [".....oo.....", "....oyyo....", "....oyyo....", "...oyyyyo...", "...oyooyo...", "..oyyooyyo..", "..oyyooyyo..", ".oyyyooyyyo.", ".oyyyyyyyyo.", "oyyyyooyyyyo", "oyyyyyyyyyyo", "oooooooooooo"],
 };
 export function icon(name, size = 40, label = "") {
   const g = G[name];
