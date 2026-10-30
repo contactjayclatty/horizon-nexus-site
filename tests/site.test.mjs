@@ -229,3 +229,11 @@ test("v5 phase 1: source note once, no filler, footer folds, tables stack, joke 
   const faq = html.find(([f]) => f.endsWith("dist-test/faq/index.html"))[1];
   assert.equal((faq.match(/being built\?/g) || []).length, 0);
 });
+
+test("v5 phase 2: docs have an on-page list and labelled pager, devs box is one style", () => {
+  const te = html.find(([f]) => f.endsWith("dist-test/docs/typed-events/index.html"))[1];
+  assert.match(te, /<nav class="on-page" aria-label="On this page">[^]*?href="#for-developers"/);
+  assert.match(te, /class="button pager-prev"[^]*?<small>Previous<\/small>[^]*?class="button pager-next"[^]*?<small>Next<\/small>/);
+  const css = readFileSync(new URL("../src/style.css", import.meta.url), "utf8");
+  assert.match(css, /\.for-devs \{ border: 2px solid/);
+});

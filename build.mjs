@@ -315,13 +315,18 @@ node --test tests/*.test.mjs</code></pre>
 };
 
 const docNav = (slug) => `<nav class="docs-nav" aria-label="Documentation"><details class="docs-toc" data-docs-toc><summary><span class="micro">All docs (${DOCS.length})</span><b>${esc(DOCS.find((d) => d.slug === slug)?.title ?? "")}</b></summary><ul>${DOCS.map((d) => `<li><a href="${u(d.slug ? `docs/${d.slug}/` : "docs/")}"${d.slug === slug ? ' aria-current="page"' : ""}>${esc(d.title)}</a></li>`).join("")}</ul></details></nav>`;
+const slugify = (t) => t.toLowerCase().replace(/<[^>]+>/g, "").replace(/&[a-z]+;/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 DOCS.forEach((d, i) => {
   const prev = DOCS[i - 1], next = DOCS[i + 1];
   const href = (x) => u(x.slug ? `docs/${x.slug}/` : "docs/");
+  const toc = [];
+  const body = d.body({ u, esc, flow, CURRENT, TARGETS }).replace(/<h2>([^]*?)<\/h2>/g, (m, t) => { if (t.includes("badge")) return m; const id = slugify(t); toc.push([id, t.replace(/<[^>]+>/g, "")]); return `<h2 id="${id}">${t}</h2>`; })
+    .replace(/<section class="for-devs" aria-label="For developers"><h2>/, () => { toc.push(["for-developers", "For developers"]); return '<section class="for-devs" aria-label="For developers" id="for-developers"><h2>'; });
+  const onPage = toc.length > 1 ? `<nav class="on-page" aria-label="On this page"><p class="micro">On this page</p><ul>${toc.map(([id, t]) => `<li><a href="#${id}">${t}</a></li>`).join("")}</ul></nav>` : "";
   pages[d.slug ? `docs/${d.slug}/` : "docs/"] = {
     title: d.title, description: d.description,
-    body: `<div class="container page-main docs">${docNav(d.slug)}<article class="prose"><p class="kicker">Docs · ${i + 1} of ${DOCS.length}</p><h1 class="title">${esc(d.title)}</h1>${d.body({ u, esc, flow, CURRENT, TARGETS })}
-<nav class="pager" aria-label="Previous and next">${prev ? `<a class="button" href="${href(prev)}"><span aria-hidden="true">◀</span> ${esc(prev.title)}</a>` : "<span></span>"}${next ? `<a class="button" href="${href(next)}">${esc(next.title)} <span aria-hidden="true">▶</span></a>` : ""}</nav></article></div>`,
+    body: `<div class="container page-main docs${onPage ? " has-toc" : ""}">${docNav(d.slug)}<article class="prose"><p class="kicker">Docs · ${i + 1} of ${DOCS.length}</p><h1 class="title">${esc(d.title)}</h1>${body}
+<nav class="pager" aria-label="Previous and next">${prev ? `<a class="button pager-prev" href="${href(prev)}"><small>Previous</small><span><span aria-hidden="true">◀</span> ${esc(prev.title)}</span></a>` : "<span></span>"}${next ? `<a class="button pager-next" href="${href(next)}"><small>Next</small><span>${esc(next.title)} <span aria-hidden="true">▶</span></span></a>` : "<span></span>"}</nav></article>${onPage}</div>`,
   };
 });
 
