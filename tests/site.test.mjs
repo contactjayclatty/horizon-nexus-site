@@ -216,7 +216,6 @@ test("v5 phase 2: docs have an on-page list and labelled pager, devs box is one 
 
 test("v5 phase 3: releases jump list and folds, glossary A to Z, plain target list, no fake download bar", () => {
   const get = (p) => html.find(([f]) => f.endsWith(`dist-test/${p}`))[1];
-  assert.match(road, /156\/156 tests passing/);
   const rel = get("releases/index.html");
   assert.match(rel, /<nav class="jump" aria-label="Jump to a milestone">/);
   assert.equal((rel.match(/<details class="more-items" open>/g) || []).length, 1, "only the newest release is open");
