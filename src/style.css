@@ -439,3 +439,19 @@ table.data td { background: var(--panel); }
 .dev-detail { margin-top: 10px; font-size: 14px; }
 .dev-detail summary { cursor: pointer; color: var(--muted); min-height: 32px; display: flex; align-items: center; }
 .dev-detail p { color: var(--ink-soft); margin: 6px 0 0; }
+
+/* Live "now building" banner (home) */
+.build-banner { position: relative; background: var(--panel); border-bottom: 2px solid var(--outline); box-shadow: inset 0 2px 0 var(--bevel); }
+.build-banner::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 6px; background: repeating-linear-gradient(45deg, var(--warn, #f5c062) 0 8px, var(--outline) 8px 16px); background-size: 22.6px 6px; animation: stripe 3s linear infinite; }
+.build-inner { display: flex; align-items: center; gap: 12px; padding-top: 16px; padding-bottom: 10px; }
+.build-icon { line-height: 0; flex: none; }
+.live-dot { flex: none; width: 10px; height: 10px; background: var(--warn, #f5c062); border: 2px solid var(--outline); animation: pulse 1.6s ease-in-out infinite; }
+.build-text { margin: 0; flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.build-text b { font: 600 15px/1.25 var(--pixel); color: var(--ink); }
+.build-text span { font-size: 14px; color: var(--ink-soft); }
+@keyframes stripe { to { background-position: 22.6px 0; } }
+@keyframes pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .build-banner::before, .live-dot { animation: none; } }
+@media (max-width: 560px) { .build-inner { flex-wrap: wrap; } .build-text { flex-basis: calc(100% - 70px); } .build-inner .button { margin-left: 50px; } }
+.next-steps { margin-top: 40px; padding-top: 16px; border-top: 2px solid var(--outline); display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.page-main > .callout.you, .prose > .callout.you { margin-bottom: 24px; }

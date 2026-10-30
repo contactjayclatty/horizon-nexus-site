@@ -111,6 +111,14 @@ const pages = {};
 pages[""] = {
   title: "Home", description: "Horizon Nexus: create, modify and extend Horizon with a Rust-native modding framework and loader. In development.",
   body: `
+<aside class="build-banner" aria-label="Now building">
+  <div class="container build-inner">
+    <span class="build-icon">${icon("construction", 28)}</span>
+    <span class="live-dot" aria-hidden="true"></span>
+    <p class="build-text"><b>Now building: ${FOCUS.ver}, ${esc(FOCUS.name.toLowerCase())}</b><span>${esc(FOCUS.plain)}</span></p>
+    <a class="button small" href="${u("roadmap/")}#current">See the roadmap</a>
+  </div>
+</aside>
 <section class="hero" aria-labelledby="hero-title">
   <div class="container hero-grid">
     <div class="hero-copy">
@@ -175,11 +183,12 @@ pages["roadmap/"] = {
   title: "Roadmap", description: "Nexus development roadmap: completed milestones, the current step, planned v0.4 work and final stabilization.",
   body: `<div class="container page-main">
 <p class="kicker">Roadmap</p><h1 class="display page-title">Built block by block</h1>
-<p class="lede">What is done, what is happening now and what is planned. v0.4 is the final planned feature milestone. No v0.5 or v1.0 features are planned, and there are no dates.</p>
+${lead("This page shows what is finished, what is being built now, and what comes next. Each block is one step of the project.")}
+${you("Nothing here can be installed yet. v0.4 is the last planned feature step, then comes testing and fixing. No v0.5 or v1.0 features are planned, and there are no dates.")}
 <ol class="road reveal" aria-label="Roadmap at a glance">${MILESTONES.map((m) => `<li class="${m.state}"><span class="road-block" aria-hidden="true"></span><b>${m.ver}</b><span>${m.state === "done" ? "Done" : "Planned"}</span></li>`).join("").replace('<li class="planned"><span class="road-block" aria-hidden="true"></span><b>v0.4b</b>', `<li class="current"><span class="road-icon">${icon("construction", 18)}</span><b>v0.4b.1</b><span>Current</span></li><li class="planned"><span class="road-block" aria-hidden="true"></span><b>v0.4b</b>`)}<li class="planned"><span class="road-block" aria-hidden="true"></span><b>Then</b><span>Stabilize</span></li></ol>
 <p class="legend micro"><span class="key done"></span> Completed ${icon("construction", 14)} Current <span class="key planned"></span> Planned</p>
 
-<section class="section" aria-labelledby="completed">${head("01", "Completed", "Developer-reported milestones on an independent Horizon branch.", "completed")}
+<section class="section" aria-labelledby="completed">${head("01", "Completed", "These steps are done. The developer reported them from their own copy of Horizon.", "completed")}
 <div class="grid two">${[...DONE].reverse().map((m) => card({ ic: m.icon, title: `${m.ver}: ${m.name}`, b: "done", body: esc(m.summary), extra: `${ticks(m.items, "done")}${commit(m.commit)}` })).join("")}</div>
 <p class="more-link"><a href="${u("releases/")}">Validation results are on the Releases page</a></p></section>
 
@@ -187,11 +196,12 @@ pages["roadmap/"] = {
 <p class="muted">Updated ${UPDATED}. Work marked Current is in progress and not completed.</p>
 <section class="panel current-panel reveal"><div class="panel-head"><h3 class="panel-title">${FOCUS.ver}: ${esc(FOCUS.name)}</h3><span class="tags">${badge("progress")}${badge("dev_reported")}</span></div><p><b>${FOCUS.status}.</b> ${esc(FOCUS.body)}</p>${ticks(FOCUS.items)}</section></section>
 
-<section class="section" aria-labelledby="planned">${head("03", "Planned", "Goals for the rest of v0.4. None of this exists yet.", "planned")}
+<section class="section" aria-labelledby="planned">${head("03", "Planned", "These are the next steps. None of this exists yet.", "planned")}
 <div class="grid three">${PLANNED.map((m) => card({ ic: m.icon, title: `${m.ver}: ${m.name}`, b: "planned", cls: "planned-card", body: esc(m.summary), extra: ticks(m.items) })).join("")}</div></section>
 
 <section class="section" aria-labelledby="stabilize">${head("04", "Final stabilization", "", "stabilize")}
-<section class="panel well reveal"><div class="panel-head"><h3 class="panel-title">After v0.4</h3>${badge("planned")}</div><p>Once v0.4 is finished, the work turns to quality:</p>${ticks(STABILIZATION, "cols")}<p><b>After successful stabilization, development pauses.</b> No v0.5 or v1.0 features are currently planned.</p></section></section>
+<section class="panel well reveal"><div class="panel-head"><h3 class="panel-title">After v0.4</h3>${badge("planned")}</div><p>Once v0.4 is finished, the work turns to making everything solid:</p>${ticks(STABILIZATION, "cols")}<p><b>After successful stabilization, development pauses.</b> No v0.5 or v1.0 features are currently planned.</p></section></section>
+<p class="next-steps"><b>Next:</b> <a href="${u("releases/")}">See test results on Releases</a> · <a href="${u("docs/")}">Read the docs</a></p>
 </div>`,
 };
 
@@ -199,6 +209,8 @@ pages["releases/"] = {
   title: "Releases", description: "Completed Nexus development milestones, and public release availability.",
   body: `<div class="container page-main narrow">
 <p class="kicker">Releases</p><h1 class="display page-title">Releases</h1>
+${lead("This page lists every finished step of Nexus. None of them are downloads you can install.")}
+${you("There is nothing to download yet. These cards are a record of progress, most recent first.")}
 <section class="panel window reveal" aria-labelledby="public"><div class="window-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><h2 class="panel-title" id="public">Public downloadable releases</h2>${badge("none")}</div>
 <p class="big-note">${NO_RELEASE}</p><p class="muted">There are no Nexus installers, packages, tags or GitHub Releases. See <a href="${u("downloads/")}">Downloads</a> for status.</p></section>
 <section class="section" aria-labelledby="history">${head("Development milestone history", "Completed milestones", `${esc(USER_PROVIDED)} They are development milestones, not published releases. Most recent first.`, "history")}
@@ -206,6 +218,7 @@ pages["releases/"] = {
 <p>${esc(m.summary)}</p>${commit(m.commit)}
 <div class="release-cols"><div><h4 class="h-small">Changes</h4>${ticks(m.items, "done")}</div>${m.validation ? `<div><h4 class="h-small">Reported validation</h4>${ticks(m.validation)}</div>` : ""}</div>
 ${m.note ? `<div class="callout warn"><p>${esc(m.note)}</p></div>` : ""}</article>`).join("")}</div></section>
+<p class="next-steps"><b>Next:</b> <a href="${u("roadmap/")}">See what is being built now</a> · <a href="${u("downloads/")}">Download status</a></p>
 </div>`,
 };
 
@@ -231,7 +244,8 @@ pages["downloads/"] = {
   title: "Downloads", description: "Nexus has no public standalone release yet.",
   body: `<div class="container page-main">
 <p class="kicker">Downloads</p><h1 class="display page-title">Nothing to download yet</h1>
-<p class="lede">${NO_RELEASE} The runtime is compiled into Horizon on an independent development branch that is not published here.</p>
+${lead(`${NO_RELEASE} There is no installer and no file to download.`)}
+${you("You cannot try Nexus yet. It only exists inside the developer's own build of Horizon, which is not published here.")}
 <div class="grid two section">
 <section class="panel window reveal"><div class="window-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><h2 class="panel-title">Nexus</h2>${badge("none")}</div>
 <div class="launcher-bar"><div class="version-select">Latest milestone: ${LATEST.ver}</div><span class="button primary" aria-disabled="true">No download</span></div>
@@ -239,34 +253,40 @@ pages["downloads/"] = {
 <section class="panel reveal"><div class="panel-head"><h2 class="panel-title">Horizon itself</h2><span class="badge">Upstream</span></div>
 <p>These belong to the upstream Horizon project. Nexus is not part of them.</p>
 <ul class="links"><li><a href="${HORIZON}">Horizon source</a></li><li><a href="${HORIZON}/releases">Horizon releases</a></li><li><a href="${HORIZON_SITE}">playhorizon.dev</a></li></ul></section>
-</div></div>`,
+</div><p class="next-steps"><b>Next:</b> <a href="${u("roadmap/")}">See what is being built</a> · <a href="${u("faq/")}">Read the FAQ</a></p></div>`,
 };
 
 const FAQ = [
-  ["What is Nexus?", DEFINITION],
-  ["Can I install it?", `Not yet. ${NO_RELEASE} The runtime is compiled into Horizon, and standalone <code>.nmod</code> installation is not implemented.`],
-  ["What works today?", `The framework core: systems, scheduling, lifecycle, engine integration and typed events (v0.1 to v0.3), plus a package library that validates and resolves <code>.nmod</code> manifests (v0.4a). v0.4a does not build, install or run mods.`],
-  ["How much of the game can mods change?", `The aim is broad: blocks, items, entities, world generation, rules, physics, rendering, HUD, audio, input, networking, saved data and more. These are engineering targets, not current features.`],
-  ["Can mods change the engine itself?", `That is the plan. Beyond APIs and hooks, Nexus aims to support trusted native source-level extensions.`],
-  ["Are native mods sandboxed?", `No. Native Rust source mods are not sandboxed, and compiling them can run code. Trust must be approved before compilation.`],
-  ["Do I need a compiler?", `For Nexus mods, yes. They are source-built Rust and will need a Rust toolchain.`],
-  ["Does Nexus load Fabric or Forge mods?", `${NO_JAVA} ${OUT_OF_SCOPE}`],
-  ["What about .hnmod?", `<code>.hnmod</code> is upstream Horizon's native source mod format (see <a href="${HORIZON_MODS}">horizon-mods</a>). Interoperability remains an architectural consideration.`],
-  ["Is v0.4 the last version?", `It is the final planned feature milestone. After it comes stabilization, then development pauses. No v0.5 or v1.0 features are planned.`],
-  ["Is Nexus official?", `No. It is an independent project, not an official Mojang or Microsoft product, and not an officially endorsed part of upstream Horizon.`],
+  ["What is Nexus?", `A toolkit for changing the game Horizon. It has two parts: a framework mod makers build with, and a mod loader that will install mods for you.`, DEFINITION],
+  ["Can I install it?", `Not yet. ${NO_RELEASE}`, "The runtime is compiled into Horizon, and standalone <code>.nmod</code> installation is not implemented."],
+  ["What works today?", `The core: systems (mini machines that run every tick), their order, and messages between them. Nexus can also read and check mod packages, but not install them.`, "v0.1 to v0.3: systems, scheduling, lifecycle, engine integration and typed events. v0.4a validates and resolves <code>.nmod</code> manifests; it does not build, install or run mods."],
+  ["What is being built right now?", `${FOCUS.ver}: the part that lets mods plug their own systems into Nexus. It is in progress, not finished.`, ""],
+  ["How much of the game can mods change?", `The goal is a lot: blocks, items, creatures, worlds, rules, sound, controls and more. None of that works yet.`, "Blocks, items, entities, world generation, rules, physics, rendering, HUD, audio, input, networking and saved data are engineering targets, not current features."],
+  ["Can mods change the engine itself?", `That is the plan, for mods you trust.`, "Beyond APIs and hooks, Nexus aims to support trusted native source-level extensions."],
+  ["Are mods safe?", `Only as safe as the person who made them. Nexus mods are real programs and are not locked in a safe box. You will approve each mod before it is built.`, "Native Rust source mods are not sandboxed, and compiling them can run code. Trust must be approved before compilation."],
+  ["Do I need special tools?", `To build Nexus mods, yes. You will need the free Rust programming tools.`, "Nexus mods are source-built Rust and need a Rust toolchain."],
+  ["Does Nexus load Fabric or Forge mods?", `No. ${NO_JAVA}`, OUT_OF_SCOPE],
+  ["What about .hnmod?", `That is Horizon's own mod format. Whether Nexus will work with it is still being thought about.`, `<code>.hnmod</code> is upstream Horizon's native source mod format (see <a href="${HORIZON_MODS}">horizon-mods</a>). Interoperability remains an architectural consideration.`],
+  ["Is v0.4 the last version?", `It is the last planned feature step. After it comes testing and fixing, then a pause. No v0.5 or v1.0 features are planned.`, ""],
+  ["Is Nexus official?", `No. It is an independent project, not an official Mojang or Microsoft product, and not an officially endorsed part of upstream Horizon.`, ""],
 ];
 pages["faq/"] = {
   title: "FAQ", description: "Short answers about Horizon Nexus.",
   body: `<div class="container page-main narrow"><p class="kicker">FAQ</p><h1 class="display page-title">Questions</h1>
-<div class="faq-list section">${FAQ.map(([q, a]) => `<section class="panel reveal"><h2 class="panel-title">${esc(q)}</h2><p>${a}</p></section>`).join("")}</div></div>`,
+${lead("Short, plain answers to the questions people ask most. Tap \"For developers\" under an answer for the technical version.")}
+<div class="faq-list section">${FAQ.map(([q, a, d]) => `<section class="panel reveal"><h2 class="panel-title">${esc(q)}</h2><p>${a}</p>${d ? `<details class="dev-detail"><summary>For developers</summary><p>${d}</p></details>` : ""}</section>`).join("")}</div>
+<p class="next-steps"><b>Next:</b> <a href="${u("docs/glossary/")}">Look up a word</a> · <a href="${u("roadmap/")}">See the roadmap</a></p></div>`,
 };
 
 pages["contributing/"] = {
   title: "Contributing", description: "How to contribute to the Horizon Nexus website.",
   body: `<div class="container page-main"><p class="kicker">Contributing</p><h1 class="display page-title">Help with the site</h1>
+${lead("This page explains how to help improve this website. You can report a mistake without writing any code.")}
+${you(`Spotted something wrong or confusing? Open an issue on <a href="${REPO}/issues">the website repository</a> and describe it in plain words.`)}
 <div class="grid two section">
 <section class="panel reveal"><div class="panel-head"><h2 class="panel-title">This website</h2><span class="badge">This repo</span></div>
 <p>Fixes to pages, design, accessibility and docs go to <a href="${REPO}">contactjayclatty/horizon-nexus-site</a>.</p>
+<h3 class="h-small">For developers</h3>
 <pre><code>git clone ${REPO}
 cd horizon-nexus-site
 node build.mjs
@@ -293,7 +313,7 @@ DOCS.forEach((d, i) => {
 const notFound = layout({ path: "404", title: "Missing block", description: "This page does not exist.", body: `<div class="container missing">
 <p class="kicker">Error 404</p><h1 class="display">Missing block</h1>
 <div class="grid404" aria-hidden="true">${"iiiiiiigiiiiiii".split("").map((c) => `<i${c === "g" ? ' class="gone"' : ""}></i>`).join("")}</div>
-<p class="lede">This page was mined out, or never placed.</p>
+<p class="lead-plain">This page was mined out, or never placed. Try one of these instead.</p>
 <div class="actions center"><a class="button primary large" href="${u()}">Home</a><a class="button large" href="${u("docs/")}">Docs</a><a class="button large" href="${u("roadmap/")}">Roadmap</a></div></div>` });
 
 function diagramSvg(nodes, title) {

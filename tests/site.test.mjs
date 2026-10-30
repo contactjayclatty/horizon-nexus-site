@@ -146,8 +146,8 @@ test("no unrendered template placeholders", () => { for (const [f, s] of html) a
 test("readability: docs, features and architecture are written for players first", () => {
   const strip = (x) => x.replace(/<[^>]+>/g, " ").replace(/&[a-z#0-9]+;/g, " ").replace(/\s+/g, " ").trim();
   const sentences = (x) => strip(x).split(/(?<=[.!?])\s+(?=[A-Z0-9"'])/).filter((s) => /[a-z]/i.test(s));
-  const targets = html.filter(([f]) => /dist-test\/(features|architecture|docs(\/[^/]+)?)\/index\.html$/.test(f));
-  assert.ok(targets.length >= 13, `found ${targets.length} pages`);
+  const targets = html.filter(([f]) => /dist-test\/((features|architecture|roadmap|releases|downloads|faq|contributing|docs(\/[^/]+)?)\/index|404)\.html$/.test(f));
+  assert.ok(targets.length >= 19, `found ${targets.length} pages`);
   for (const [f, s] of targets) {
     const main = s.slice(s.indexOf("<main"), s.indexOf("</main>"));
     const leads = [...main.matchAll(/<p class="lead-plain">([^]*?)<\/p>/g)].map((m) => m[1]);
@@ -157,11 +157,23 @@ test("readability: docs, features and architecture are written for players first
       assert.ok(ss.length <= 2, `${f} lead has ${ss.length} sentences: ${strip(l)}`);
       assert.ok(strip(l).split(" ").length <= 40, `${f} lead too long: ${strip(l)}`);
     }
-    assert.match(main, /What this means for you/, `${f} missing "What this means for you"`);
+    if (!/faq|404/.test(f)) assert.match(main, /What this means for you/, `${f} missing "What this means for you"`);
     const devAt = main.indexOf('<section class="for-devs"');
     const plain = (devAt > 0 ? main.slice(0, devAt) : main).replace(/<details[^]*?<\/details>/g, "").replace(/<table[^]*?<\/table>/g, "");
     for (const [, p] of plain.matchAll(/<p(?: class="(?:lead-plain|caption|term)")?>([^]*?)<\/p>/g))
       for (const sn of sentences(p)) assert.ok(sn.split(" ").length <= 30, `${f} long plain sentence: ${sn}`);
-    if (!/developer-setup|glossary/.test(f)) assert.ok(/<p class="lead-plain">/.test(main.slice(0, main.indexOf("<h2") > 0 ? main.indexOf("<h2") : undefined)), `${f} lead must come before the first heading`);
+    if (!/developer-setup|glossary|404/.test(f)) assert.ok(/<p class="lead-plain">/.test(main.slice(0, main.indexOf("<h2") > 0 ? main.indexOf("<h2") : undefined)), `${f} lead must come before the first heading`);
   }
+});
+
+test("home has a live now-building banner driven by the current milestone", async () => {
+  const { FOCUS } = await import("../src/content.mjs");
+  const home = html.find(([f]) => f.endsWith("dist-test/index.html"))[1];
+  const i = home.indexOf('class="build-banner"');
+  assert.ok(i > home.indexOf("</header>") && i < home.indexOf('class="hero"'), "banner sits below the nav, above the hero");
+  const banner = home.slice(i, home.indexOf("</aside>", i));
+  assert.ok(banner.includes(`Now building: ${FOCUS.ver}`), "banner uses FOCUS");
+  assert.match(banner, /roadmap\//); assert.doesNotMatch(banner, /\d+\s*%/, "no fake progress");
+  const css = readFileSync(new URL("../src/style.css", import.meta.url), "utf8");
+  assert.match(css, /prefers-reduced-motion: reduce\) \{ \.build-banner::before, \.live-dot \{ animation: none/);
 });
