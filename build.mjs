@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { readFileSync, existsSync } from "node:fs";
 import { writeArt } from "./scripts/art.mjs";
-import { MILESTONES, LATEST, AUDIT, UPDATED, CURRENT_MS, HIGHLIGHT, CHECKPOINTS, REMAINING, PLAIN_PROGRESS, PROGRESS, STATUS, AVAILABILITY, TESTS_NOTE, SECURITY_PLAIN, DEV_NOTES, SCOPE, STABILIZATION, IMPLEMENTED, TARGETS, MODULES, NOTICE, USER_PROVIDED, DEFINITION, NO_RELEASE, NO_JAVA, OUT_OF_SCOPE, REPO, HORIZON, HORIZON_SITE, HORIZON_MODS, VISION } from "./src/content.mjs";
+import { MILESTONES, LATEST, AUDIT, UPDATED, CURRENT_MS, HIGHLIGHT, CHECKPOINTS, REMAINING, PLAIN_PROGRESS, PROGRESS, LATEST_DEV, STATUS, AVAILABILITY, TESTS_NOTE, SECURITY_PLAIN, DEV_NOTES, SCOPE, STABILIZATION, IMPLEMENTED, TARGETS, MODULES, NOTICE, USER_PROVIDED, DEFINITION, NO_RELEASE, NO_JAVA, OUT_OF_SCOPE, REPO, HORIZON, HORIZON_SITE, HORIZON_MODS, VISION } from "./src/content.mjs";
 import { icon } from "./src/icons.mjs";
 import { DOCS, lead, you, devs } from "./src/docs.mjs";
 
@@ -125,7 +125,11 @@ const statusCard = (extra = "") => `<section class="status-card" aria-labelledby
 const CHECK_LABEL = { done: "Complete", next: "Next", planned: "Planned" };
 const checklist = () => `<ol class="checklist">${CHECKPOINTS.map(([id, name, st]) => `<li class="ck-${st}"><span class="ck-mark" aria-hidden="true"></span><span class="ck-name">${id ? `<b>${id}</b> ` : ""}${esc(name)}</span><span class="ck-state">${CHECK_LABEL[st]}</span></li>`).join("")}</ol>`;
 
-const progress = () => `<div class="progress-tl" role="group" aria-label="Development progress">${[["done", "Completed within v0.4b.2", PROGRESS.done], ["next", "Next", PROGRESS.next], ["later", "Later", PROGRESS.later]].map(([k, t, xs]) => `<section class="tl-step tl-${k}"><h4 class="tl-title"><span class="tl-dot" aria-hidden="true"></span>${t}</h4><ul>${xs.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>`).join("")}</div>`;
+const progress = () => `<div class="progress-tl" role="group" aria-label="Development progress">${[["done", "Completed within v0.4b.2", PROGRESS.done], ["next", "In development, not complete", PROGRESS.next], ["later", "Later", PROGRESS.later]].map(([k, t, xs]) => `<section class="tl-step tl-${k}"><h4 class="tl-title"><span class="tl-dot" aria-hidden="true"></span>${t}</h4><ul>${xs.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></section>`).join("")}</div>`;
+
+const STATE_LABEL = (m) => m.label || (m.state === "done" ? "Complete" : m.state === "current" ? "In development" : "Planned");
+const miniRoad = () => `<ol class="mini-road" aria-label="Roadmap summary">${MILESTONES.filter((m) => m.ver !== "Audit").map((m) => `<li class="mr-${m.state}"><span class="mr-ver">${m.ver === "Final" ? "Final audit" : m.ver}</span><span class="mr-state">${esc(STATE_LABEL(m))}</span><span class="mr-sum">${esc(m.summary.replace(/^(Planned|In development, not released|Final planned feature milestone)\. /, ""))}</span></li>`).join("")}</ol>`;
+const latestDev = (tech = false) => `<section class="panel latest-dev"><div class="panel-head"><h3 class="panel-title"><b>${LATEST_DEV.id}</b> ${esc(LATEST_DEV.title)}</h3><span class="tags">${badge("done")}${badge("dev_reported")}</span></div>${ticks(LATEST_DEV.plain, "done")}<p class="callout warn">${esc(LATEST_DEV.caveat)}</p>${tech ? `<p class="muted">${esc(LATEST_DEV.tech)}</p>` : ""}</section>`;
 
 pages[""] = {
   title: "Home", description: "Horizon Nexus: native Rust modding for Horizon. A source-compiled modding framework and package loader. In active development.",
@@ -142,15 +146,33 @@ pages[""] = {
   </div>
 </section>
 <section class="section"><div class="container">
-  ${head("Two parts, one platform", "Framework and package loader")}
+  ${head("What exists and what does not", "Foundations and work in progress")}
   <div class="grid two">
-    ${card({ ic: "framework", title: "Nexus Framework", b: "now", cls: "pillar", body: "Native Rust APIs, events and engine integration for building mods.", extra: `<p class="status">The core runtime works today, compiled into Horizon. Wider gameplay and engine APIs are planned.</p><a class="button" href="${u("features/")}">What works today</a>` })}
-    ${card({ ic: "package", title: "Nexus Package Loader", b: "progress", cls: "pillar", body: "Loads .nmod packages safely: inspect, check, then ask you before any native code is built.", extra: `<p class="status">Package checks, safe extraction and integrity audits work. Trust approval and installing mods do not work yet.</p><a class="button" href="${u("development/")}">How it is going</a>` })}
+    ${card({ ic: "framework", title: "Nexus Framework", b: "now", cls: "pillar", body: "Existing foundations: the Rust runtime, deterministic lifecycle, typed events, allowlisted commands and native registration, compiled into Horizon.", extra: `<p class="status">Wider gameplay and engine APIs (blocks, items, entities, world generation and more) are roadmap targets, not finished.</p><a class="button" href="${u("features/")}">What works today</a>` })}
+    ${card({ ic: "package", title: "Nexus Package Loader", b: "progress", cls: "pillar", body: "Done internally: package validation, private custody, safe extraction, integrity audits, provenance checks, manifests and a launcher connection.", extra: `<p class="status">In progress: choosing a .nmod in the launcher, a consent dialog, installation and loading. The launcher cannot run .nmod packages yet.</p><a class="button" href="${u("development/")}">How it is going</a>` })}
   </div>
+</div></section>
+<section class="section"><div class="container">
+  ${head("Roadmap", "Where Nexus is heading")}
+  ${miniRoad()}
+  <p class="more-link"><a href="${u("roadmap/")}">Full roadmap</a></p>
+</div></section>
+<section class="section"><div class="container narrow-block">
+  ${head("Latest development", "Launcher connected to the loader")}
+  ${latestDev()}
+</div></section>
+<section class="section"><div class="container narrow-block">
+  ${head("The package format", "What is a .nmod?")}
+  <p>A .nmod is one file that holds a Nexus mod: its Rust source plus a manifest saying what it is, what it needs and what it can do. Nexus checks the file, unpacks it into a private folder and audits it. The plan is that you approve it before any native code is built. Installing and running .nmod packages is not possible yet.</p>
+  <p class="more-link"><a href="${u("docs/mod-packaging/")}">How .nmod packages work</a></p>
 </div></section>
 <section class="section"><div class="container">
   ${head("Safety", "Checked first, trusted by you")}
   <ul class="plain-points">${SECURITY_PLAIN.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>
+</div></section>
+<section class="section"><div class="container">
+  ${head("Read more", "Docs and source")}
+  <ul class="link-grid">${[[u("docs/"), "Docs", "How Nexus works, in plain words"], [u("development/"), "Development", "Checkpoints and test results"], [u("releases/"), "Releases", "Finished milestones"], [REPO, "Website source", "This site on GitHub"], [HORIZON, "Horizon source", "The Horizon engine (upstream)"]].map(([h, t, d]) => `<li><a href="${h}"><b>${t}</b><span>${esc(d)}</span></a></li>`).join("")}</ul>
 </div></section>`,
 };
 
@@ -187,7 +209,7 @@ pages["roadmap/"] = {
 <p class="kicker">Roadmap</p><h1 class="display page-title">Built block by block</h1>
 ${lead("What is finished, what is being built now, and what comes next.")}
 ${you("Nothing here can be installed yet. v0.4 is the last planned feature stage. No v0.5 or v1.0 features are planned, and there are no dates.")}
-<ol class="road" aria-label="Roadmap at a glance">${MILESTONES.map((m) => `<li class="${m.state}"><span class="road-block" aria-hidden="true"></span><b>${m.ver}</b><span>${m.state === "done" ? "Done" : m.state === "current" ? "Building" : "Planned"}</span></li>`).join("").replace('<li class="current"><span class="road-block" aria-hidden="true"></span>', `<li class="current"><span class="road-icon">${icon("construction", 18)}</span>`)}</ol>
+<ol class="road" aria-label="Roadmap at a glance">${MILESTONES.map((m) => `<li class="${m.state}"><span class="road-block" aria-hidden="true"></span><b>${m.ver}</b><span>${m.label || (m.state === "done" ? "Done" : m.state === "current" ? "Building" : "Planned")}</span></li>`).join("").replace('<li class="current"><span class="road-block" aria-hidden="true"></span>', `<li class="current"><span class="road-icon">${icon("construction", 18)}</span>`)}</ol>
 <nav class="jump" aria-label="On this page"><a href="#current">In development</a><a href="#completed">Completed</a><a href="#planned">Planned</a></nav>
 
 <section class="section" aria-labelledby="current">${head("01", "In development", "", "current")}
@@ -219,8 +241,9 @@ ${statusCard(`<p class="status-plain">${esc(PLAIN_PROGRESS)}</p>`)}
 <p>${esc(CURRENT_MS.summary)}</p>
 ${progress()}<h3 class="h-small">Checkpoints</h3>${checklist()}
 <p class="next-ck">${esc(REMAINING)}</p></section>
+<section class="section" aria-labelledby="dev-latest">${head("Latest", "Latest development", "", "dev-latest")}${latestDev(true)}</section>
 <section class="section" aria-labelledby="dev-limits">${head("Be clear", "What does not work yet", "", "dev-limits")}
-<ul class="plain-points">${["v0.4b.2 is not finished.", "Mod packages can be checked, unpacked into a private folder and audited, but they cannot be installed or run yet.", "Native mod installation and runtime activation are not implemented.", "Explicit user trust approval (starting with 4.4a) must come before any native source compilation. It is not complete.", "There is no public Nexus binary, installer or .nmod download."].map((t) => `<li>${esc(t)}</li>`).join("")}</ul></section>
+<ul class="plain-points">${["v0.4b.2 is not finished.", "Mod packages can be checked, unpacked into a private folder and audited, but they cannot be installed or run yet.", "The launcher is connected to the loader, but it cannot run .nmod packages. Its consent adapter always answers Unavailable.", "There is no consent dialog, saved trust, full installation, native compilation or runtime loading yet.", "There is no public Nexus binary, installer or .nmod download."].map((t) => `<li>${esc(t)}</li>`).join("")}</ul></section>
 <section class="section" aria-labelledby="dev-safety">${head("Safety", "How trust works", "", "dev-safety")}
 <ul class="plain-points">${SECURITY_PLAIN.map((t) => `<li>${esc(t)}</li>`).join("")}</ul></section>
 ${devs(`<h3>Internal progress in v0.4b.2</h3>${ticks(CURRENT_MS.items, "done")}<h3>Latest reported validation</h3>${ticks(CURRENT_MS.validation)}<p class="muted">${esc(TESTS_NOTE)}</p><h3>Notes</h3>${ticks(DEV_NOTES)}`)}
@@ -286,7 +309,7 @@ const FAQ = [
   ["What is Nexus?", `A toolkit for changing the game Horizon. It has two parts: a framework mod makers build with, and a mod loader that will install mods for you.`, DEFINITION],
   ["Can I install it?", `Not yet. ${NO_RELEASE}`, "The runtime is compiled into Horizon, and standalone <code>.nmod</code> installation is not implemented."],
   ["What works today?", `The core: systems (mini machines that run every tick), their order, and messages between them. Nexus can also read and check mod packages, but not install them.`, "v0.1 to v0.3: systems, scheduling, lifecycle, engine integration and typed events. v0.4a validates and resolves <code>.nmod</code> manifests; it does not build, install or run mods."],
-  ["What is being built now?", `${CURRENT_MS.ver}: safe .nmod package loading. Archives are now checked, copied privately, safely extracted, audited and recorded in integrity manifests. Next is 4.4a, the trust-request foundation. Trust approval, installation and runtime activation are still to come. It is not finished.`, "See the Development page for the checkpoint list."],
+  ["What is being built now?", `${CURRENT_MS.ver}: safe .nmod package loading. Archives are now checked, copied privately, safely extracted, audited and recorded in integrity manifests. The launcher is now connected to the loader (4.4c-b1), but it cannot install or run .nmod packages yet. Next is the end-to-end launcher flow: choosing a package, a consent dialog, installation and loading. It is not finished.`, "See the Development page for the checkpoint list."],
   ["What finished most recently?", `v0.4b.1: native Rust registration interfaces and mod capability metadata.`, "v0.4b.1 added NexusRegistrar and versioned capability metadata. Capability metadata is declarative; command-boundary enforcement is planned. External .nmod installation is not available yet."],
   ["How much of the game can mods change?", `The goal is a lot: blocks, items, creatures, worlds, rules, sound, controls and more. None of that works yet.`, "Blocks, items, entities, world generation, rules, physics, rendering, HUD, audio, input, networking and saved data are engineering targets, not current features."],
   ["Can mods change the engine itself?", `That is the plan, for mods you trust.`, "Beyond APIs and hooks, Nexus aims to support trusted native source-level extensions."],

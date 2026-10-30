@@ -113,8 +113,8 @@ test("future modules are labelled as ideas, never as available", () => {
 test("home is short, has the exact hero copy, the status card and the primary nav", () => {
   const home = html.find(([f]) => f.endsWith("dist-test/index.html"))[1];
   const main = home.slice(home.indexOf("<main"), home.indexOf("</main>"));
-  assert.ok((main.match(/<section class="(?:hero|section)/g) || []).length <= 5, "too many home sections");
-  for (const s of ["Horizon Nexus", "Native Rust modding for Horizon.", "A source-compiled modding framework and package loader built to extend Horizon through native Rust APIs, events and engine integration.", "Latest completed", "v0.4b.1", "In development", "v0.4b.2", "Latest checkpoint", "4.3e", "Next checkpoint", "4.4a (not complete)", "Internal tests", "156/156 passing at latest verified checkpoint", "Horizon Nexus can validate native mod packages, preserve verified archives, safely extract their contents, independently audit extracted files, verify their cryptographic provenance, and publish versioned integrity manifests. Native mod installation, user trust approval and runtime activation remain in development.", "Public availability", "Not yet released", "Currently in active development. Public downloads will become available after installation support and security validation are complete."]) assert.ok(main.includes(s), s);
+  assert.ok((main.match(/<section class="(?:hero|section)/g) || []).length <= 7, "too many home sections");
+  for (const s of ["Horizon Nexus", "Native Rust modding for Horizon.", "A source-compiled modding framework and package loader built to extend Horizon through native Rust APIs, events and engine integration.", "Latest committed milestone", "v0.4b.1", "In development", "v0.4b.2 (not released)", "Latest completed work", "4.4c-b1: launcher to loader seam", "Final planned feature milestone", "v0.4d", "Internal tests", "174 passing, plus 13 regression tests (reported)", "Horizon Nexus can validate native mod packages, preserve verified archives, safely extract their contents, independently audit extracted files, verify their cryptographic provenance, and publish versioned integrity manifests. Native mod installation, user trust approval and runtime activation remain in development.", "Public availability", "Not yet released", "Currently in active development. Public downloads will become available after installation support and security validation are complete."]) assert.ok(main.includes(s), s);
   assert.doesNotMatch(main, /18\/18|32\/32|fb43e5954|0fcc557b1|3\.4b|ZIP 9/, "home shows engineering detail");
   assert.doesNotMatch(main, /production[- ]ready|100% secure|fully sandboxed|safe to run any mod/i);
   const nav = home.slice(home.indexOf('class="nav-links"'), home.indexOf("</ul>", home.indexOf('class="nav-links"')));
@@ -246,28 +246,36 @@ test("v6: calm home, checkpoint list, new roadmap, development page", () => {
   assert.doesNotMatch(home, /build-banner|CRISIS AVERTED|wander|No blocks were harmed|role="progressbar"|class="buddy"/);
   for (const [f, s] of html) assert.doesNotMatch(s.replace(/<[^>]+>/g, " "), /v0\.4b\.[34]\b|went for a little wander|CRISIS AVERTED/, f);
   const road = get("roadmap/index.html"), dev = get("development/index.html");
-  const want = [["3.1", "ZIP dependency migration", "Complete"], ["3.2", "Archive consistency gate", "Complete"], ["3.3", "Entry metadata security validation", "Complete"], ["3.4a", "Collision and manifest checks", "Complete"], ["3.4b", "Resource limits and preflight report", "Complete"], ["4.0", "Security review", "Complete"], ["4.1a", "Archive-size cap and directory rules", "Complete"], ["4.1b", "SHA-256 archive identity", "Complete"], ["4.2a", "CRC-32 and compressed size", "Complete"], ["4.2b", "Private archive custody", "Complete"], ["4.2c-a", "Extraction path planning", "Complete"], ["4.2c-b", "Capability-based filesystem security", "Complete"], ["4.2c-c", "Streaming content verification", "Complete"], ["4.2c-d", "Secure mod extraction", "Complete"], ["4.3a", "Snapshot integrity audit", "Complete"], ["4.3b", "Cryptographic provenance", "Complete"], ["4.3c", "Unicode filename security", "Complete"], ["4.3d", "Versioned snapshot manifests", "Complete"], ["4.3e", "Atomic manifest publication", "Complete"], ["4.4a", "Explicit native-mod trust-request foundation", "Next"], ["", "Genuine user approval before native compilation", "Planned"], ["", "Controlled native build, installation and loading", "Planned"]];
+  const want = [["3.1", "ZIP dependency migration", "Complete"], ["3.2", "Archive consistency gate", "Complete"], ["3.3", "Entry metadata security validation", "Complete"], ["3.4a", "Collision and manifest checks", "Complete"], ["3.4b", "Resource limits and preflight report", "Complete"], ["4.0", "Security review", "Complete"], ["4.1a", "Archive-size cap and directory rules", "Complete"], ["4.1b", "SHA-256 archive identity", "Complete"], ["4.2a", "CRC-32 and compressed size", "Complete"], ["4.2b", "Private archive custody", "Complete"], ["4.2c-a", "Extraction path planning", "Complete"], ["4.2c-b", "Capability-based filesystem security", "Complete"], ["4.2c-c", "Streaming content verification", "Complete"], ["4.2c-d", "Secure mod extraction", "Complete"], ["4.3a", "Snapshot integrity audit", "Complete"], ["4.3b", "Cryptographic provenance", "Complete"], ["4.3c", "Unicode filename security", "Complete"], ["4.3d", "Versioned snapshot manifests", "Complete"], ["4.3e", "Atomic manifest publication", "Complete"], ["4.4c-b1", "Launcher to Nexus loader integration seam", "Complete"], ["", "Select a local .nmod, verify and stage it through the loader", "Planned"], ["", "Separate Nexus consent dialog with verified package details and risks", "Planned"], ["", "Explicit Approve, Deny and Cancel", "Planned"], ["", "Securely persist exact approvals and revocations, reverified before use", "Planned"], ["", "Native build, installation and first real native mod loading", "Planned"]];
   for (const page of [road, dev]) {
     const items = [...page.slice(page.indexOf('<ol class="checklist">')).split("</ol>")[0].matchAll(/<li class="ck-[a-z]+">[^]*?<\/li>/g)].map((m) => m[0].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
     assert.deepEqual(items, want.map(([id, n, st]) => [id, n, st].filter(Boolean).join(" ")));
   }
-  assert.match(dev, /156\/156 tests passing at the latest verified checkpoint \(Nexus Loader 135\/135, Nexus Runtime 21\/21\)/);
-  assert.match(dev, /21 development checkpoints completed/);
-  assert.match(road + dev, /Next is 4\.4a[^<]*It is not complete\./);
+  assert.match(dev, /174 passing Nexus and adapter tests: loader 151\/151, runtime 21\/21, new launcher Nexus adapter 2\/2/);
+  assert.match(dev, /13\/13 existing launcher native-mods regression tests/);
+  assert.match(dev, /returns Unavailable unconditionally/);
+  assert.match(road + dev, /not listed one by one[^<]*None of it is finished\./);
   for (const p of [road, dev]) {
-    assert.match(p, /<li class="ck-next"><span class="ck-mark"[^>]*><\/span><span class="ck-name"><b>4\.4a<\/b>/, "4.4a is Next");
-    assert.doesNotMatch(p, /<li class="ck-done"><span class="ck-mark"[^>]*><\/span><span class="ck-name"><b>4\.4a<\/b>/, "4.4a must not be complete");
+    assert.match(p, /<li class="ck-done"><span class="ck-mark"[^>]*><\/span><span class="ck-name"><b>4\.4c-b1<\/b>/, "4.4c-b1 complete");
+    assert.doesNotMatch(p, /ck-next|<b>4\.4[ab]<\/b>/, "no invented 4.4a/4.4b rows");
     const ids = [...p.slice(p.indexOf('<ol class="checklist">')).split("</ol>")[0].matchAll(/<b>([^<]+)<\/b>/g)].map((m) => m[1]);
     assert.equal(new Set(ids).size, ids.length, "no duplicate checkpoints");
     assert.equal((p.match(/class="tl-step tl-/g) || []).length, 3);
-    for (const n of ["Atomic manifest publication", "Actual bounded file extraction", "v0.4c: Expanded gameplay and engine modding APIs", "Comprehensive final audit, then a development pause"]) assert.ok(p.includes(n), n);
+    for (const n of ["Atomic manifest publication", "Actual bounded file extraction", "v0.4c: Expanded gameplay and engine APIs", "Final audit, then a development pause"]) assert.ok(p.includes(n), n);
   }
-  assert.match(road, /156\/156 tests passing/);
+  assert.match(road, /174 passing Nexus and adapter tests/);
   const rel = get("releases/index.html");
-  for (const p of [home, road, dev, rel]) { assert.doesNotMatch(p, /\b(?:84|115)(?:\/115)? (?:passing|tests)|\d+% (?:complete|done)/); }
-  for (const p of [home, rel]) { assert.match(p, /156\/156/); assert.match(p, /4\.3e/); assert.match(p, /4\.4a/); }
+  for (const p of [home, road, dev, rel]) { assert.doesNotMatch(p, /\b(?:84|115|156)(?:\/(?:115|156))? (?:passing|tests)|\b156\/156|\d+% (?:complete|done)/); }
+  for (const p of [home, rel, road, dev]) { assert.match(p, /174/); assert.match(p, /4\.4c-b1/); assert.match(p, /v0\.4b\.2/); assert.match(p, /cannot (?:install or )?run \.nmod packages/); assert.doesNotMatch(p.replace(/<[^>]+>/g, " "), /v0\.4b\.2 (?:is )?(?:released|complete)\b|launcher can (?:install|run)|now sandboxed|are sandboxed/i); }
+  for (const s of ["v0.1", "v0.2", "v0.3", "v0.4a", "v0.4b.1", "v0.4b.2", "v0.4c", "v0.4d", "Final audit"]) assert.ok(home.includes(`<span class="mr-ver">${s}</span>`), `home mini roadmap ${s}`);
+  assert.match(home, /<li class="mr-done"><span class="mr-ver">v0\.4b\.1<\/span><span class="mr-state">Committed/);
+  assert.match(home, /<li class="mr-current"><span class="mr-ver">v0\.4b\.2<\/span><span class="mr-state">In development/);
+  assert.match(home, /<span class="mr-ver">v0\.4d<\/span><span class="mr-state">Final feature milestone/);
+  assert.match(home, /This does not mean Nexus mods can be installed or run through the launcher yet\./);
+  assert.match(home, /What is a \.nmod\?/);
+  assert.doesNotMatch((home + road).replace("No v0.5 or v1.0 features are planned", ""), /v0\.5|v1\.0/);
   assert.doesNotMatch(home + road + dev, /Bounded extraction \(|Snapshot validation<|not actually unpacked|Unpacking and installing mods are not done yet/);
-  for (const v of ["v0.4c: Expanded gameplay and engine modding APIs", "v0.4d: SDK, package tooling, mod profiles, versioning, rollback and broader extensibility", "Final hardening"]) assert.ok(road.includes(v), v);
+  for (const v of ["v0.4c: Expanded gameplay and engine modding APIs", "v0.4d", "Final planned feature milestone. Modding SDK", "Final audit"]) assert.ok(road.includes(v), v);
   assert.match(road, /feature development is planned to pause pending further direction/);
   assert.match(dev, /older ZIP dependencies under security review/);
   assert.doesNotMatch(home, /older ZIP dependencies/);
