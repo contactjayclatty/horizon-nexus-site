@@ -141,3 +141,4 @@ test("old docs URLs redirect to existing pages", async () => {
     assert.ok((await stat(target)).isFile(), m[1]);
   }
 });
+test("no unrendered template placeholders", () => { for (const [f, s] of html) assert.doesNotMatch(s, /\$\{/, f); });

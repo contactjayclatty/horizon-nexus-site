@@ -90,7 +90,7 @@ ${body}
 }
 
 const BADGE = { done: ["done", "Completed"], planned: ["planned", "Planned"], progress: ["dev", "Current"], idea: ["idea", "Idea, not promised"], dev_reported: ["user", "Developer-reported"], goal: ["planned", "Goal"], now: ["done", "Works today"], none: ["", "Not available"] };
-const badge = (k) => `<span class="badge ${BADGE[k][0]}">${BADGE[k][1]}</span>`;
+const badge = (k) => `<span class="badge ${BADGE[k][0]}">${k === "progress" ? icon("construction", 14) : ""}${BADGE[k][1]}</span>`;
 const flow = (nodes, label) => `<ol class="flow" aria-label="${esc(label)}">${nodes.map(([n, s, cls = ""]) => `<li><div class="block-node ${cls}">${esc(n)}${s ? `<small>${esc(s)}</small>` : ""}</div></li>`).join("")}</ol>`;
 const CURRENT = [["Horizon", "the engine", "done"], ["Nexus Runtime", "compiled in", "hot"], ["Registered Systems", "Rust"], ["Typed Event Dispatcher", "same stage, fixed order"]];
 const FRAMEWORK = [["Horizon Engine", "", "done"], ["Nexus APIs / Hooks / Registries", "planned", "planned"], ["Mod Systems", "your code", "planned"]];
@@ -141,7 +141,7 @@ pages[""] = {
 </div></section>
 <section class="section"><div class="container">
   <section class="panel raised status-strip reveal" aria-labelledby="latest">
-    <div>${icon("package", 48)}</div>
+    <div>${icon("construction", 48)}</div>
     <div class="status-text"><p class="micro">Latest Development, ${UPDATED}</p><h2 class="panel-title" id="latest">Current: ${FOCUS.ver}, ${esc(FOCUS.name.toLowerCase())}</h2>
     <p>${FOCUS.status}. In progress, not completed. Latest completed: the pre-v0.4b audit (33/33 tests). Development is progressing through v0.4, the final planned feature milestone, followed by stabilization.</p>
     <p class="tags">${badge("done")} <span class="micro">v0.1 to v0.4a, audit</span> ${badge("progress")} <span class="micro">${FOCUS.ver}</span> ${badge("planned")} <span class="micro">rest of v0.4</span></p></div>
@@ -170,8 +170,8 @@ pages["roadmap/"] = {
   body: `<div class="container page-main">
 <p class="kicker">Roadmap</p><h1 class="display page-title">Built block by block</h1>
 <p class="lede">What is done, what is happening now and what is planned. v0.4 is the final planned feature milestone. No v0.5 or v1.0 features are planned, and there are no dates.</p>
-<ol class="road reveal" aria-label="Roadmap at a glance">${MILESTONES.map((m) => `<li class="${m.state}"><span class="road-block" aria-hidden="true"></span><b>${m.ver}</b><span>${m.state === "done" ? "Done" : "Planned"}</span></li>`).join("").replace('<li class="planned"><span class="road-block" aria-hidden="true"></span><b>v0.4b</b>', '<li class="current"><span class="road-block" aria-hidden="true"></span><b>v0.4b.1</b><span>Current</span></li><li class="planned"><span class="road-block" aria-hidden="true"></span><b>v0.4b</b>')}<li class="planned"><span class="road-block" aria-hidden="true"></span><b>Then</b><span>Stabilize</span></li></ol>
-<p class="legend micro"><span class="key done"></span> Completed <span class="key current"></span> Current <span class="key planned"></span> Planned</p>
+<ol class="road reveal" aria-label="Roadmap at a glance">${MILESTONES.map((m) => `<li class="${m.state}"><span class="road-block" aria-hidden="true"></span><b>${m.ver}</b><span>${m.state === "done" ? "Done" : "Planned"}</span></li>`).join("").replace('<li class="planned"><span class="road-block" aria-hidden="true"></span><b>v0.4b</b>', `<li class="current"><span class="road-icon">${icon("construction", 18)}</span><b>v0.4b.1</b><span>Current</span></li><li class="planned"><span class="road-block" aria-hidden="true"></span><b>v0.4b</b>`)}<li class="planned"><span class="road-block" aria-hidden="true"></span><b>Then</b><span>Stabilize</span></li></ol>
+<p class="legend micro"><span class="key done"></span> Completed ${icon("construction", 14)} Current <span class="key planned"></span> Planned</p>
 
 <section class="section" aria-labelledby="completed">${head("01", "Completed", "Developer-reported milestones on an independent Horizon branch.", "completed")}
 <div class="grid two">${[...DONE].reverse().map((m) => card({ ic: m.icon, title: `${m.ver}: ${m.name}`, b: "done", body: esc(m.summary), extra: `${ticks(m.items, "done")}${commit(m.commit)}` })).join("")}</div>

@@ -414,3 +414,8 @@ table.data td { background: var(--panel); }
 .band .section-head { margin-bottom: 16px; }
 .foot-links { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
 .steps .badge { margin-left: 6px; vertical-align: 1px; }
+
+.badge .pix { vertical-align: -2px; margin-right: 5px; }
+.road-icon { display: block; height: 18px; line-height: 0; }
+.legend .pix { vertical-align: middle; }
+.road li.current { border-color: var(--warn); }
