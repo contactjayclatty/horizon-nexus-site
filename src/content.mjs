@@ -45,8 +45,8 @@ export const MILESTONES = [
 export const LATEST = MILESTONES.filter((m) => m.state === "done").at(-1);
 export const AUDIT = MILESTONES.find((m) => m.ver === "Audit");
 export const UPDATED = "30 October 2026";
-export const FOCUS = { ver: "v0.4b.1", name: "Native system registration", status: "Architecture reviewed, implementation authorized",
-  body: "The first step of v0.4b. It is planned and authorized. It is not completed and not yet reported as underway.",
+export const FOCUS = { ver: "v0.4b.1", name: "Native system registration", status: "Architecture reviewed, implementation authorized and in progress",
+  body: "The first step of v0.4b. It is the current, in-progress milestone. It is not completed.",
   items: ["Native Nexus system registration hooks", "Connecting external mod registration to the Nexus runtime", "Deterministic registration and lifecycle behavior", "Preparing the foundation for independently installable .nmod mods"] };
 export const STABILIZATION = ["Review all code and architecture", "Fix defects", "Improve existing implementations", "Strengthen security", "Benchmark performance", "Test real mod workflows", "Test client/server behaviour", "Improve documentation", "Verify future maintainability"];
 

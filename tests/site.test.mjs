@@ -114,7 +114,7 @@ test("home is short, has the exact hero copy and the primary nav", () => {
   const home = html.find(([f]) => f.endsWith("dist-test/index.html"))[1];
   const main = home.slice(home.indexOf("<main"), home.indexOf("</main>"));
   assert.ok((main.match(/<section class="(?:hero|section)/g) || []).length <= 5, "too many home sections");
-  for (const s of ["The Horizon modding platform", "Change the game.", "Create, modify and extend Horizon with a powerful Rust-native modding framework and loader.", "Explore Nexus", "Documentation", "Currently in development. Standalone installation is not yet available.", "Latest Development", "v0.4b.1", "Planned, authorized", "View development roadmap"]) assert.ok(main.includes(s), s);
+  for (const s of ["The Horizon modding platform", "Change the game.", "Create, modify and extend Horizon with a powerful Rust-native modding framework and loader.", "Explore Nexus", "Documentation", "Currently in development. Standalone installation is not yet available.", "Latest Development", "v0.4b.1", "Current", "In progress, not completed", "View development roadmap"]) assert.ok(main.includes(s), s);
   assert.doesNotMatch(main, /18\/18|32\/32|fb43e5954|0fcc557b1/, "home shows engineering detail");
   const nav = home.slice(home.indexOf('class="nav-links"'), home.indexOf("</ul>", home.indexOf('class="nav-links"')));
   assert.deepEqual([...nav.matchAll(/>([^<]+)<\/a>/g)].map((m) => m[1]), ["Home", "Features", "Roadmap", "Docs", "Releases", "GitHub"]);
@@ -127,8 +127,8 @@ test("releases page: no public release, v0.4a first and marked completed", () =>
   assert.deepEqual([...order].sort((a, b) => a - b), order); assert.ok(order[0] > 0);
   assert.match(r, /fb43e5954/); assert.match(r, /does not install or execute/);
   const road = html.find(([f]) => f.endsWith("dist-test/roadmap/index.html"))[1];
-  assert.match(road, /v0\.4b\.1[^]*Planned, authorized/);
-  for (const [f, s] of html) { const i = s.indexOf('v0.4b.1: '); if (i > 0) assert.doesNotMatch(s.slice(i, i + 300), /badge[^"]*">(?:Completed|In progress)</, `${f} v0.4b.1 status`); } assert.doesNotMatch(road, /Requested/);
+  assert.match(road, /v0\.4b\.1[^]*>Current</); assert.doesNotMatch(road, /underway|Planned, authorized/);
+  for (const [f, s] of html) { const i = s.indexOf('v0.4b.1: '); if (i > 0) assert.doesNotMatch(s.slice(i, i + 300), /badge[^"]*">Completed</, `${f} v0.4b.1 status`); } assert.doesNotMatch(road, /Requested/);
   assert.match(r, /Pre-v0\.4b audit and hardening[^]*8f809e822[^]*33\/33/);
   assert.match(r, /Typed Inter-System Events/);
 });
