@@ -6,3 +6,4 @@ qa/screenshots/
 *.log
 .env
 .env.*
+dist-test-off/

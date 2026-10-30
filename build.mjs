@@ -15,6 +15,8 @@ const root = dirname(fileURLToPath(import.meta.url));
 const BASE = (process.env.BASE ?? "/horizon-nexus-site/").replace(/\/?$/, "/");
 const SITE = (process.env.SITE_URL ?? "https://contactjayclatty.github.io/horizon-nexus-site/").replace(/\/?$/, "/");
 const out = join(root, process.env.OUT ?? "dist");
+// Seasonal layer. Set to "" (or build with NEXUS_SEASON=off) to switch it off; src/season-<name>.css holds all its styles.
+const SEASON = ((process.env.NEXUS_SEASON ?? "halloween") === "off" ? "" : (process.env.NEXUS_SEASON ?? "halloween"));
 export const u = (p = "") => BASE + p.replace(/^\//, "");
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
@@ -61,11 +63,11 @@ function layout({ path, title, description, body, bodyClass = "" }) {
 <link rel="preload" href="${u("fonts/PixelifySans-Bold.woff2")}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${u("fonts/Geist-Regular.woff2")}" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${u("assets/tokens.css")}?v=${HASH["tokens.css"]}">
-<link rel="stylesheet" href="${u("assets/style.css")}?v=${HASH["style.css"]}">
+<link rel="stylesheet" href="${u("assets/style.css")}?v=${HASH["style.css"]}">${SEASON ? `\n<link rel="stylesheet" href="${u(`assets/season-${SEASON}.css`)}?v=${HASH[`season-${SEASON}.css`]}">` : ""}
 <script>document.documentElement.classList.replace("no-js","js")</script>
 <script type="module" src="${u("assets/site.js")}?v=${HASH["site.js"]}"></script>
 </head>
-<body class="${bodyClass}" id="top">
+<body class="${[bodyClass, SEASON && `season-${SEASON}`].filter(Boolean).join(" ")}" id="top">
 <a class="skip" href="#main">Skip to the content</a>
 <header class="nav">
   <div class="container nav-inner">
@@ -116,7 +118,7 @@ ${diagram(FRAMEWORK, "Planned framework", "architecture-framework.svg", "Horizon
 ${diagram(LOADER, "Loader pipeline", "architecture-loader.svg", ".nmod, Validation and Dependencies (done in v0.4a), then Native Build and Registration (planned), then Horizon", "goal", "Part done. Nexus can already find and check mod packages. Building them and adding them to the game is planned.")}`;
 const moduleCard = (m) => card({ ic: m.icon, title: m.name, b: "idea", cls: "module", body: esc(m.body), extra: m.note ? `<p class="note">${esc(m.note)}</p>` : "" });
 
-const HASH = Object.fromEntries(["tokens.css", "style.css", "site.js", "search.js"].map((f) => [f, createHash("sha256").update(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "src", f))).digest("hex").slice(0, 10)]));
+const HASH = Object.fromEntries(["tokens.css", "style.css", "site.js", "search.js", ...(SEASON ? [`season-${SEASON}.css`] : [])].map((f) => [f, createHash("sha256").update(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "src", f))).digest("hex").slice(0, 10)]));
 const pages = {};
 
 const statusCard = (extra = "") => `<section class="status-card" aria-labelledby="status-title"><div class="status-head"><span class="status-icon">${icon("construction", 20)}</span><h2 class="status-title" id="status-title">Current status</h2></div>
@@ -131,6 +133,10 @@ const STATE_LABEL = (m) => m.label || (m.state === "done" ? "Complete" : m.state
 const miniRoad = () => `<ol class="mini-road" aria-label="Roadmap summary">${MILESTONES.filter((m) => m.ver !== "Audit").map((m) => `<li class="mr-${m.state}"><span class="mr-ver">${m.ver === "Final" ? "Final audit" : m.ver}</span><span class="mr-state">${esc(STATE_LABEL(m))}</span><span class="mr-sum">${esc(m.summary.replace(/^(Planned|In development, not released|Final planned feature milestone)\. /, ""))}</span></li>`).join("")}</ol>`;
 const latestDev = (tech = false) => `<section class="panel latest-dev"><div class="panel-head"><h3 class="panel-title"><b>${LATEST_DEV.id}</b> ${esc(LATEST_DEV.title)}</h3><span class="tags">${badge("done")}${badge("dev_reported")}</span></div>${ticks(LATEST_DEV.plain, "done")}<p class="callout warn">${esc(LATEST_DEV.caveat)}</p>${tech ? `<p class="muted">${esc(LATEST_DEV.tech)}</p>` : ""}</section>`;
 
+// Halloween note: decoration only, no status change. Pixel pumpkin drawn from 1px rects.
+const PUMPKIN = (() => { const rows = ["....gg....", "...gg.....", ".oooooooo.", "oOooOOooOo", "ooKooooKoo", "oOooOOooOo", "ooKKKKKKoo", "oOoKoKoOoo", ".oooooooo."]; const col = { g: "#5fd39a", o: "#ff9f43", O: "#e27d1f", K: "#1a0f05" }; return `<svg class="pix season-pumpkin" width="20" height="18" viewBox="0 0 10 9" shape-rendering="crispEdges" aria-hidden="true" focusable="false">${rows.map((r, y) => [...r].map((c, x) => col[c] ? `<rect x="${x}" y="${y}" width="1" height="1" fill="${col[c]}"/>` : "").join("")).join("")}</svg>`; })();
+const SEASON_NOTE = `<p class="season-note">${PUMPKIN}<span>Happy Halloween. This is a seasonal look only; Nexus status is unchanged.</span></p>`;
+
 pages[""] = {
   title: "Home", description: "Horizon Nexus: native Rust modding for Horizon. A source-compiled modding framework and package loader. In active development.",
   body: `
@@ -138,7 +144,7 @@ pages[""] = {
   <div class="container hero-grid">
     <div class="hero-copy">
       <h1 class="display hero-display" id="hero-title">Horizon Nexus</h1>
-      <p class="hero-tag">Native Rust modding for Horizon.</p>
+      <p class="hero-tag">Native Rust modding for Horizon.</p>${SEASON === "halloween" ? SEASON_NOTE : ""}
       <p class="lede">A source-compiled modding framework and package loader built to extend Horizon through native Rust APIs, events and engine integration.</p>
       <div class="actions"><a class="button primary large" href="${u("features/")}">See what it can do</a><a class="button large" href="${u("development/")}">Development status</a></div>
     </div>
@@ -402,7 +408,7 @@ await writeFile(join(out, "media/architecture-current.svg"), diagramSvg(CURRENT,
 await writeFile(join(out, "media/architecture-framework.svg"), diagramSvg(FRAMEWORK, "Planned framework (v0.4b to d)"));
 await writeFile(join(out, "media/architecture-loader.svg"), diagramSvg(LOADER, "Loader pipeline (v0.4a done, rest planned)"));
 // Small build-time minify for CSS (comments and extra whitespace only).
-for (const f of ["tokens.css", "style.css"]) await writeFile(join(out, "assets", f), readFileSync(join(root, "src", f), "utf8").replace(/\/\*[^]*?\*\//g, "").replace(/\s*\n\s*/g, "\n").replace(/\n+/g, "\n").trim() + "\n");
+for (const f of ["tokens.css", "style.css", ...(SEASON ? [`season-${SEASON}.css`] : [])]) await writeFile(join(out, "assets", f), readFileSync(join(root, "src", f), "utf8").replace(/\/\*[^]*?\*\//g, "").replace(/\s*\n\s*/g, "\n").replace(/\n+/g, "\n").trim() + "\n");
 for (const f of ["site.js", "search.js"]) await cp(join(root, "src", f), join(out, "assets", f));
 for (const [path, p] of Object.entries(pages)) {
   await mkdir(join(out, path), { recursive: true });

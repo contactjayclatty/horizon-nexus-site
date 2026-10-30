@@ -3,7 +3,7 @@ import { test, before } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { readFile, readdir, stat } from "node:fs/promises";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { join, dirname, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -301,4 +301,29 @@ test("v6.2: maybe-someday vision is labelled as an idea, not a plan", () => {
   for (const w of ["Game engines", "Desktop software", "Servers", "Installers", "Developer tools", "Simulators"]) assert.ok(sec.includes(w), w);
   assert.doesNotMatch(sec, /v\d|reveal|\b20\d\d\b/);
   for (const p of ["index.html", "roadmap/index.html"]) assert.doesNotMatch(get(p), /universal foundation/);
+});
+
+test("seasonal Halloween layer is decoration only and switches off cleanly", async () => {
+  const get = (p) => html.find(([f]) => f.endsWith(`dist-test/${p}`))[1];
+  const on = get("index.html");
+  assert.match(on, /<body class="[^"]*season-halloween/);
+  assert.match(on, /assets\/season-halloween\.css\?v=/);
+  assert.match(on, /<p class="season-note">[^]*?Happy Halloween\. This is a seasonal look only; Nexus status is unchanged\./);
+  assert.doesNotMatch(readFileSync(join(root, "src/season-halloween.css"), "utf8"), /@keyframes|animation|transition/);
+  const css = readFileSync(join(dist, "assets/season-halloween.css"), "utf8");
+  for (const f of ["season-cobweb.svg", "season-pumpkin.svg", "season-bats.svg"]) { assert.ok(css.includes(`../media/${f}`), f); assert.ok(readFileSync(join(dist, "media", f), "utf8").startsWith("<svg"), `${f} built`); }
+  for (const rule of css.match(/[^{}]*::(?:before|after)[^{}]*\{[^}]*url\([^}]*\}/g) || []) assert.match(rule, /pointer-events: ?none/, `decoration must not catch clicks: ${rule.slice(0, 60)}`);
+  assert.match(css, /@media \(max-width: ?599px\)/, "phones show fewer decorations");
+  assert.doesNotMatch(on, /season-cobweb|season-pumpkin\.svg/, "decorations live in CSS only, not in page markup");
+  const offDir = join(root, "dist-test-off");
+  execFileSync(process.execPath, ["build.mjs"], { cwd: root, env: { ...process.env, OUT: "dist-test-off", BASE, NEXUS_SEASON: "off" } });
+  const off = readFileSync(join(offDir, "index.html"), "utf8");
+  assert.doesNotMatch(off, /season-|Happy Halloween/);
+  assert.ok(!existsSync(join(offDir, "assets/season-halloween.css")), "no seasonal CSS when off");
+  const card = (h) => h.slice(h.indexOf('<section class="status-card"'), h.indexOf("</section>", h.indexOf('<section class="status-card"')));
+  assert.equal(card(on), card(off), "status card content is identical with the theme on or off");
+  for (const p of ["roadmap/index.html", "development/index.html"]) {
+    const strip = (h) => h.slice(h.indexOf("<main"), h.indexOf("</main>"));
+    assert.equal(strip(get(p)), strip(readFileSync(join(offDir, p), "utf8")), `${p} main content unchanged by theme`);
+  }
 });

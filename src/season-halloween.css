@@ -1,0 +1,40 @@
+/* Halloween seasonal layer. Remove this file and set SEASON to "" in build.mjs (or build with NEXUS_SEASON=off) to switch it off. Static, nothing moves. */
+body.season-halloween {
+  --accent: #ffa24d;      /* orange links and accents, about 9:1 on the page navy */
+  --highlight: #ffc98f;   /* warm hero tagline */
+  --button-bevel: #7a5cc4;
+  --bevel: #4b3a7a;
+}
+.season-halloween .kicker { color: #ffb366; }
+.season-halloween .section-head .title::after { content: ""; display: block; width: 48px; height: 4px; margin-top: 10px; background: linear-gradient(90deg, #ff9f43 0 50%, #9b7be0 50% 100%); }
+.season-halloween .status-card { border-color: #7a5cc4; }
+.season-halloween .status-head .status-title { color: #ffc98f; }
+.season-note { display: inline-flex; align-items: center; gap: 10px; margin: 0 0 14px; padding: 8px 12px; background: #1c1433; border: 2px solid #7a5cc4; color: #f3ecff; font-size: 14px; line-height: 1.45; }
+.season-note .season-pumpkin { flex: none; width: 20px; height: 18px; }
+/* Static pixel bats in the hero corner, hidden on small screens so nothing crowds the text. */
+.season-halloween .hero::after { content: ""; position: absolute; top: 24px; right: 4%; width: 120px; height: 40px; z-index: 0; pointer-events: none; opacity: .55;
+  background: no-repeat url("../media/season-bats.svg"); background-size: contain; image-rendering: pixelated; }
+@media (max-width: 700px) { .season-halloween .hero::after { display: none; } }
+/* Cobwebs and pumpkins. CSS backgrounds only: never in the accessibility tree, never clickable.
+   They sit in empty gutters or padding, so they never cover text or controls. */
+.season-halloween .nav::before, .season-halloween .nav::after { content: none; position: absolute; top: 0; width: 56px; height: 56px; pointer-events: none;
+  background: url("../media/season-cobweb.svg") no-repeat 0 0 / contain; image-rendering: pixelated; }
+.season-halloween .nav::before { left: 0; }
+.season-halloween .nav::after { right: 0; transform: scaleX(-1); }
+.season-halloween .section { position: relative; }
+.season-halloween main .section + .section::before { content: ""; position: absolute; top: clamp(16px, 2.4vw, 32px); left: 50%; width: 20px; height: 18px; margin-left: -10px; pointer-events: none;
+  background: url("../media/season-pumpkin.svg") no-repeat center / contain; image-rendering: pixelated; opacity: .85; }
+.season-halloween .footer { position: relative; }
+.season-halloween .footer::before { content: ""; position: absolute; top: 10px; right: var(--gutter); width: 84px; height: 18px; pointer-events: none;
+  background: url("../media/season-pumpkin.svg") no-repeat 0 100% / 20px 18px, url("../media/season-pumpkin.svg") no-repeat 32px 100% / 20px 18px, url("../media/season-pumpkin.svg") no-repeat 64px 100% / 20px 18px; image-rendering: pixelated; }
+.season-halloween .footer::after { content: none; position: absolute; top: 0; left: 0; width: 48px; height: 48px; pointer-events: none;
+  background: url("../media/season-cobweb.svg") no-repeat 0 0 / contain; image-rendering: pixelated; }
+/* Phones: one pumpkin in the footer, no section pumpkins, no cobwebs. */
+@media (max-width: 599px) {
+  .season-halloween main .section + .section::before { display: none; }
+  .season-halloween .footer::before { width: 20px; pointer-events: none; background: url("../media/season-pumpkin.svg") no-repeat 0 100% / 20px 18px; }
+}
+/* Cobwebs only where the page has empty side gutters next to the 1280px container. */
+@media (min-width: 1400px) {
+  .season-halloween .nav::before, .season-halloween .nav::after, .season-halloween .footer::after { content: ""; }
+}
