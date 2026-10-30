@@ -667,3 +667,12 @@ a.button:active, button.button:active { transform: translateY(2px); }
 .vision-grid p { margin: 0; color: var(--ink-soft); font-size: 14px; }
 @media (min-width: 600px) { .vision-grid { grid-template-columns: 1fr 1fr; } }
 @media (min-width: 1000px) { .vision-grid { grid-template-columns: repeat(3, 1fr); } }
+.progress-tl { display: grid; grid-template-columns: 1fr; gap: 0; margin: 14px 0 20px 9px; }
+.tl-step { position: relative; padding: 12px 14px 14px 30px; border-left: 3px solid var(--border); }
+.tl-step ul { margin: 6px 0 0; padding-left: 18px; color: var(--ink-soft); font-size: 14px; line-height: 1.55; }
+.tl-title { margin: 0; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.tl-dot { position: absolute; left: -9px; top: 15px; width: 14px; height: 14px; border: 2px solid var(--outline); background: var(--muted); }
+.tl-done { border-left-color: var(--success); } .tl-done .tl-dot { background: var(--success); } .tl-done .tl-title { color: var(--success); }
+.tl-next { border-left-color: var(--warn); background: rgba(245,192,98,.06); } .tl-next .tl-dot { background: var(--warn); } .tl-next .tl-title { color: var(--warn); }
+.tl-later { border-left-style: dashed; } .tl-later .tl-title { color: var(--muted); }
+@media (min-width: 900px) { .progress-tl { grid-template-columns: 1.3fr 1fr 1fr; gap: 12px; margin-left: 0; } .tl-step { border-left: 0; border-top: 3px solid var(--border); padding: 18px 14px 14px; } .tl-done { border-top-color: var(--success); } .tl-next { border-top-color: var(--warn); } .tl-later { border-top-style: dashed; } .tl-dot { left: 14px; top: -9px; } .tl-title { margin-top: 4px; } }
