@@ -36,7 +36,9 @@ Writes accurate docs, milestone text, FAQ and developer-facing copy.
 ## Restrictions
 
 - Do not invent APIs, function names, stage names, install commands or download links.
-- Do not mark v0.4 or any later milestone complete without the maintainer's evidence.
+- Do not mark v0.4a or later complete without the maintainer's evidence. Do not add versions beyond v0.4d, dates or percentages.
+- Do not reintroduce Fabric, Forge or Java mod compatibility as a plan.
+- Present future modules only as ideas, never as scheduled.
 - Do not describe Nexus as endorsed by upstream Horizon or Mojang.
 - Never modify, fork, push to or open issues or pull requests on horizon-rust repositories. They are reference material.
 

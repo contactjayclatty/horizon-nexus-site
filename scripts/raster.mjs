@@ -23,7 +23,7 @@ html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#050b18 
 .v{position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,15,29,.94),rgba(8,15,29,.7) 50%,rgba(8,15,29,0) 80%)}
 .t{position:absolute;left:72px;top:110px;color:#f1f7ff}.k{font:500 22px G;color:#9fbad8;letter-spacing:.08em;text-transform:uppercase}
 h1{font:700 76px/1.02 P;margin:18px 0;max-width:12ch}.s{font:700 30px P;color:#a5dcff}.n{font:400 18px G;color:#9fbad8;margin-top:36px}</style>
-<div class="v"></div><div class="t"><div class="k">Horizon Nexus</div><h1>Extend the Engine. Connect the Systems.</h1><div class="s">Built Block by Block.</div><div class="n">Independent project. Not affiliated with Mojang or Microsoft.</div></div>`);
+<div class="v"></div><div class="t"><div class="k">Horizon Nexus</div><h1>Change the Game. Extend the Engine.</h1><div class="s">The Rust-native framework and mod loader for Horizon.</div><div class="n">Independent project. Not affiliated with Mojang or Microsoft.</div></div>`);
 await p.waitForTimeout(300);
 await p.screenshot({ path: join(pub, "og.png") });
 await b.close();

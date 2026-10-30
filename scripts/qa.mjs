@@ -10,12 +10,12 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const port = 4398, BASE = "/horizon-nexus-site/", origin = process.env.QA_URL ?? `http://localhost:${port}${BASE}`;
 const server = process.env.QA_URL ? null : spawn(process.execPath, [join(root, "serve.mjs")], { env: { ...process.env, PORT: String(port) }, stdio: "ignore" });
 await new Promise((r) => setTimeout(r, 500));
-const out = join(root, "qa/screenshots", process.env.QA_URL ? "live" : "local");
+const out = join(root, "qa/screenshots", process.env.QA_OUT ?? (process.env.QA_URL ? "live" : "local"));
 await mkdir(out, { recursive: true });
-const pages = ["", "features/", "architecture/", "docs/", "docs/event-dispatch/", "roadmap/", "changelog/", "downloads/", "faq/", "contributing/", "nope/"];
+const pages = ["", "features/", "architecture/", "docs/", "docs/typed-events/", "roadmap/", "changelog/", "downloads/", "faq/", "contributing/", "nope/"];
 const b = await chromium.launch(process.env.CHROME ? { executablePath: process.env.CHROME } : {});
 let problems = 0; const bad = (m) => { problems++; console.log("FAIL", m); };
-for (const w of [390, 768, 1440, 1920]) {
+for (const w of (process.env.QA_WIDTHS ?? "360,390,768,1024,1440,1920").split(",").map(Number)) {
   const ctx = await b.newContext({ viewport: { width: w, height: w < 900 ? 860 : 1000 }, reducedMotion: "reduce" });
   for (const path of pages) {
     const p = await ctx.newPage();
@@ -35,7 +35,7 @@ for (const w of [390, 768, 1440, 1920]) {
     if (!m.fontsOk) bad(`${w} ${path}: fonts not loaded`);
     if (w === 390 && m.small.length) bad(`${w} ${path}: small targets ${m.small.join(" | ")}`);
     if (failed.length) bad(`${w} ${path}: failed requests ${failed.join(", ")}`);
-    if (["", "docs/", "roadmap/", "downloads/", "nope/", "faq/"].includes(path)) await p.screenshot({ path: join(out, `${name}-${w}.png`), fullPage: w <= 768 ? false : true });
+    if (["", "features/", "architecture/", "docs/typed-events/", "roadmap/", "downloads/", "nope/", "faq/"].includes(path)) await p.screenshot({ path: join(out, `${name}-${w}.png`), fullPage: true });
     await p.close();
   }
   await ctx.close();

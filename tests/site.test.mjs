@@ -3,6 +3,7 @@ import { test, before } from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { readFile, readdir, stat } from "node:fs/promises";
+import { readFileSync } from "node:fs";
 import { join, dirname, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -14,12 +15,12 @@ let files, html;
 before(async () => {
   execFileSync(process.execPath, ["build.mjs"], { cwd: root, env: { ...process.env, OUT: "dist-test", BASE } });
   files = await walk(dist);
-  html = await Promise.all(files.filter((f) => f.endsWith(".html")).map(async (f) => [f, await readFile(f, "utf8")]));
+  html = await Promise.all(files.filter((f) => f.endsWith(".html")).filter((f) => !/http-equiv="refresh"/.test(readFileSync(f, "utf8"))).map(async (f) => [f, await readFile(f, "utf8")]));
 });
 
 test("every required page is built", async () => {
   for (const p of ["index.html", "features/index.html", "architecture/index.html", "docs/index.html", "roadmap/index.html", "changelog/index.html", "downloads/index.html", "faq/index.html", "contributing/index.html", "404.html",
-    ...["architecture", "runtime-lifecycle", "nexus-system", "execution-stages", "typed-events", "event-dispatch", "security", "limitations", "developer-setup", "mod-loading"].map((s) => `docs/${s}/index.html`)])
+    ...["system-lifecycle", "execution-stages", "typed-events", "engine-integration", "api-limitations", "planned-extensibility", "security-model", "mod-packaging", "installation-architecture", "developer-setup"].map((s) => `docs/${s}/index.html`)])
     assert.ok((await stat(join(dist, p))).isFile(), p);
 });
 
@@ -55,7 +56,7 @@ test("honesty: notices present, v0.4 never called complete, no fake downloads", 
   for (const [f, s] of html) {
     assert.match(s, /not approved by or associated with Mojang or Microsoft/, `${f} Mojang notice`);
     assert.match(s, /user-provided|provided by the Nexus developer/i, `${f} user-provided label`);
-    assert.doesNotMatch(s, /v0\.4(?: [A-Za-z]+){0,3} (?:is|was|has been) (?:complete|completed|released|shipped)\b/i, `${f} v0.4 claimed complete`);
+    assert.doesNotMatch(s, /(?<!(?:once|when|until|after) )v0\.4(?: [A-Za-z]+){0,3} (?:is|was|has been) (?:complete|completed|released|shipped)\b/i, `${f} v0.4 claimed complete`);
     assert.doesNotMatch(s, /href="[^"]+\.(?:exe|dmg|msi|zip|jar|nmod)"/i, `${f} download link`);
     assert.doesNotMatch(s, /cargo install|npm install nexus|curl [^<]*\| ?sh/i, `${f} invented install step`);
   }
@@ -82,4 +83,35 @@ test("text colour pairs meet WCAG AA (4.5:1)", async () => {
   pairs.push(["on-face", "face"]);
   const fails = pairs.map(([f, b]) => [f, b, ratio(t[f], t[b])]).filter(([, , r]) => r < 4.5).map(([f, b, r]) => `${f} on ${b}: ${r.toFixed(2)}`);
   assert.deepEqual(fails, []);
+});
+
+test("scope: no em-dashes, no Fabric/Forge plans, no invented versions or percentages", () => {
+  const ALLOWED = "Nexus is a native Rust modding platform for Horizon and does not load Java Fabric or Forge mods.";
+  for (const [f, s] of html) {
+    const text = s.replace(/<[^>]+>/g, " ");
+    assert.doesNotMatch(s, /\u2014/, `${f} em-dash`);
+    const fabric = text.split(ALLOWED).join("").replace(/Fabric or Forge mods\?/g, "");
+    assert.doesNotMatch(fabric, /Fabric|Forge|NeoForge|compatibility research|Java mod (?:compat|bridge)/i, `${f} Fabric/Forge mention`);
+    assert.doesNotMatch(text.replace(/no planned v0\.5 or v1\.0 milestones|Is there a v0\.5 or v1\.0\?/g, ""), /\bv0\.[5-9]\b|\bv1\.0\b/, `${f} invented version`);
+    assert.doesNotMatch(text, /\b\d{1,3}\s?%/, `${f} percentage`);
+    assert.doesNotMatch(text, /(?<!(?:once|when|until|after) )v0\.4a?(?: [A-Za-z:]+){0,4} (?:is|was|has been) (?:complete|completed|released|shipped|available)\b/i, `${f} v0.4 claimed done`);
+  }
+});
+
+test("future modules are labelled as ideas, never as available", () => {
+  const home = html.find(([f]) => f.endsWith("dist-test/index.html"))[1];
+  for (const name of ["Nexus Performance", "Nexus Cinematics", "Nexus World Tools", "Nexus Quality of Life"]) {
+    const i = home.indexOf(name); assert.ok(i > 0, name);
+    assert.match(home.slice(i - 400, i + 50), /Idea, not scheduled/, `${name} label`);
+  }
+  assert.match(home, /does not keep chunks loaded and ticking/);
+});
+
+test("old docs URLs redirect to existing pages", async () => {
+  for (const f of files.filter((x) => x.endsWith("index.html"))) {
+    const s = await readFile(f, "utf8"); const m = s.match(/url=([^"]+)"/);
+    if (!/http-equiv="refresh"/.test(s)) continue;
+    let target = join(dist, m[1].slice(BASE.length)); if ((await stat(target)).isDirectory()) target = join(target, "index.html");
+    assert.ok((await stat(target)).isFile(), m[1]);
+  }
 });

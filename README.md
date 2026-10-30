@@ -2,9 +2,9 @@
 
 **Extend the Engine. Connect the Systems.** Built Block by Block.
 
-The website for Horizon Nexus, a modular systems runtime for the [Horizon](https://github.com/horizon-rust/horizon) engine. Live at **https://contactjayclatty.github.io/horizon-nexus-site/**.
+The website for Horizon Nexus, the Rust-native modding framework and mod loader for the [Horizon](https://github.com/horizon-rust/horizon) engine. Live at **https://contactjayclatty.github.io/horizon-nexus-site/**.
 
-Nexus status (user-provided by the Nexus developer, from an independent development branch; not verified against public upstream): v0.1 Systems Runtime, v0.2 Engine Integration and v0.3 Inter-System Events are complete. v0.4, a standalone `.nmod` loader, is proposed / in development. Nexus is compiled into the engine; there is no installer.
+Nexus status (user-provided by the Nexus developer, from an independent development branch; not verified against public upstream): v0.1 Systems Runtime, v0.2 Engine Integration and v0.3 Inter-System Events are complete. v0.4 (Complete Nexus Framework and Mod Loader) is the last planned feature milestone: v0.4a Package Foundation is in development, v0.4b to v0.4d are planned. Then stabilization, then a pause. Nexus is compiled into the engine; there is no installer.
 
 > Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft. Not an official or endorsed part of upstream Horizon.
 
@@ -22,11 +22,11 @@ node --test tests/*.test.mjs   # build, links, metadata, honesty, secrets, contr
 
 ```
 build.mjs, serve.mjs     build and local server
-src/                     tokens.css, style.css, site.js, content.mjs (every Nexus claim), docs.mjs
+src/                     tokens.css, style.css, site.js, icons.mjs (pixel icons), content.mjs (every Nexus claim), docs.mjs
 scripts/                 art.mjs (pixel art), png.mjs, raster.mjs (icons, og.png), qa.mjs (browser QA)
 public/                  fonts (OFL), favicon, og.png, media (logo, icon, portal)
 tests/                   node:test checks
-docs/design/             horizon-reference.md, visual-review.md
+docs/design/             horizon-reference.md, visual-review.md, site-improvement-audit.md
 .github/agents/          the seven Nexus Development Collective profiles
 .github/workflows/       GitHub Pages deployment
 ```

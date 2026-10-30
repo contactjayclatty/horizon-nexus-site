@@ -20,12 +20,13 @@ To add an agent: copy an existing profile, keep every section (role, responsibil
 
 ## Rules for everyone
 
-- **Accuracy.** Every claim about Nexus lives in `src/content.mjs` or `src/docs.mjs` and must come from the maintainer. Label it user-provided. Do not invent APIs, stage names, install steps or downloads. v0.4 stays "Proposed / In development" until the maintainer says otherwise.
+- **Accuracy.** Every claim about Nexus lives in `src/content.mjs` or `src/docs.mjs` and must come from the maintainer. Label it user-provided. Do not invent APIs, stage names, install steps or downloads. v0.4a stays "In development" and v0.4b to v0.4d stay "Planned" until the maintainer gives new evidence. v0.4 is the last planned feature milestone: no v0.5, v1.0, dates or percentages. Fabric and Forge are out of scope; the only allowed mention is the FAQ sentence that Nexus does not load them. Future modules (Performance, Cinematics, World Tools, Quality of Life) are ideas, never deliverables.
 - **Upstream is read-only.** Never modify, fork, push to or open issues or PRs on any horizon-rust repository.
 - **Original art only.** No Minecraft textures or assets. Keep the Mojang non-affiliation notice in the footer.
 - **Base path.** Build every internal URL with `u()` in `build.mjs`. The site is served under `/horizon-nexus-site/`.
 - **No secrets.** Nothing in `.env`, no tokens in code or workflows.
 - **No licence file** until the maintainer chooses a licence. Fonts keep their OFL notices in `public/fonts/`.
+- **Copy:** plain and short. No em-dashes anywhere on the site (a test enforces it).
 - **Checks before a push:** `node build.mjs && node --test tests/*.test.mjs`, and `node scripts/qa.mjs` when layout changes.
 
 ## Updating the site for a Nexus release
