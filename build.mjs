@@ -5,7 +5,7 @@ import { mkdir, writeFile, readFile, cp, rm } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { writeArt } from "./scripts/art.mjs";
-import { MILESTONES, LATEST, AUDIT, UPDATED, CURRENT_MS, HIGHLIGHT, BUILDING, STABILIZATION, IMPLEMENTED, TARGETS, MODULES, NOTICE, USER_PROVIDED, DEFINITION, NO_RELEASE, NO_JAVA, OUT_OF_SCOPE, REPO, HORIZON, HORIZON_SITE, HORIZON_MODS } from "./src/content.mjs";
+import { MILESTONES, LATEST, AUDIT, UPDATED, CURRENT_MS, HIGHLIGHT, ALERT, STABILIZATION, IMPLEMENTED, TARGETS, MODULES, NOTICE, USER_PROVIDED, DEFINITION, NO_RELEASE, NO_JAVA, OUT_OF_SCOPE, REPO, HORIZON, HORIZON_SITE, HORIZON_MODS } from "./src/content.mjs";
 import { icon } from "./src/icons.mjs";
 import { DOCS, lead, you, devs } from "./src/docs.mjs";
 
@@ -89,8 +89,8 @@ ${body}
   return html.replace(/<a ([^>]*?)href="(https?:\/\/[^"]+)"/g, (m, pre, url) => `<a ${pre}href="${url}" rel="noopener"`);
 }
 
-const BADGE = { done: ["done", "Completed"], planned: ["planned", "Planned"], progress: ["dev", "In development"], idea: ["idea", "Idea, not promised"], dev_reported: ["user", "Developer-reported"], goal: ["planned", "Goal"], now: ["done", "Works today"], none: ["", "Not available"] };
-const badge = (k) => `<span class="badge ${BADGE[k][0]}">${k === "progress" ? icon("construction", 14) : ""}${BADGE[k][1]}</span>`;
+const BADGE = { done: ["done", "Completed"], planned: ["planned", "Planned"], paused: ["paused", "Paused, Investigation"], idea: ["idea", "Idea, not promised"], dev_reported: ["user", "Developer-reported"], goal: ["planned", "Goal"], now: ["done", "Works today"], none: ["", "Not available"] };
+const badge = (k) => `<span class="badge ${BADGE[k][0]}">${k === "paused" ? icon("warning", 14) : ""}${BADGE[k][1]}</span>`;
 const flow = (nodes, label) => `<ol class="flow" aria-label="${esc(label)}">${nodes.map(([n, s, cls = ""]) => `<li><div class="block-node ${cls}">${esc(n)}${s ? `<small>${esc(s)}</small>` : ""}</div></li>`).join("")}</ol>`;
 const CURRENT = [["Horizon", "the engine", "done"], ["Nexus Runtime", "compiled in", "hot"], ["Registered Systems", "Rust"], ["Typed Event Dispatcher", "same stage, fixed order"]];
 const FRAMEWORK = [["Horizon Engine", "", "done"], ["Nexus APIs / Hooks / Registries", "planned", "planned"], ["Mod Systems", "your code", "planned"]];
@@ -109,14 +109,21 @@ const moduleCard = (m) => card({ ic: m.icon, title: m.name, b: "idea", cls: "mod
 const pages = {};
 
 pages[""] = {
-  title: "Home", description: "Horizon Nexus: create, modify and extend Horizon with a Rust-native modding framework and loader. In development.",
+  title: "Home", description: "Horizon Nexus: create, modify and extend Horizon with a Rust-native modding framework and loader. Development is temporarily paused.",
   body: `
-<aside class="build-banner" aria-label="Now building">
-  <div class="container build-inner">
-    <span class="build-icon">${icon("construction", 28)}</span>
-    <p class="build-text"><b>${esc(BUILDING.title)}</b><span>${esc(BUILDING.body)}</span></p>
-    <div class="build-progress"><span class="build-label"><span class="live-dot" aria-hidden="true"></span>Building...</span><span class="indet" role="progressbar" aria-label="In development, no completion estimate" aria-valuetext="In development"><i></i><i></i><i></i></span></div>
-    <a class="button small" href="${u("roadmap/")}#current">See the roadmap</a>
+<aside class="alert-wrap" aria-labelledby="alert-title">
+  <div class="container">
+    <div class="alert-panel" role="status">
+      <div class="alert-head"><span class="alert-icon">${icon("warning", 32)}</span><h2 class="alert-title" id="alert-title">${esc(ALERT.title)}</h2></div>
+      <div class="alert-body">${ALERT.body.map((p) => `<p>${esc(p)}</p>`).join("")}</div>
+      <dl class="alert-facts">
+        <div><dt>Status</dt><dd><b>${ALERT.status}</b></dd></div>
+        <div><dt>Affected milestone</dt><dd>${ALERT.affected}</dd></div>
+        <div><dt>Last previously confirmed commit</dt><dd><code>${ALERT.lastCommit}</code> (${ALERT.lastCommitMs}), pending repository re-verification</dd></div>
+        <div><dt>Last updated</dt><dd>${ALERT.updated}</dd></div>
+      </dl>
+      <a class="button small" href="${u("roadmap/")}#current">See the roadmap</a>
+    </div>
   </div>
 </aside>
 <section class="hero" aria-labelledby="hero-title">
@@ -126,7 +133,7 @@ pages[""] = {
       <h1 class="display hero-display reveal" id="hero-title"><span class="sr-only">Horizon Nexus: </span>Change the game.</h1>
       <p class="lede reveal">Create, modify and extend Horizon with a powerful Rust-native modding framework and loader.</p>
       <div class="actions reveal"><a class="button primary large" href="${u("features/")}">Explore Nexus</a><a class="button large" href="${u("docs/")}">Documentation</a></div>
-      <p class="availability reveal"><span class="badge dev">In development</span> Currently in development. Standalone installation is not yet available.</p>
+      <p class="availability reveal"><span class="badge paused">Paused</span> Development is temporarily paused. Standalone installation is not yet available.</p>
     </div>
     <div class="hero-art reveal"><img src="${u("media/portal.svg")}" alt="Pixel art: a glowing blue Nexus portal of blocks, with module blocks connecting at its sides" width="420" height="420"></div>
   </div>
@@ -152,7 +159,7 @@ pages[""] = {
     <div class="tracker-head"><p class="micro">Latest Development, ${UPDATED}</p><h2 class="panel-title" id="latest">Where Nexus is now</h2></div>
     <ol class="track" aria-label="Development progress, by step">
       <li class="t-done"><span class="t-mark" aria-hidden="true"></span><span class="t-state">Done</span><span class="t-what">${DONE[0].ver} to ${DONE.at(-1).ver}</span></li>
-      <li class="t-current" aria-current="step"><span class="t-mark">${icon("construction", 20)}</span><span class="t-state">Building now</span><span class="t-what">${CURRENT_MS.ver}: secure mod packaging</span></li>
+      <li class="t-current t-paused" aria-current="step"><span class="t-mark">${icon("warning", 20)}</span><span class="t-state">Paused: Investigation</span><span class="t-what">${CURRENT_MS.ver}: secure mod packaging</span></li>
       <li class="t-planned"><span class="t-mark" aria-hidden="true"></span><span class="t-state">Planned</span><span class="t-what">${PLANNED[0].ver} to ${PLANNED.at(-1).ver.replace(/c to d$/, "d")}, then stabilization</span></li>
     </ol>
     <a class="button primary" href="${u("roadmap/")}">View development roadmap</a>
@@ -185,18 +192,18 @@ pages["roadmap/"] = {
   title: "Roadmap", description: "Nexus development roadmap: completed milestones, the current step, planned v0.4 work and final stabilization.",
   body: `<div class="container page-main">
 <p class="kicker">Roadmap</p><h1 class="display page-title">Built block by block</h1>
-${lead("This page shows what is finished, what is being built now, and what comes next. Each block is one step of the project.")}
+${lead("This page shows what is finished, what is paused, and what comes next. Each block is one step of the project.")}
 ${you("Nothing here can be installed yet. v0.4 is the last planned feature step, then comes testing and fixing. No v0.5 or v1.0 features are planned, and there are no dates.")}
-<ol class="road reveal" aria-label="Roadmap at a glance">${MILESTONES.map((m) => `<li class="${m.state}"><span class="road-block" aria-hidden="true"></span><b>${m.ver}</b><span>${m.state === "done" ? "Done" : m.state === "current" ? "Building" : "Planned"}</span></li>`).join("").replace('<li class="current"><span class="road-block" aria-hidden="true"></span>', `<li class="current"><span class="road-icon">${icon("construction", 18)}</span>`)}<li class="planned"><span class="road-block" aria-hidden="true"></span><b>Then</b><span>Stabilize</span></li></ol>
-<p class="legend micro"><span class="key done"></span> Completed ${icon("construction", 14)} In development <span class="key planned"></span> Planned</p>
+<ol class="road reveal" aria-label="Roadmap at a glance">${MILESTONES.map((m) => `<li class="${m.state}"><span class="road-block" aria-hidden="true"></span><b>${m.ver}</b><span>${m.state === "done" ? "Done" : m.state === "paused" ? "Paused" : "Planned"}</span></li>`).join("").replace('<li class="paused"><span class="road-block" aria-hidden="true"></span>', `<li class="paused"><span class="road-icon">${icon("warning", 18)}</span>`)}<li class="planned"><span class="road-block" aria-hidden="true"></span><b>Then</b><span>Stabilize</span></li></ol>
+<p class="legend micro"><span class="key done"></span> Completed ${icon("warning", 14)} Paused, Investigation <span class="key planned"></span> Planned</p>
 
 <section class="section" aria-labelledby="completed">${head("01", "Completed", "These steps are done. The developer reported them from their own copy of Horizon.", "completed")}
 <div class="grid two">${[...DONE].reverse().map((m) => card({ ic: m.icon, title: `${m.ver}: ${m.name}`, b: "done", body: esc(m.summary), extra: `${ticks(m.items, "done")}${commit(m.commit)}` })).join("")}</div>
 <p class="more-link"><a href="${u("releases/")}">Validation results are on the Releases page</a></p></section>
 
-<section class="section" aria-labelledby="current">${head("02", "In development", "", "current")}
-<p class="muted">Updated ${UPDATED}. This step is being built now and is not finished.</p>
-<section class="panel current-panel reveal"><div class="panel-head"><h3 class="panel-title">${CURRENT_MS.ver}: ${esc(CURRENT_MS.name)}</h3><span class="tags">${badge("progress")}${badge("dev_reported")}</span></div><p>${esc(BUILDING.body)}</p><h4 class="h-small">Focus</h4>${ticks(CURRENT_MS.items)}<div class="callout warn"><p>${esc(CURRENT_MS.note)}</p></div></section>
+<section class="section" aria-labelledby="current">${head("02", "Paused, Investigation", "", "current")}
+<p class="muted">Updated ${ALERT.updated}. ${esc(ALERT.body[0])} ${esc(ALERT.body[3])}</p>
+<section class="panel current-panel reveal"><div class="panel-head"><h3 class="panel-title">${CURRENT_MS.ver}: ${esc(CURRENT_MS.name)}</h3><span class="tags">${badge("paused")}${badge("dev_reported")}</span></div><p>Last previously confirmed commit: <code>${ALERT.lastCommit}</code> (${ALERT.lastCommitMs}), pending repository re-verification. No confirmed loss of previously committed work has been established.</p><h4 class="h-small">Planned focus (paused)</h4>${ticks(CURRENT_MS.items)}<div class="callout warn"><p>${esc(CURRENT_MS.note)}</p></div></section>
 <div class="callout you"><p class="you-title">Just finished</p><p><b>${esc(HIGHLIGHT.title)}.</b> ${esc(HIGHLIGHT.body)}</p></div></section>
 
 <section class="section" aria-labelledby="planned">${head("03", "Planned", "These come after. None of this exists yet.", "planned")}
@@ -264,7 +271,8 @@ const FAQ = [
   ["What is Nexus?", `A toolkit for changing the game Horizon. It has two parts: a framework mod makers build with, and a mod loader that will install mods for you.`, DEFINITION],
   ["Can I install it?", `Not yet. ${NO_RELEASE}`, "The runtime is compiled into Horizon, and standalone <code>.nmod</code> installation is not implemented."],
   ["What works today?", `The core: systems (mini machines that run every tick), their order, and messages between them. Nexus can also read and check mod packages, but not install them.`, "v0.1 to v0.3: systems, scheduling, lifecycle, engine integration and typed events. v0.4a validates and resolves <code>.nmod</code> manifests; it does not build, install or run mods."],
-  ["What just finished, and what is being built?", `v0.4b.1 is done: mods now have a proper front desk for signing in their systems. ${CURRENT_MS.ver} is being built now: secure mod packaging and automatic registration. It is not finished.`, "v0.4b.1 added NexusRegistrar and versioned capability metadata. Capability metadata is declarative; command-boundary enforcement is planned. External .nmod installation is not available yet."],
+  ["Why is development paused?", `Development was temporarily paused during ${CURRENT_MS.ver} after reports of inconsistent local repository state and incomplete code changes. The Git history and earlier milestones are being checked. No confirmed loss of previously committed work has been established.`, ""],
+  ["What finished most recently?", `v0.4b.1: mods now have a proper front desk for signing in their systems. ${CURRENT_MS.ver} is paused.`, "v0.4b.1 added NexusRegistrar and versioned capability metadata. Capability metadata is declarative; command-boundary enforcement is planned. External .nmod installation is not available yet."],
   ["How much of the game can mods change?", `The goal is a lot: blocks, items, creatures, worlds, rules, sound, controls and more. None of that works yet.`, "Blocks, items, entities, world generation, rules, physics, rendering, HUD, audio, input, networking and saved data are engineering targets, not current features."],
   ["Can mods change the engine itself?", `That is the plan, for mods you trust.`, "Beyond APIs and hooks, Nexus aims to support trusted native source-level extensions."],
   ["Are mods safe?", `Only as safe as the person who made them. Nexus mods are real programs and are not locked in a safe box. You will approve each mod before it is built.`, "Native Rust source mods are not sandboxed, and compiling them can run code. Trust must be approved before compilation."],
