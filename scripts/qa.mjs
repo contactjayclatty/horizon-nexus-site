@@ -12,7 +12,7 @@ const server = process.env.QA_URL ? null : spawn(process.execPath, [join(root, "
 await new Promise((r) => setTimeout(r, 500));
 const out = join(root, "qa/screenshots", process.env.QA_OUT ?? (process.env.QA_URL ? "live" : "local"));
 await mkdir(out, { recursive: true });
-const pages = ["", "features/", "architecture/", "docs/", "docs/typed-events/", "docs/glossary/", "roadmap/", "releases/", "changelog/", "downloads/", "faq/", "contributing/", "nope/"];
+const pages = ["", "features/", "architecture/", "docs/", "docs/typed-events/", "docs/glossary/", "roadmap/", "releases/", "changelog/", "downloads/", "faq/", "contributing/", "search/", "nope/"];
 const b = await chromium.launch(process.env.CHROME ? { executablePath: process.env.CHROME } : {});
 let problems = 0; const bad = (m) => { problems++; console.log("FAIL", m); };
 for (const w of (process.env.QA_WIDTHS ?? "360,390,768,1024,1440,1920").split(",").map(Number)) {

@@ -250,3 +250,16 @@ test("v5 phase 3: releases jump list and folds, glossary A to Z, plain target li
   const dl = get("downloads/index.html");
   assert.doesNotMatch(dl, /launcher-bar|No download<\/span>/);
 });
+
+test("v5 phase 4: search page and index, per-page share images, minified css", async () => {
+  const s = html.find(([f]) => f.endsWith("dist-test/search/index.html"))[1];
+  assert.match(s, /<label for="q"[^>]*>Search the site<\/label><input id="q" type="search"/);
+  assert.match(s, /aria-live="polite"/);
+  const idx = JSON.parse(readFileSync(join(dist, "search.json"), "utf8"));
+  assert.ok(idx.length >= 20 && idx.every((p) => p.t && p.u.startsWith(BASE) && typeof p.x === "string"));
+  assert.ok(idx.some((p) => /typed events/i.test(p.t)));
+  const road = html.find(([f]) => f.endsWith("dist-test/roadmap/index.html"))[1];
+  assert.match(road, /og:image" content="[^"]*og\/roadmap\.png"/);
+  await stat(join(dist, "og/roadmap.png"));
+  assert.doesNotMatch(readFileSync(join(dist, "assets/style.css"), "utf8"), /\/\*/);
+});

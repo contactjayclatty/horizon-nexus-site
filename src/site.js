@@ -24,3 +24,5 @@ const toc = document.querySelector("[data-docs-toc]");
 if (toc) { const wide = matchMedia("(min-width: 901px)"); const sync = () => { toc.open = wide.matches; }; sync(); wide.addEventListener("change", sync); }
 // Folds that are open on wide screens and closed on phones (footer links).
 document.querySelectorAll("[data-fold-wide]").forEach((d) => { const wide = matchMedia("(min-width: 761px)"); const sync = () => { d.open = wide.matches; }; sync(); wide.addEventListener("change", sync); });
+// Phone menu: move focus to the first link when it opens.
+if (button && menu) button.addEventListener("click", () => { if (!menu.hidden) menu.querySelector("a")?.focus(); });

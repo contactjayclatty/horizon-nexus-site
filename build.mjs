@@ -5,7 +5,7 @@ import { mkdir, writeFile, readFile, cp, rm } from "node:fs/promises";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { writeArt } from "./scripts/art.mjs";
 import { MILESTONES, LATEST, AUDIT, UPDATED, CURRENT_MS, HIGHLIGHT, BUILDING, STABILIZATION, IMPLEMENTED, TARGETS, MODULES, NOTICE, USER_PROVIDED, DEFINITION, NO_RELEASE, NO_JAVA, OUT_OF_SCOPE, REPO, HORIZON, HORIZON_SITE, HORIZON_MODS } from "./src/content.mjs";
 import { icon } from "./src/icons.mjs";
@@ -19,8 +19,10 @@ export const u = (p = "") => BASE + p.replace(/^\//, "");
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 const NAV = [["", "Home"], ["features/", "Features"], ["roadmap/", "Roadmap"], ["docs/", "Docs"], ["releases/", "Releases"]];
-const MORE = [["architecture/", "Architecture"], ["downloads/", "Downloads"], ["faq/", "FAQ"], ["contributing/", "Contributing"]];
+const MORE = [["architecture/", "Architecture"], ["downloads/", "Downloads"], ["faq/", "FAQ"], ["contributing/", "Contributing"], ["search/", "Search"]];
 
+const ogKey = (path) => (path || "home").replace(/\/$/, "").replace(/\//g, "-");
+const ogFor = (path) => (existsSync(join(dirname(fileURLToPath(import.meta.url)), "public/og", `${ogKey(path)}.png`)) ? `og/${ogKey(path)}.png` : "og.png");
 function layout({ path, title, description, body, bodyClass = "" }) {
   const isCurrent = (p) => (p === "" ? path === "" : path.startsWith(p));
   const li = ([p, l]) => `<li><a href="${u(p)}"${isCurrent(p) ? ' aria-current="page"' : ""}>${l}</a></li>`;
@@ -46,14 +48,14 @@ function layout({ path, title, description, body, bodyClass = "" }) {
 <meta property="og:title" content="${esc(fullTitle)}">
 <meta property="og:description" content="${esc(description)}">
 <meta property="og:url" content="${SITE}${path}">
-<meta property="og:image" content="${SITE}og.png">
+<meta property="og:image" content="${SITE}${ogFor(path)}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Horizon Nexus: a blue block portal in a pixel-art night landscape, with the line Change the Game. Extend the Engine.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${esc(fullTitle)}">
 <meta name="twitter:description" content="${esc(description)}">
-<meta name="twitter:image" content="${SITE}og.png">
+<meta name="twitter:image" content="${SITE}${ogFor(path)}">
 <meta name="color-scheme" content="dark">
 <link rel="preload" href="${u("fonts/PixelifySans-Bold.woff2")}" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="${u("fonts/Geist-Regular.woff2")}" as="font" type="font/woff2" crossorigin>
@@ -114,7 +116,7 @@ ${diagram(FRAMEWORK, "Planned framework", "architecture-framework.svg", "Horizon
 ${diagram(LOADER, "Loader pipeline", "architecture-loader.svg", ".nmod, Validation and Dependencies (done in v0.4a), then Native Build and Registration (planned), then Horizon", "goal", "Part done. Nexus can already find and check mod packages. Building them and adding them to the game is planned.")}`;
 const moduleCard = (m) => card({ ic: m.icon, title: m.name, b: "idea", cls: "module", body: esc(m.body), extra: m.note ? `<p class="note">${esc(m.note)}</p>` : "" });
 
-const HASH = Object.fromEntries(["tokens.css", "style.css", "site.js"].map((f) => [f, createHash("sha256").update(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "src", f))).digest("hex").slice(0, 10)]));
+const HASH = Object.fromEntries(["tokens.css", "style.css", "site.js", "search.js"].map((f) => [f, createHash("sha256").update(readFileSync(join(dirname(fileURLToPath(import.meta.url)), "src", f))).digest("hex").slice(0, 10)]));
 const pages = {};
 
 pages[""] = {
@@ -315,7 +317,18 @@ node --test tests/*.test.mjs</code></pre>
 </div>`,
 };
 
-const docNav = (slug) => `<nav class="docs-nav" aria-label="Documentation"><details class="docs-toc" data-docs-toc><summary><span class="micro">All docs (${DOCS.length})</span><b>${esc(DOCS.find((d) => d.slug === slug)?.title ?? "")}</b></summary><ul>${DOCS.map((d) => `<li><a href="${u(d.slug ? `docs/${d.slug}/` : "docs/")}"${d.slug === slug ? ' aria-current="page"' : ""}>${esc(d.title)}</a></li>`).join("")}</ul></details></nav>`;
+const docNav = (slug) => `<nav class="docs-nav" aria-label="Documentation"><details class="docs-toc" data-docs-toc><summary><span class="micro">All docs (${DOCS.length})</span><b>${esc(DOCS.find((d) => d.slug === slug)?.title ?? "")}</b></summary><ul>${DOCS.map((d) => `<li><a href="${u(d.slug ? `docs/${d.slug}/` : "docs/")}"${d.slug === slug ? ' aria-current="page"' : ""}>${esc(d.title)}</a></li>`).join("")}</ul></details><a class="docs-search" href="${u("search/")}">Search the docs</a></nav>`;
+pages["search/"] = {
+  title: "Search", description: "Search the Horizon Nexus site: docs, glossary, roadmap, releases and FAQ.",
+  body: `<div class="container page-main narrow">
+<p class="kicker">Search</p><h1 class="display page-title">Find it fast</h1>
+${lead("Type a word, like event, .nmod or install. Results come from this site only.")}
+<div class="search-box"><label for="q" class="micro">Search the site</label><input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Try: typed events" data-search-input data-index="${u("search.json")}"></div>
+<p class="muted" data-search-status aria-live="polite"><noscript>Search needs JavaScript. You can browse the <a href="${u("docs/")}">docs</a> instead.</noscript></p>
+<ol class="search-results" data-search-results></ol>
+<script type="module" src="${u("assets/search.js")}?v=${HASH["search.js"]}"></script>
+</div>`,
+};
 const slugify = (t) => t.toLowerCase().replace(/<[^>]+>/g, "").replace(/&[a-z]+;/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 DOCS.forEach((d, i) => {
   const prev = DOCS[i - 1], next = DOCS[i + 1];
@@ -356,12 +369,18 @@ await writeArt(join(out, "media"));
 await writeFile(join(out, "media/architecture-current.svg"), diagramSvg(CURRENT, "Current runtime (v0.3)"));
 await writeFile(join(out, "media/architecture-framework.svg"), diagramSvg(FRAMEWORK, "Planned framework (v0.4b to d)"));
 await writeFile(join(out, "media/architecture-loader.svg"), diagramSvg(LOADER, "Loader pipeline (v0.4a done, rest planned)"));
-for (const f of ["tokens.css", "style.css", "site.js"]) await cp(join(root, "src", f), join(out, "assets", f));
+// Small build-time minify for CSS (comments and extra whitespace only).
+for (const f of ["tokens.css", "style.css"]) await writeFile(join(out, "assets", f), readFileSync(join(root, "src", f), "utf8").replace(/\/\*[^]*?\*\//g, "").replace(/\s*\n\s*/g, "\n").replace(/\n+/g, "\n").trim() + "\n");
+for (const f of ["site.js", "search.js"]) await cp(join(root, "src", f), join(out, "assets", f));
 for (const [path, p] of Object.entries(pages)) {
   await mkdir(join(out, path), { recursive: true });
   await writeFile(join(out, path, "index.html"), layout({ path, ...p }));
 }
 await writeFile(join(out, "404.html"), notFound);
+// Search index: plain text of each page's main content, built here, searched in the browser.
+const text = (h) => h.replace(/<script[^]*?<\/script>/g, " ").replace(/<nav[^]*?<\/nav>/g, " ").replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/\s+/g, " ").trim();
+const index = Object.entries(pages).filter(([p]) => p !== "search/").map(([p, pg]) => ({ t: pg.title, u: u(p), d: pg.description, x: text(pg.body).slice(0, 6000) }));
+await writeFile(join(out, "search.json"), JSON.stringify(index));
 // Old docs URLs from the first version of the site, kept working as redirects.
 const MOVED = { "docs/architecture/": "architecture/", "docs/runtime-lifecycle/": "docs/system-lifecycle/", "docs/nexus-system/": "docs/", "docs/event-dispatch/": "docs/typed-events/", "docs/security/": "docs/security-model/", "docs/limitations/": "docs/api-limitations/", "docs/mod-loading/": "docs/mod-packaging/", "changelog/": "releases/" };
 for (const [from, to] of Object.entries(MOVED)) {
