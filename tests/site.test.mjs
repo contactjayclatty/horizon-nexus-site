@@ -270,3 +270,15 @@ test("pixel font ligatures are off so 'fi' never misreads", () => {
   const css = readFileSync(new URL("../src/style.css", import.meta.url), "utf8");
   assert.match(css, /\*, \*::before, \*::after \{ font-variant-ligatures: none; font-feature-settings: "liga" 0/);
 });
+
+test("v6.2: maybe-someday vision is labelled as an idea, not a plan", () => {
+  const get = (p) => html.find(([f]) => f.endsWith(`dist-test/${p}`))[1];
+  const feat = get("features/index.html");
+  const sec = feat.slice(feat.indexOf('aria-labelledby="vision"')).split("</section>")[0];
+  assert.match(sec, /This is an idea, not a plan\./);
+  assert.match(sec, /not on the roadmap/);
+  assert.match(sec, /built for Horizon only, and none of the uses below exist/);
+  for (const w of ["Game engines", "Desktop software", "Servers", "Installers", "Developer tools", "Simulators"]) assert.ok(sec.includes(w), w);
+  assert.doesNotMatch(sec, /v\d|reveal|\b20\d\d\b/);
+  for (const p of ["index.html", "roadmap/index.html"]) assert.doesNotMatch(get(p), /universal foundation/);
+});

@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { readFileSync, existsSync } from "node:fs";
 import { writeArt } from "./scripts/art.mjs";
-import { MILESTONES, LATEST, AUDIT, UPDATED, CURRENT_MS, HIGHLIGHT, CHECKPOINTS, REMAINING, PLAIN_PROGRESS, STATUS, AVAILABILITY, TESTS_NOTE, SECURITY_PLAIN, DEV_NOTES, SCOPE, STABILIZATION, IMPLEMENTED, TARGETS, MODULES, NOTICE, USER_PROVIDED, DEFINITION, NO_RELEASE, NO_JAVA, OUT_OF_SCOPE, REPO, HORIZON, HORIZON_SITE, HORIZON_MODS } from "./src/content.mjs";
+import { MILESTONES, LATEST, AUDIT, UPDATED, CURRENT_MS, HIGHLIGHT, CHECKPOINTS, REMAINING, PLAIN_PROGRESS, STATUS, AVAILABILITY, TESTS_NOTE, SECURITY_PLAIN, DEV_NOTES, SCOPE, STABILIZATION, IMPLEMENTED, TARGETS, MODULES, NOTICE, USER_PROVIDED, DEFINITION, NO_RELEASE, NO_JAVA, OUT_OF_SCOPE, REPO, HORIZON, HORIZON_SITE, HORIZON_MODS, VISION } from "./src/content.mjs";
 import { icon } from "./src/icons.mjs";
 import { DOCS, lead, you, devs } from "./src/docs.mjs";
 
@@ -171,6 +171,11 @@ ${you("The foundations above work today. The areas below are the goal for later 
 <section class="section band" aria-labelledby="future">${head("Ideas", "Future possibilities", "", "future")}
 ${lead("These are example mod packs the toolkit could one day allow. They are not built and not promised for v0.4.")}
 <div class="grid four">${MODULES.map(moduleCard).join("")}</div></section>
+<section class="section vision" aria-labelledby="vision"><div class="section-head"><p class="kicker">Maybe someday</p><h2 class="title" id="vision">Imagine Nexus as a universal foundation</h2></div>
+<p class="vision-note"><b>This is an idea, not a plan.</b> It is not on the roadmap and has no dates or versions. Nexus today is built for Horizon only, and none of the uses below exist.</p>
+<div class="vision-core">${icon("framework", 32)}<h3 class="panel-title">Nexus Core</h3><p>Reusable Rust infrastructure</p><p class="vision-parts">Packages, security checks, dependencies, events and extensions</p></div>
+<p class="vision-arrow" aria-hidden="true">&darr;</p>
+<ul class="vision-grid">${VISION.map(([ic, t, d]) => `<li>${icon(ic, 28)}<h3>${esc(t)}</h3><p>${esc(d)}</p></li>`).join("")}</ul></section>
 </div>`,
 };
 

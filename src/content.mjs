@@ -94,3 +94,6 @@ export const MODULES = [
 
 export const NOTICE = "Horizon Nexus is an independent project. It is not an official Minecraft product and is not approved by or associated with Mojang or Microsoft. It is not an officially endorsed part of upstream Horizon.";
 export const USER_PROVIDED = "Milestones, commit ids and test results are developer-reported, from an independent Horizon development branch. The commits may not exist in the public upstream repository.";
+
+// "Maybe someday" idea on the Features page. An idea, not a plan: never put it on the roadmap.
+export const VISION = [["engine", "Game engines", "Mods, events, custom content"], ["sides", "Desktop software", "Plugins, themes, extensions"], ["runtime", "Servers", "Modules, automation, commands"], ["package", "Installers", "Verified packages and updates"], ["tools", "Developer tools", "Third-party integrations"], ["world", "Simulators", "Custom physics and plugins"]];
