@@ -522,5 +522,5 @@ table.data td { background: var(--panel); }
   .build-label { font-size: 11px; white-space: nowrap; }
   .indet { flex: 1; height: 8px; border-width: 1px; }
   .indet i { width: 10px; }
-  .build-banner .button { flex: none; background: none; border: 0; padding: 0; min-height: 0; color: #ffd36b; text-decoration: underline; font-size: 12px; justify-self: auto; width: auto; }
+  .build-banner .button { flex: none; background: none; border: 0; padding: 0 2px; min-height: 24px; display: inline-flex; align-items: center; color: #ffd36b; text-decoration: underline; font-size: 12px; justify-self: auto; width: auto; }
 }
