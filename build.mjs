@@ -194,6 +194,7 @@ ${you("Nothing here can be installed yet. v0.4 is the last planned feature stage
 <section class="panel current-panel"><div class="panel-head"><h3 class="panel-title">${CURRENT_MS.ver}: ${esc(CURRENT_MS.name)}</h3><span class="tags">${badge("progress")}${badge("dev_reported")}</span></div><p>${esc(CURRENT_MS.summary)}</p>
 ${progress()}<h4 class="h-small">Checkpoints</h4>${checklist()}
 <p class="next-ck">${esc(REMAINING)}</p>
+<p class="muted">Latest reported validation: ${esc(CURRENT_MS.validation[0])}. Reported by the development agent.</p>
 <div class="callout warn"><p>${esc(CURRENT_MS.note)}</p></div>
 <a class="button" href="${u("development/")}">Full development notes</a></section></section>
 
