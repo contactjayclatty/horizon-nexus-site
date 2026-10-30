@@ -114,22 +114,26 @@ test("home is short, has the exact hero copy and the primary nav", () => {
   const home = html.find(([f]) => f.endsWith("dist-test/index.html"))[1];
   const main = home.slice(home.indexOf("<main"), home.indexOf("</main>"));
   assert.ok((main.match(/<section class="(?:hero|section)/g) || []).length <= 5, "too many home sections");
-  for (const s of ["The Horizon modding platform", "Change the game.", "Create, modify and extend Horizon with a powerful Rust-native modding framework and loader.", "Explore Nexus", "Documentation", "Currently in development. Standalone installation is not yet available.", "Latest Development", "v0.4b.1", "Current", "In progress, not completed", "View development roadmap"]) assert.ok(main.includes(s), s);
+  for (const s of ["The Horizon modding platform", "Change the game.", "Create, modify and extend Horizon with a powerful Rust-native modding framework and loader.", "Explore Nexus", "Documentation", "Currently in development. Standalone installation is not yet available.", "Latest Development", "v0.4b.1 Complete: Native Mod Registration Foundation", "Nexus can now expose a dedicated registration interface for future native mods. Next up: secure package staging and automatic registration.", "View development roadmap"]) assert.ok(main.includes(s), s);
   assert.doesNotMatch(main, /18\/18|32\/32|fb43e5954|0fcc557b1/, "home shows engineering detail");
   const nav = home.slice(home.indexOf('class="nav-links"'), home.indexOf("</ul>", home.indexOf('class="nav-links"')));
   assert.deepEqual([...nav.matchAll(/>([^<]+)<\/a>/g)].map((m) => m[1]), ["Home", "Features", "Roadmap", "Docs", "Releases", "GitHub"]);
 });
 
-test("releases page: no public release, v0.4a first and marked completed", () => {
+test("releases page: no public release, local milestones newest first", () => {
   const r = html.find(([f]) => f.endsWith("dist-test/releases/index.html"))[1];
   assert.ok(r.includes("No public standalone Nexus release is available yet."));
-  const order = ["Audit:", "v0.4a:", "v0.3:", "v0.2:", "v0.1:"].map((v) => r.indexOf(v));
+  const order = ["v0.4b.1:", "Audit:", "v0.4a:", "v0.3:", "v0.2:", "v0.1:"].map((v) => r.indexOf(v));
   assert.deepEqual([...order].sort((a, b) => a - b), order); assert.ok(order[0] > 0);
   assert.match(r, /fb43e5954/); assert.match(r, /does not install or execute/);
   const road = html.find(([f]) => f.endsWith("dist-test/roadmap/index.html"))[1];
-  assert.match(road, /v0\.4b\.1[^]*>Current</); assert.doesNotMatch(road, /underway|Planned, authorized/);
-  for (const [f, s] of html) { const i = s.indexOf('v0.4b.1: '); if (i > 0) assert.doesNotMatch(s.slice(i, i + 300), /badge[^"]*">Completed</, `${f} v0.4b.1 status`); } assert.doesNotMatch(road, /Requested/);
-  assert.match(r, /Pre-v0\.4b audit and hardening[^]*8f809e822[^]*33\/33/);
+  assert.match(r, /Locally committed development milestones/); assert.match(r, /Publicly downloadable releases/);
+  assert.match(r, /9198d320e[^]*35\/35 distinct tests passing/); assert.match(r, /external \.nmod package installation is not available yet/);
+  assert.match(road, /v0\.4b\.2: Secure \.nmod package staging and generated registration[^]*Next, not started/);
+  assert.doesNotMatch(road, /underway|Planned, authorized|>Current</);
+  for (const v of ["v0.4b.2", "v0.4b.3", "v0.4b.4", "v0.4c to d"]) for (const [f, s] of html) { const i = s.indexOf(`${v}: `); if (i > 0) assert.doesNotMatch(s.slice(i, i + 300), /badge[^"]*">(?:Completed|Current|In progress)</, `${f} ${v} status`); }
+  assert.doesNotMatch(road, /Requested/);
+  assert.match(r, /Pre-v0\.4b audit: stabilization and resource-safety fixes[^]*8f809e822[^]*33\/33/);
   assert.match(r, /Typed Inter-System Events/);
 });
 
@@ -166,16 +170,14 @@ test("readability: docs, features and architecture are written for players first
   }
 });
 
-test("home has a live now-building banner driven by the current milestone", async () => {
-  const { FOCUS } = await import("../src/content.mjs");
+test("home banner honestly shows the next, not-started milestone", async () => {
+  const { NEXT } = await import("../src/content.mjs");
+  assert.equal(NEXT.state, "next");
   const home = html.find(([f]) => f.endsWith("dist-test/index.html"))[1];
   const i = home.indexOf('class="build-banner"');
   assert.ok(i > home.indexOf("</header>") && i < home.indexOf('class="hero"'), "banner sits below the nav, above the hero");
   const banner = home.slice(i, home.indexOf("</aside>", i));
-  assert.ok(banner.includes(`Now building: ${FOCUS.ver}`), "banner uses FOCUS");
-  assert.match(banner, /roadmap\//); assert.doesNotMatch(banner, /\d+\s*%/, "no fake progress");
-  const css = readFileSync(new URL("../src/style.css", import.meta.url), "utf8");
-  assert.match(css, /prefers-reduced-motion: reduce\) \{ \.build-banner::before, \.live-dot, \.indet i \{ animation: none/);
-  assert.match(banner, /role="progressbar"/); assert.doesNotMatch(banner, /aria-valuenow/, "progress must be indeterminate");
-  assert.match(banner, /Building\.\.\./);
+  assert.ok(banner.includes(`Up next: ${NEXT.ver}`), "banner uses NEXT");
+  assert.match(banner, /Next, not started/); assert.match(banner, /roadmap\//);
+  assert.doesNotMatch(banner, /Now building|Building\.\.\.|progressbar|live-dot|\d+\s*%/, "must not imply active work or progress");
 });

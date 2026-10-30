@@ -4,7 +4,7 @@
 // function signatures, stage names or install commands appear.
 import { DEFINITION, NO_JAVA, OUT_OF_SCOPE, MILESTONES } from "./content.mjs";
 const UP = `<div class="callout"><p><b>Source:</b> developer-reported, from an independent Horizon development branch. Not verified against public upstream. There is no public API reference yet, so these pages describe behaviour, not signatures.</p></div>`;
-const PLAN = `<div class="callout warn"><p><b>Planned, not built.</b> v0.4b, v0.4c and v0.4d are planned. Details can change.</p></div>`;
+const PLAN = `<div class="callout warn"><p><b>Planned, not built.</b> v0.4b.2 is next and not started. v0.4b.3, v0.4b.4 and v0.4c to d are planned. Details can change.</p></div>`;
 const v4a = MILESTONES.find((m) => m.ver === "v0.4a");
 const list = (xs) => `<ul class="ticks">${xs.map((x) => `<li>${x}</li>`).join("")}</ul>`;
 export const lead = (t) => `<p class="lead-plain">${t}</p>`;
@@ -29,6 +29,9 @@ export const GLOSSARY = [
   [".nmod", "The file package a Nexus mod will come in. It holds the mod and a label describing it."],
   ["Manifest", "The label inside a .nmod. It says the mod's name, version and what other mods it needs."],
   ["Dependency", "Another mod that a mod needs in order to work."],
+  ["Registrar", "The front desk where a mod signs in its systems. In Nexus it is called NexusRegistrar. It lets mods sign in without handing them the keys to everything."],
+  ["Capability metadata", "A label on each system saying what it says it needs. Today it is only a label: Nexus does not yet enforce it."],
+  ["Staging", "Getting a mod package unpacked and checked in a safe place before it is used. Planned for v0.4b.2."],
   ["Native code", "Real program code that runs directly on your computer, with your permissions."],
   ["Sandbox", "A locked box that stops code from touching the rest of your computer. Nexus mods do not have one."],
   ["Compile", "Turn a mod's source code into a program the computer can run. This step can itself run code."],
@@ -48,7 +51,7 @@ ${term("System:", G("System"))}${term("Event:", G("Event"))}${term("Tick:", G("T
 <p>Every other term is in the <a href="${u("docs/glossary/")}">glossary</a>.</p>
 <h2>Where things stand</h2>
 <p>Each block below is one step of the project. Filled blocks are done, the hot block is being worked on, and outlined blocks are planned.</p>
-${flow([["v0.1", "Systems Runtime", "done"], ["v0.2", "Engine Integration", "done"], ["v0.3", "Typed Inter-System Events", "done"], ["v0.4a", "Manifests and resolution", "done"], ["Audit", "Pre-v0.4b", "done"], ["v0.4b.1", "current", "hot"], ["v0.4b to d", "planned", "planned"]], "Milestones")}
+${flow([["v0.1", "Systems Runtime", "done"], ["v0.2", "Engine Integration", "done"], ["v0.3", "Typed Inter-System Events", "done"], ["v0.4a", "Manifests and resolution", "done"], ["Audit", "Pre-v0.4b", "done"], ["v0.4b.1", "Registration", "done"], ["v0.4b.2", "next", "planned"], ["v0.4b.3 to d", "planned", "planned"]], "Milestones")}
 <p>v0.4 is the last planned feature step. After it comes a long round of testing and fixing, then a pause. See the <a href="${u("roadmap/")}">roadmap</a>.</p>
 <h2>What it is not</h2><ul><li>Not something you can install today.</li><li>${NO_JAVA}</li><li>Not an official Mojang or Microsoft product, and not an officially endorsed part of upstream Horizon.</li></ul>
 ${devs(`${UP}<p>${DEFINITION}</p>
@@ -104,6 +107,7 @@ ${you("There is nothing to install yet. When a Horizon build includes Nexus, it 
 ${flow([["Horizon", "the engine", "done"], ["Nexus Runtime", "compiled in", "hot"], ["Registered systems"], ["Typed event dispatcher"]], "Current runtime")}
 <p class="caption">The game runs Nexus, Nexus runs the systems, and the systems pass messages.</p>
 <p>Nexus already knows about things like day and night. It can ask the game to do certain things in a safe, controlled way.</p>
+<p>Since v0.4b.1, mods have a front desk for signing in their systems. You still cannot install a .nmod.</p>
 <h2>A note for server owners</h2>
 <p>On a dedicated server, chat announcements from Nexus are written to the log and not shown in game.</p>
 ${devs(`${UP}
@@ -135,11 +139,11 @@ ${devs(`${UP}
 <p><b>Nexus mods are trusted native code.</b> Native Rust source mods are not sandboxed and run with the player's permissions. Compiling them can execute code (build scripts, procedural macros), so trust approval must come <b>before</b> compilation.</p>
 <h3>In place</h3><ul class="ticks"><li>Controlled engine command requests (v0.2).</li><li>Server/client separation (v0.1).</li><li>v0.4a: filesystem path and symlink checks during discovery, strict TOML validation, conflict detection, and explicit native-code trust assumptions.</li></ul>
 <p>Validation rejects broken or conflicting packages. It does not make untrusted code safe.</p>
-<h3>Completed: pre-v0.4b audit</h3><p>The audit (8f809e822, developer-reported) fixed an event-queue resource issue, added regression coverage and verified 33/33 tests.</p><h3>Current: v0.4b.1</h3><p>Native system registration hooks and connecting external mod registration to the runtime. Architecture reviewed and implementation authorized. In progress, not completed.</p>`)}` },
+<h3>Completed: pre-v0.4b audit</h3><p>The audit (8f809e822, developer-reported) fixed an event-queue resource issue, added regression coverage and verified 33/33 tests.</p><h3>Completed: v0.4b.1</h3><p>NexusRegistrar exposes registration without unrestricted runtime access (9198d320e, developer-reported). Capability metadata is declarative; command-boundary enforcement is still planned.</p><h3>Next: v0.4b.2</h3><p>Secure .nmod package staging and generated registration. Not started.</p>`)}` },
   { slug: "mod-packaging", title: "Mod packages", description: "What a .nmod package is and how Nexus will handle it.", body: ({ flow }) => `
 ${lead("A Nexus mod will come as one package file, called a .nmod. Inside is the mod plus a label saying what it is and what it needs.")}
 ${you("Later, you will get mods as .nmod files and Nexus will sort out the rest. Today Nexus can read and check these files, but not install them.")}
-${flow([[".nmod", "package", "done"], ["Validation", "v0.4a", "done"], ["Dependencies", "v0.4a", "done"], ["Native Build", "v0.4b/c", "planned"], ["Registration", "v0.4b", "planned"], ["Horizon", "", "done"]], "Loader pipeline")}
+${flow([[".nmod", "package", "done"], ["Validation", "v0.4a", "done"], ["Dependencies", "v0.4a", "done"], ["Staging", "v0.4b.2", "planned"], ["Native Build", "v0.4b.3", "planned"], ["Registration", "seam v0.4b.1", "done"], ["Horizon", "", "done"]], "Loader pipeline")}
 <p class="caption">Filled blocks work today. Outlined blocks are planned.</p>
 <p>Nexus reads the label, checks it, and works out which other mods are needed. It then puts them in a sensible order. Building and adding them to the game comes later.</p>
 ${devs(`${UP}
@@ -154,9 +158,9 @@ ${MILESTONES.filter((m) => m.state === "planned").map((m) => `<tr><td>${m.ver}: 
 ${lead("This page shows the steps a mod will go through on its way into your game. The first two work today, and the rest are planned.")}
 ${you("There is no way to install a Nexus mod yet. When there is, you will approve each mod before it is built.")}
 ${PLAN}
-<ol class="steps"><li><b>Find</b> the mod packages. <span class="badge done">Done in v0.4a</span></li><li><b>Check</b> each label and work out what is needed, in a fixed order. <span class="badge done">Done in v0.4a</span></li><li><b>You approve</b> each mod you trust. <span class="badge planned">Planned</span></li><li><b>Build</b> the mod into a program. <span class="badge planned">Planned</span></li><li><b>Add</b> its systems to Nexus. <span class="badge planned">Planned</span></li><li><b>Play</b> with it in Horizon. <span class="badge planned">Planned</span></li></ol>
+<ol class="steps"><li><b>Find</b> the mod packages. <span class="badge done">Done in v0.4a</span></li><li><b>Check</b> each label and work out what is needed, in a fixed order. <span class="badge done">Done in v0.4a</span></li><li><b>You approve</b> each mod you trust. <span class="badge planned">Planned</span></li><li><b>Build</b> the mod into a program. <span class="badge planned">Planned</span></li><li><b>Add</b> its systems to Nexus. <span class="badge planned">Planned</span> <span class="micro">The sign-in desk exists (v0.4b.1).</span></li><li><b>Play</b> with it in Horizon. <span class="badge planned">Planned</span></li></ol>
 ${devs(`<ol><li>Discover packages, with path and symlink checks (v0.4a).</li><li>Validate and resolve manifests, versions and dependencies deterministically (v0.4a).</li><li>Approve trust for each native mod.</li><li>Compile through Horizon Launcher's pipeline. Needs a Rust toolchain.</li><li>Register generated Nexus systems.</li><li>Run in Horizon.</li></ol>
-<p>Profiles, diagnostics, updates and rollback are v0.4d goals.</p>`)}` },
+<p>v0.4b.1 added the registration seam (NexusRegistrar). Staging and generated registration are v0.4b.2, launcher compilation is v0.4b.3, and mod management is part of v0.4c to d.</p>`)}` },
   { slug: "developer-setup", title: "Developer setup", description: "Building Horizon and working on this website.", body: () => `
 ${lead("This page is for people who write code. If you only want to play, you can skip it.")}
 ${you("Nothing here is needed to play Horizon. There are no Nexus install steps because there is nothing to install yet.")}
