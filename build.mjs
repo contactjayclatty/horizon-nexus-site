@@ -183,7 +183,7 @@ ${lead("These are the building blocks that already work. Each card says it in pl
 <section class="section band" aria-labelledby="targets">${head("Engineering targets", "What Nexus is meant to make possible", "", "targets")}
 ${lead("These are parts of the game Nexus aims to let mods change. None of them work yet.")}
 ${you("Think of this as a wish list for the finished toolkit. Not every area will get support.")}
-<ul class="chips big reveal">${TARGETS.map((t) => `<li>${esc(t)}</li>`).join("")}</ul></section>
+<ul class="target-list reveal">${TARGETS.map((t) => `<li>${esc(t)}</li>`).join("")}</ul></section>
 <section class="section band" aria-labelledby="future">${head("Ideas", "Future possibilities", "", "future")}
 ${lead("These are example mod packs the toolkit could one day allow. They are not built and not promised for v0.4.")}
 <div class="grid four">${MODULES.map(moduleCard).join("")}</div></section>
@@ -228,9 +228,10 @@ ${you("There is nothing to download yet. The cards below are steps the developer
 <p class="big-note">${NO_RELEASE}</p><p class="muted">There are no Nexus installers, packages, tags or GitHub Releases. See <a href="${u("downloads/")}">Downloads</a> for status.</p></section>
 <section class="section" aria-labelledby="history"><div class="callout you"><p class="you-title">Latest completed</p><p><b>${esc(HIGHLIGHT.title)}.</b> ${esc(HIGHLIGHT.body)}</p></div>
 ${head("Local development history", "Locally committed development milestones", `${esc(USER_PROVIDED)} They are development milestones, not published releases. Most recent first.`, "history")}
-<div class="stack">${[...DONE].reverse().map((m) => `<article class="panel release reveal" id="${m.ver.replace(".", "")}"><div class="panel-head"><h3 class="panel-title">${m.ver}: ${esc(m.name)}</h3><span class="tags">${badge("done")}${badge("dev_reported")}</span></div>
+<nav class="jump" aria-label="Jump to a milestone">${[...DONE].reverse().map((m) => `<a href="#${m.ver.replace(".", "")}">${m.ver}</a>`).join("")}</nav>
+<div class="stack">${[...DONE].reverse().map((m, idx) => `<article class="panel release reveal" id="${m.ver.replace(".", "")}"><div class="panel-head"><h3 class="panel-title">${m.ver}: ${esc(m.name)}</h3><span class="tags">${badge("done")}${badge("dev_reported")}</span></div>
 <p>${esc(m.summary)}</p>${m.title ? `<p class="micro">Commit title: <code>${esc(m.title)}</code>${m.date ? `, ${m.date}` : ""}</p>` : ""}${commit(m.commit)}
-<div class="release-cols"><div><h4 class="h-small">Changes</h4>${ticks(m.items, "done")}</div>${m.validation ? `<div><h4 class="h-small">Reported validation</h4>${ticks(m.validation)}</div>` : ""}</div>
+<details class="more-items"${idx === 0 ? " open" : ""}><summary>Changes and reported validation</summary><div class="release-cols"><div><h4 class="h-small">Changes</h4>${ticks(m.items, "done")}</div>${m.validation ? `<div><h4 class="h-small">Reported validation</h4>${ticks(m.validation)}</div>` : ""}</div></details>
 ${m.note ? `<div class="callout warn"><p>${esc(m.note)}</p></div>` : ""}</article>`).join("")}</div></section>
 <p class="next-steps"><b>Next:</b> <a href="${u("roadmap/")}">See what is next</a> · <a href="${u("downloads/")}">Download status</a></p>
 </div>`,
@@ -262,7 +263,7 @@ ${lead(`${NO_RELEASE} There is no installer and no file to download.`)}
 ${you("You cannot try Nexus yet. It only exists inside the developer's own build of Horizon, which is not published here.")}
 <div class="grid two section">
 <section class="panel window reveal"><div class="window-bar"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span><h2 class="panel-title">Nexus</h2>${badge("none")}</div>
-<div class="launcher-bar"><div class="version-select">Latest milestone: ${LATEST.ver}</div><span class="button primary" aria-disabled="true">No download</span></div>
+<p class="big-note">${NO_RELEASE}</p><p class="muted">Latest completed milestone: ${LATEST.ver}. It is a development step, not a download.</p>
 <ol class="rows"><li><span class="idx">01</span><span><span class="name">Installer</span><span class="detail">Does not exist yet</span></span><span class="badge">None</span></li><li><span class="idx">02</span><span><span class="name">.nmod installation</span><span class="detail">Package checks done (v0.4a). Install planned (v0.4c).</span></span>${badge("planned")}</li><li><span class="idx">03</span><span><span class="name">Profiles and rollback</span><span class="detail">Planned (v0.4d)</span></span>${badge("planned")}</li></ol></section>
 <section class="panel reveal"><div class="panel-head"><h2 class="panel-title">Horizon itself</h2><span class="badge">Upstream</span></div>
 <p>These belong to the upstream Horizon project. Nexus is not part of them.</p>

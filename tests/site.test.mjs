@@ -237,3 +237,16 @@ test("v5 phase 2: docs have an on-page list and labelled pager, devs box is one 
   const css = readFileSync(new URL("../src/style.css", import.meta.url), "utf8");
   assert.match(css, /\.for-devs \{ border: 2px solid/);
 });
+
+test("v5 phase 3: releases jump list and folds, glossary A to Z, plain target list, no fake download bar", () => {
+  const get = (p) => html.find(([f]) => f.endsWith(`dist-test/${p}`))[1];
+  const rel = get("releases/index.html");
+  assert.match(rel, /<nav class="jump" aria-label="Jump to a milestone">/);
+  assert.equal((rel.match(/<details class="more-items" open>/g) || []).length, 1, "only the newest release is open");
+  const g = get("docs/glossary/index.html");
+  assert.match(g, /<nav class="jump az"/);
+  for (const m of g.matchAll(/href="#(g-[^"]+)"/g)) assert.ok(g.includes(`id="${m[1]}"`));
+  assert.match(get("features/index.html"), /<ul class="target-list/);
+  const dl = get("downloads/index.html");
+  assert.doesNotMatch(dl, /launcher-bar|No download<\/span>/);
+});

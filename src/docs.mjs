@@ -63,7 +63,7 @@ ${devs(`<div id="source">${UP}</div><p>${DEFINITION}</p>
   { slug: "glossary", title: "Glossary", description: "Plain-English meanings of every Nexus term.", body: () => `
 ${lead("This page explains the words used across the Nexus site. Each one gets a short, everyday meaning.")}
 ${you("If a page uses a word you do not know, look it up here. You do not need to know how to code.")}
-<dl class="glossary">${GLOSSARY.map(([w, d]) => `<div><dt>${w}</dt><dd>${d}</dd></div>`).join("")}</dl>` },
+${(() => { const key = (w) => (/^[a-z]/i.test(w) ? w[0].toUpperCase() : "#"); const sorted = [...GLOSSARY].sort(([a], [b]) => a.replace(/^\./, "").localeCompare(b.replace(/^\./, ""))); const letters = [...new Set(sorted.map(([w]) => key(w.replace(/^\./, ""))))]; return `<nav class="jump az" aria-label="Jump to a letter">${letters.map((l) => `<a href="#g-${l}">${l}</a>`).join("")}</nav>${letters.map((l) => `<section class="g-group" id="g-${l}" aria-label="${l}"><p class="g-letter" aria-hidden="true">${l}</p><dl class="glossary">${sorted.filter(([w]) => key(w.replace(/^\./, "")) === l).map(([w, d]) => `<div><dt>${w}</dt><dd>${d}</dd></div>`).join("")}</dl></section>`).join("")}`; })()}` },
   { slug: "system-lifecycle", title: "System lifecycle", description: "How a Nexus system starts, runs and stops, in plain words.", body: ({ flow }) => `
 ${lead("A system is a mini machine inside the game that does one job. This page shows how one is switched on, kept running and switched off.")}
 ${you("Mods will be made of systems. Because Nexus starts and stops them in a tidy way, a mod should not leave a mess behind when you leave a world.")}

@@ -596,3 +596,12 @@ a.button:active, button.button:active { transform: translateY(2px); }
 .hero-grid { align-items: center; }
 .hero-art img { max-width: 380px; }
 .hero .actions .button.large:not(.primary) { background: transparent; }
+
+/* v5 phase 3 */
+.target-list { list-style: none; margin: 16px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 6px 16px; }
+.target-list li { position: relative; padding: 8px 0 8px 22px; border-bottom: 1px solid var(--outline); color: var(--ink-soft); font-size: 15px; }
+.target-list li::before { content: ""; position: absolute; left: 0; top: 14px; width: 10px; height: 10px; border: 2px dashed var(--border); box-sizing: border-box; }
+.jump.az a { min-width: 40px; justify-content: center; padding: 8px 10px; }
+.g-group { scroll-margin-top: calc(var(--nav) + 16px); margin-top: 20px; }
+.g-letter { font: 700 22px/1 var(--pixel); color: var(--highlight); margin: 0 0 8px; }
+.release { scroll-margin-top: calc(var(--nav) + 16px); }
