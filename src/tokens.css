@@ -1,0 +1,64 @@
+/* Nexus tokens. The names and structure follow Horizon's crates/horizon-theme/tokens.css
+   (Blocks palette: page, side, panel, raised, button, well, bevel, lip, outline, face...);
+   the values are the Nexus midnight-blue recolouring. Sizes, type scale, spacing and motion
+   are carried over from Horizon's tokens unchanged. */
+:root {
+  color-scheme: dark;
+  --page: #080f1d;
+  --deep: #0b1729;
+  --side: #060c17;
+  --panel: #142840;
+  --raised: #1c3552;
+  --button: #1f3b5e;
+  --button-bevel: #3a6596;
+  --well: #0a1829;
+  --bevel: #2a4c75;
+  --lip: #040910;
+  --outline: #02060d;
+  --border: #365f8e;
+  --rule: #0b1729;
+  --ink: #f1f7ff;
+  --ink-soft: #c9dcf0;
+  --muted: #9fbad8;
+  --accent: #62b6ff;
+  --highlight: #a5dcff;
+  --primary: #287be4;
+  --face: #1f6ad0;
+  --face-bevel: #4c9af0;
+  --face-lip: #123f80;
+  --on-face: #ffffff;
+  --success: #5fd39a;
+  --warn: #f5c062;
+  --danger: #ff8a78;
+
+  --font: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --pixel: "Pixelify Sans", "Geist", ui-sans-serif, sans-serif;
+
+  --block-outline: 2px;
+  --block-bevel: 2px;
+  --block-lip: 4px;
+
+  --text-micro: 11px;
+  --text-caption: 12px;
+  --text-label: 13px;
+  --text-ui: 14px;
+  --text-body: clamp(15px, calc(15px + 2 * (100vw - 375px) / 1065), 17px);
+  --text-heading: clamp(20px, calc(20px + 4 * (100vw - 375px) / 1065), 24px);
+  --text-title: clamp(28px, calc(28px + 16 * (100vw - 375px) / 1065), 44px);
+  --text-display: clamp(34px, calc(34px + 30 * (100vw - 375px) / 1065), 64px);
+
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
+  --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 96px;
+  --gutter: clamp(16px, 4.4vw, 64px);
+  --measure: 68ch;
+  --control: 32px; --control-large: 40px;
+  --nav: 64px;
+
+  --quick: 150ms; --ease-quick: cubic-bezier(0.4, 0, 0.2, 1);
+  --move: 240ms; --ease-move: cubic-bezier(0.23, 1, 0.32, 1);
+  --enter: 600ms; --ease-enter: cubic-bezier(0.23, 1, 0.32, 1);
+  --stagger: 40ms;
+
+  --panel-edges: inset 0 var(--block-bevel) 0 var(--bevel), inset 0 calc(-1 * var(--block-lip)) 0 var(--lip);
+}
