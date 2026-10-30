@@ -4,7 +4,7 @@
 
 The website for Horizon Nexus, the Rust-native modding framework and mod loader for the [Horizon](https://github.com/horizon-rust/horizon) engine. Live at **https://contactjayclatty.github.io/horizon-nexus-site/**.
 
-Nexus status (user-provided by the Nexus developer, from an independent development branch; not verified against public upstream): v0.1 Systems Runtime, v0.2 Engine Integration and v0.3 Inter-System Events are complete. v0.4 (Complete Nexus Framework and Mod Loader) is the last planned feature milestone: v0.4a Package Foundation is in development, v0.4b to v0.4d are planned. Then stabilization, then a pause. Nexus is compiled into the engine; there is no installer.
+Nexus status (developer-reported, from an independent development branch; not verified against public upstream): v0.1 Systems Runtime, v0.2 Engine Integration and v0.3 Inter-System Events are complete. v0.4 (Complete Nexus Framework and Mod Loader) is the last planned feature milestone: v0.4a Package Foundation is completed and committed (a metadata, discovery and resolution library that does not install or run mods), a pre-v0.4b audit is requested, and v0.4b to v0.4d are planned. No public standalone Nexus release is available yet. Then stabilization, then a pause. Nexus is compiled into the engine; there is no installer.
 
 > Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft. Not an official or endorsed part of upstream Horizon.
 

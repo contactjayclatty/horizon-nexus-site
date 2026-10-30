@@ -10,7 +10,7 @@ if (button && menu) {
   };
   button.addEventListener("click", () => set(button.getAttribute("aria-expanded") !== "true"));
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && button.getAttribute("aria-expanded") === "true") { set(false); button.focus(); } });
-  matchMedia("(min-width: 1181px)").addEventListener("change", (e) => { if (e.matches) set(false); });
+  matchMedia("(min-width: 901px)").addEventListener("change", (e) => { if (e.matches) set(false); });
 }
 const items = document.querySelectorAll(".reveal");
 if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {

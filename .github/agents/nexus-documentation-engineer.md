@@ -14,7 +14,7 @@ Writes accurate docs, milestone text, FAQ and developer-facing copy.
 ## Responsibilities
 
 - Own src/content.mjs and src/docs.mjs.
-- Label user-provided facts as user-provided.
+- Label developer-reported facts as developer-reported.
 - Link to upstream Horizon for anything upstream owns.
 
 ## Input contract

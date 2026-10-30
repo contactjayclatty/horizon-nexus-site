@@ -45,3 +45,16 @@ Date: 2026-10-30 (AWST). Baseline: commit 504483d, live at https://contactjaycla
 
 ## Kept as is
 The dependency-free build, the Pages workflow, the base-path helper `u()` and the no-installer Downloads page.
+
+## v3 audit (simplification and v0.4a correction)
+
+| Problem in v2 | Fix in v3 |
+|---|---|
+| Home had too many sections and engineering detail (test counts, commit ids) | Five parts: hero, two pillars, Why Nexus, status strip, footer |
+| Nav had 9 links | Primary: Home, Features, Roadmap, Docs, Releases, GitHub. Architecture, Downloads, FAQ, Contributing moved to a More menu, the mobile menu and the footer |
+| v0.4a shown as in development | Completed and committed (fb43e5954, developer-reported); only a metadata, discovery and resolution library |
+| v0.1 to v0.3 lists were approximate | Replaced with the developer's implemented lists |
+| No pre-v0.4b audit shown | Shown as Requested, not done |
+| Changelog mixed milestones and releases | New Releases page separates public releases (none) from milestone history; changelog/ redirects there |
+| Commit ids could read as upstream links | Plain text labelled "developer-reported, not an upstream link" |
+| Missing accuracy notes | Added: runtime compiled in, events offered in fixed order to same-stage systems, scheduling is not full-game determinism, not sandboxed (trust before compile), dedicated-server /say logged and dropped, NeoForge out of scope |

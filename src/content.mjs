@@ -1,65 +1,64 @@
-// Every claim about Nexus on this site is in this file and src/docs.mjs, so it can be reviewed in one place.
-// Milestone history, commits and test results are user-provided by the Nexus developer (an independent
-// development branch) and are not verified against a public upstream repository.
+// Every claim about Nexus on this site lives here and in src/docs.mjs.
+// Milestones, commits and test results are developer-reported: they come from the Nexus developer's
+// independent Horizon branch and are not verified against any public upstream repository.
 export const REPO = "https://github.com/contactjayclatty/horizon-nexus-site";
 export const HORIZON = "https://github.com/horizon-rust/horizon";
 export const HORIZON_SITE = "https://playhorizon.dev/";
 export const HORIZON_MODS = "https://github.com/horizon-rust/horizon-mods";
 
-// state: done | dev | planned
+export const DEFINITION = "Horizon Nexus is a Rust-native modding framework and mod loader for Horizon, designed to let developers add, modify, replace and extend engine functionality.";
+export const NO_RELEASE = "No public standalone Nexus release is available yet.";
+export const OUT_OF_SCOPE = "Fabric, Forge and NeoForge compatibility are out of scope.";
+export const NO_JAVA = "Nexus is a native Rust modding platform for Horizon and does not load Java Fabric or Forge mods.";
+
+// state: done | planned
 export const MILESTONES = [
   { ver: "v0.1", name: "Systems Runtime", state: "done", commit: "0fcc557b1", icon: "runtime",
-    summary: "The Nexus systems runtime.", items: [] },
+    summary: "The foundation: Rust systems that Nexus registers, schedules and runs inside Horizon.",
+    items: ["Rust systems runtime", "System registration", "Deterministic execution scheduling", "Initialization, tick and shutdown", "Server/client separation", "Runtime activation gating"] },
   { ver: "v0.2", name: "Engine Integration", state: "done", commit: "52aedd384", icon: "engine",
-    summary: "Nexus integrated with the Horizon engine.", items: [] },
+    summary: "Nexus systems hooked into Horizon's gameplay and simulation.",
+    items: ["Additional simulation stages", "World day/night events", "Controlled engine command requests", "Gameplay lifecycle integration", "Server-side execution"] },
   { ver: "v0.3", name: "Inter-System Events", state: "done", commit: "2a01521ee", icon: "events",
-    summary: "Typed events between systems.",
-    items: ["Typed event production", "Delivery to multiple systems, validated in-game", "Dedicated event dispatch, validated", "Deterministic same-stage dispatch order", "Bounded delivery batches of 64 events", "Safe lifecycle cleanup"],
-    validation: ["18/18 tests passed", "Strict Clippy checks passed"] },
-  { ver: "v0.4a", name: "Package Foundation", state: "dev", icon: "package",
-    summary: "Manifest parsing, package discovery, dependency resolution, version compatibility and validation.",
-    items: ["Manifest parsing", "Package discovery", "Dependency resolution", "Version compatibility", "Validation"] },
+    summary: "Systems can talk to each other through typed events.",
+    items: ["Typed inter-system events", "Independent publishers and consumers", "Deterministic same-stage delivery", "Bounded 64-event dispatch batches", "Deferred reentrant events", "Session lifecycle cleanup", "Integrated and dedicated server validation"],
+    validation: ["18/18 Nexus runtime tests passed"] },
+  { ver: "v0.4a", name: "Package Foundation", state: "done", commit: "fb43e5954", icon: "package",
+    summary: "A library that reads, checks and orders .nmod packages. It does not yet install or run mods.",
+    items: ["horizon-nexus-loader crate", "Schema-1 .nmod manifest parser", "Strict TOML validation", "Mod discovery", "Dependency resolution", "Conflict detection", "Semantic version validation", "Nexus API compatibility checks", "Client/server stage validation", "Deterministic dependency ordering", "Filesystem path and symlink checks", "Explicit native-code trust assumptions"],
+    validation: ["14 loader tests passing", "18 Nexus runtime tests passing", "32/32 total tests passing", "Strict Clippy clean", "Default and Nexus-feature client checks passed", "Locked workspace validation passed"],
+    note: "Committed locally on the developer's branch: nine files, 1,336 insertions. v0.4a is a metadata, discovery and resolution library. It does not install or execute independently packaged mods." },
   { ver: "v0.4b", name: "Framework and Loader Integration", state: "planned", icon: "framework",
-    summary: "Native mod compilation, registration, engine APIs, gameplay hooks and extensibility mechanisms.",
-    items: ["Native mod compilation", "Registration", "Engine APIs", "Gameplay hooks", "Extensibility mechanisms"] },
-  { ver: "v0.4c", name: "Real Modding Workflow", state: "planned", icon: "workflow",
-    summary: "Independently developed Nexus mods that can meaningfully add or alter gameplay, packaged and installed without manually editing the engine source.",
-    items: ["Independently developed mods", "Add or alter gameplay", "Package and install without editing engine source"] },
-  { ver: "v0.4d", name: "Framework Completion and Ecosystem Tools", state: "planned", icon: "tools",
-    summary: "SDK, developer documentation, mod installation management, profiles, compatibility diagnostics, rollback and representative example mods.",
-    items: ["SDK", "Developer documentation", "Mod installation management", "Profiles", "Compatibility diagnostics", "Rollback", "Representative example mods"] },
+    summary: "Connect packages to Horizon's build, and widen what mods can reach.",
+    items: ["Connect package discovery to Horizon's launcher compilation pipeline", "Generated Nexus system registration", "Extend framework API and engine hook coverage", "A reliable path for native mods to modify gameplay"] },
+  { ver: "v0.4c", name: "Real Native Mod Workflow", state: "planned", icon: "workflow",
+    summary: "The first full loop: write a mod, install it, see the game change.",
+    items: ["Independently authored .nmod packages", "Trusted native compilation", "Installation through Horizon Launcher", "Real gameplay changes through Nexus APIs and hooks", "End-to-end mod creation and execution validation"] },
+  { ver: "v0.4d", name: "Framework Completion", state: "planned", icon: "tools",
+    summary: "Tools and docs that make Nexus practical for other developers.",
+    items: ["SDK and developer tooling", "Developer documentation", "Example gameplay mods", "Mod profiles", "Compatibility diagnostics", "Update and rollback mechanisms", "Final broad framework and loader feature completion"] },
 ];
-export const STABILIZATION = ["Exhaustive architectural review", "Code quality improvements", "Bug fixing", "Security assessment", "Performance profiling", "Compatibility testing", "Client/server testing", "Mod conflict testing", "Documentation", "Release-readiness verification", "Final polish"];
+export const LATEST = MILESTONES.filter((m) => m.state === "done").at(-1);
+export const AUDIT = { name: "Pre-v0.4b audit and hardening", status: "Requested", body: "A full audit and hardening pass to validate everything through v0.4a has been requested before v0.4b work starts. It has not been completed." };
+export const STABILIZATION = ["Review all code and architecture", "Fix defects", "Improve existing implementations", "Strengthen security", "Benchmark performance", "Test real mod workflows", "Test client/server behaviour", "Improve documentation", "Verify future maintainability"];
 
-// What exists today (by v0.3, user-provided).
 export const IMPLEMENTED = [
-  { name: "Modular Rust systems", icon: "runtime", body: "Engine-side behaviour is organised into systems that the Nexus runtime registers and runs." },
-  { name: "Deterministic schedules", icon: "schedule", body: "Systems run in a fixed, repeatable order. That orders Nexus's own work; it does not by itself make all gameplay deterministic." },
-  { name: "Typed events", icon: "events", body: "Systems produce typed events. The dispatcher offers each event to enabled systems in the same stage, and each system checks for and handles the events relevant to it." },
-  { name: "Several systems per event", icon: "fanout", body: "More than one system can handle the same event, independently. Validated in-game in v0.3." },
-  { name: "System lifecycle", icon: "lifecycle", body: "The runtime starts, runs and stops systems, with safe cleanup as of v0.3." },
-  { name: "Client/server isolation", icon: "sides", body: "Client and server work stay separate. Dedicated-server event dispatch was validated in v0.3." },
-  { name: "Controlled engine actions", icon: "engine", body: "Systems act on the engine through a controlled set of actions. Some are refused by design, such as owner-console /say on a dedicated server." },
+  { name: "Native Rust system framework", icon: "runtime", ms: "v0.1", body: "Game logic as Rust systems that Nexus runs inside Horizon." },
+  { name: "Registration and lifecycle", icon: "lifecycle", ms: "v0.1", body: "Systems are registered, initialised, ticked and shut down by the runtime." },
+  { name: "Deterministic scheduling", icon: "schedule", ms: "v0.1", body: "Systems run in a fixed order. This orders Nexus's own work; it does not make the whole game deterministic." },
+  { name: "Typed event dispatch", icon: "events", ms: "v0.3", body: "Events are offered to enabled systems in the same stage, in a fixed order. Each system checks them and handles what is relevant." },
+  { name: "Independent event consumers", icon: "fanout", ms: "v0.3", body: "Publishers and consumers do not need to know about each other." },
+  { name: "Server/client separation", icon: "sides", ms: "v0.1", body: "Server and client work are kept apart. Validated on integrated and dedicated servers." },
+  { name: "Controlled engine actions", icon: "engine", ms: "v0.2", body: "Systems request engine commands through a controlled path instead of reaching into internals." },
+  { name: ".nmod validation and resolution", icon: "package", ms: "v0.4a", body: "A library that parses manifests, finds packages, resolves dependencies and checks versions. It does not install or build mods." },
 ];
-export const PLANNED_FEATURES = [
-  { name: ".nmod packages", ms: "v0.4a", body: "A manifest, package discovery, dependency resolution and version checks." },
-  { name: "Validation before build", ms: "v0.4a", body: "Packages are checked before any native code is compiled." },
-  { name: "Native mod compilation", ms: "v0.4b", body: "Mods are Rust source, built against Horizon. A compiler toolchain is needed." },
-  { name: "Engine APIs and hooks", ms: "v0.4b", body: "High-level APIs, deeper engine hooks and registries for mods to build on." },
-  { name: "Install without editing the engine", ms: "v0.4c", body: "Mods that add or alter gameplay, packaged and installed without hand-editing engine source." },
-  { name: "SDK and tools", ms: "v0.4d", body: "SDK, docs, install management, profiles, diagnostics, rollback and example mods." },
-];
-// Target capabilities: what the framework aims to let mods change. Not implemented today.
-export const TARGETS = ["Blocks and items", "Crafting and inventory", "Entities, mobs and AI", "World generation, chunks and dimensions", "Gameplay rules and physics", "Rendering, shaders and camera", "HUD, interfaces and input", "Audio", "Networking and multiplayer", "Configuration and saved data", "Custom commands and engine hooks"];
-
-// Example future modules: ideas only, for after development pauses and only if it resumes.
+export const TARGETS = ["Blocks and items", "Entities and AI", "World generation", "Chunks and dimensions", "Gameplay rules", "Engine behaviour overrides", "Physics hooks", "Camera and rendering hooks", "HUD and UI", "Audio", "Input", "Multiplayer and networking", "Data and persistence", "Registries and extensible APIs", "Trusted native source-level extensions"];
 export const MODULES = [
-  { name: "Nexus Performance", icon: "performance", items: ["Frame-time profiling", "Targeted rendering optimisations", "Resource management", "Gameplay performance improvements"] },
-  { name: "Nexus Cinematics", icon: "camera", items: ["Free camera", "Camera paths and keyframes", "Cinematic tools", "HUD controls", "Replay-oriented features"] },
-  { name: "Nexus World Tools", icon: "world", items: ["Chunk pregeneration (Chunky-style)", "Area selection", "Generation progress", "Pause and resume", "Persistent jobs", "Performance budgets"],
-    note: "Pregeneration generates and saves chunks ahead of time. It does not keep chunks loaded and ticking." },
-  { name: "Nexus Quality of Life", icon: "qol", items: ["Inventory improvements", "Advanced HUD controls", "Waypoints", "Custom keybindings", "Accessibility features", "Convenience tools"] },
+  { name: "Nexus Performance", icon: "performance", body: "Targeted optimisations and performance tools." },
+  { name: "Nexus Cinematics", icon: "camera", body: "Free camera, camera paths, keyframes and cinematic controls." },
+  { name: "Nexus World Tools", icon: "world", body: "Chunky-style chunk pregeneration, generation progress and management.", note: "Pregeneration builds and saves chunks ahead of time. It does not keep them loaded and ticking." },
+  { name: "Nexus Quality of Life", icon: "qol", body: "Inventory improvements, HUD customisation, keybindings, waypoints and accessibility." },
 ];
 
-export const NOTICE = "Horizon Nexus is an independent project. It is not an official Minecraft product and is not approved by or associated with Mojang or Microsoft. It is not an official or endorsed part of the upstream Horizon project (horizon-rust); it builds on Horizon's public work.";
-export const USER_PROVIDED = "Nexus milestone, commit and test details on this site are user-provided by the Nexus developer from an independent development branch. Those commits may not exist in the public upstream Horizon repository and have not been independently verified here.";
+export const NOTICE = "Horizon Nexus is an independent project. It is not an official Minecraft product and is not approved by or associated with Mojang or Microsoft. It is not an officially endorsed part of upstream Horizon.";
+export const USER_PROVIDED = "Milestones, commit ids and test results are developer-reported, from an independent Horizon development branch. The commits may not exist in the public upstream repository.";

@@ -19,7 +19,7 @@ before(async () => {
 });
 
 test("every required page is built", async () => {
-  for (const p of ["index.html", "features/index.html", "architecture/index.html", "docs/index.html", "roadmap/index.html", "changelog/index.html", "downloads/index.html", "faq/index.html", "contributing/index.html", "404.html",
+  for (const p of ["index.html", "features/index.html", "architecture/index.html", "docs/index.html", "roadmap/index.html", "changelog/index.html", "downloads/index.html", "faq/index.html", "contributing/index.html", "releases/index.html", "404.html",
     ...["system-lifecycle", "execution-stages", "typed-events", "engine-integration", "api-limitations", "planned-extensibility", "security-model", "mod-packaging", "installation-architecture", "developer-setup"].map((s) => `docs/${s}/index.html`)])
     assert.ok((await stat(join(dist, p))).isFile(), p);
 });
@@ -55,8 +55,8 @@ test("every page has a title, description, canonical, og:image, lang, one h1 and
 test("honesty: notices present, v0.4 never called complete, no fake downloads", () => {
   for (const [f, s] of html) {
     assert.match(s, /not approved by or associated with Mojang or Microsoft/, `${f} Mojang notice`);
-    assert.match(s, /user-provided|provided by the Nexus developer/i, `${f} user-provided label`);
-    assert.doesNotMatch(s, /(?<!(?:once|when|until|after) )v0\.4(?: [A-Za-z]+){0,3} (?:is|was|has been) (?:complete|completed|released|shipped)\b/i, `${f} v0.4 claimed complete`);
+    assert.match(s, /developer-reported/i, `${f} developer-reported label`);
+    assert.doesNotMatch(s, /(?<!(?:once|when|until|after) )v0\.4[bcd]?(?: [A-Za-z]+){0,3} (?:is|was|has been) (?:complete|completed|released|shipped)\b/i, `${f} v0.4 claimed complete`);
     assert.doesNotMatch(s, /href="[^"]+\.(?:exe|dmg|msi|zip|jar|nmod)"/i, `${f} download link`);
     assert.doesNotMatch(s, /cargo install|npm install nexus|curl [^<]*\| ?sh/i, `${f} invented install step`);
   }
@@ -86,25 +86,48 @@ test("text colour pairs meet WCAG AA (4.5:1)", async () => {
 });
 
 test("scope: no em-dashes, no Fabric/Forge plans, no invented versions or percentages", () => {
-  const ALLOWED = "Nexus is a native Rust modding platform for Horizon and does not load Java Fabric or Forge mods.";
+  const ALLOWED = ["Nexus is a native Rust modding platform for Horizon and does not load Java Fabric or Forge mods.", "Fabric, Forge and NeoForge compatibility are out of scope."];
   for (const [f, s] of html) {
     const text = s.replace(/<[^>]+>/g, " ");
     assert.doesNotMatch(s, /\u2014/, `${f} em-dash`);
-    const fabric = text.split(ALLOWED).join("").replace(/Fabric or Forge mods\?/g, "");
+    const fabric = ALLOWED.reduce((x, a) => x.split(a).join(""), text).replace(/Fabric or Forge mods\?/g, "");
     assert.doesNotMatch(fabric, /Fabric|Forge|NeoForge|compatibility research|Java mod (?:compat|bridge)/i, `${f} Fabric/Forge mention`);
-    assert.doesNotMatch(text.replace(/no planned v0\.5 or v1\.0 milestones|Is there a v0\.5 or v1\.0\?/g, ""), /\bv0\.[5-9]\b|\bv1\.0\b/, `${f} invented version`);
+    assert.doesNotMatch(text.replace(/no (?:planned )?v0\.5 or v1\.0 (?:milestones|features)/gi, ""), /\bv0\.[5-9]\b|\bv1\.0\b/, `${f} invented version`);
     assert.doesNotMatch(text, /\b\d{1,3}\s?%/, `${f} percentage`);
-    assert.doesNotMatch(text, /(?<!(?:once|when|until|after) )v0\.4a?(?: [A-Za-z:]+){0,4} (?:is|was|has been) (?:complete|completed|released|shipped|available)\b/i, `${f} v0.4 claimed done`);
+    assert.doesNotMatch(text, /(?<!(?:once|when|until|after) )v0\.4[bcd]?(?: [A-Za-z:]+){0,4} (?:is|was|has been) (?:complete|completed|released|shipped|available)\b/i, `${f} v0.4 claimed done`);
+    assert.doesNotMatch(text, /v0\.4a[^.]{0,40}\b(?:in development|not (?:yet )?implemented|proposed)\b/i, `${f} stale v0.4a status`);
+    assert.doesNotMatch(s, /href="[^"]*\/commit\/(?:0fcc557b1|52aedd384|2a01521ee|fb43e5954)/, `${f} fabricated commit link`);
+    assert.doesNotMatch(s, /href="[^"]*\/releases\/(?:tag|download)\//, `${f} fabricated release link`);
   }
 });
 
 test("future modules are labelled as ideas, never as available", () => {
-  const home = html.find(([f]) => f.endsWith("dist-test/index.html"))[1];
+  const page = html.find(([f]) => f.endsWith("dist-test/features/index.html"))[1];
   for (const name of ["Nexus Performance", "Nexus Cinematics", "Nexus World Tools", "Nexus Quality of Life"]) {
-    const i = home.indexOf(name); assert.ok(i > 0, name);
-    assert.match(home.slice(i - 400, i + 50), /Idea, not scheduled/, `${name} label`);
+    const i = page.indexOf(name); assert.ok(i > 0, name);
+    assert.match(page.slice(i - 400, i + 50), /Idea, not promised/, `${name} label`);
   }
-  assert.match(home, /does not keep chunks loaded and ticking/);
+  assert.match(page, /does not keep them loaded and ticking/);
+});
+
+test("home is short, has the exact hero copy and the primary nav", () => {
+  const home = html.find(([f]) => f.endsWith("dist-test/index.html"))[1];
+  const main = home.slice(home.indexOf("<main"), home.indexOf("</main>"));
+  assert.ok((main.match(/<section class="(?:hero|section)/g) || []).length <= 5, "too many home sections");
+  for (const s of ["The Horizon modding platform", "Change the game.", "Create, modify and extend Horizon with a powerful Rust-native modding framework and loader.", "Explore Nexus", "Documentation", "Currently in development. Standalone installation is not yet available.", "Latest committed development milestone: <b>v0.4a</b>", "View development roadmap"]) assert.ok(main.includes(s), s);
+  assert.doesNotMatch(main, /18\/18|32\/32|fb43e5954|0fcc557b1/, "home shows engineering detail");
+  const nav = home.slice(home.indexOf('class="nav-links"'), home.indexOf("</ul>", home.indexOf('class="nav-links"')));
+  assert.deepEqual([...nav.matchAll(/>([^<]+)<\/a>/g)].map((m) => m[1]), ["Home", "Features", "Roadmap", "Docs", "Releases", "GitHub"]);
+});
+
+test("releases page: no public release, v0.4a first and marked completed", () => {
+  const r = html.find(([f]) => f.endsWith("dist-test/releases/index.html"))[1];
+  assert.ok(r.includes("No public standalone Nexus release is available yet."));
+  const order = ["v0.4a:", "v0.3:", "v0.2:", "v0.1:"].map((v) => r.indexOf(v));
+  assert.deepEqual([...order].sort((a, b) => a - b), order); assert.ok(order[0] > 0);
+  assert.match(r, /fb43e5954/); assert.match(r, /does not install or execute/);
+  const road = html.find(([f]) => f.endsWith("dist-test/roadmap/index.html"))[1];
+  assert.match(road, /Pre-v0\.4b audit and hardening[^]*Requested[^]*has not been completed/);
 });
 
 test("old docs URLs redirect to existing pages", async () => {
