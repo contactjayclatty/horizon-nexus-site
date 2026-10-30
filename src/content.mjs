@@ -13,17 +13,17 @@ export const NO_JAVA = "Nexus is a native Rust modding platform for Horizon and 
 
 // state: done | current | planned
 export const MILESTONES = [
-  { ver: "v0.1", name: "Systems Runtime", state: "done", commit: "0fcc557b1", icon: "runtime",
+  { ver: "v0.1", name: "Core runtime and lifecycle", state: "done", commit: "0fcc557b1", icon: "runtime",
     summary: "The foundation: Rust systems that Nexus registers, schedules and runs inside Horizon.",
     items: ["Rust systems runtime", "System registration", "Deterministic execution scheduling", "Initialization, tick and shutdown", "Server/client separation", "Runtime activation gating"] },
-  { ver: "v0.2", name: "Engine Integration", state: "done", commit: "52aedd384", icon: "engine",
+  { ver: "v0.2", name: "World events and command integration", state: "done", commit: "52aedd384", icon: "engine",
     summary: "Nexus systems hooked into Horizon's gameplay and simulation.",
     items: ["Additional simulation stages", "World day/night events", "Controlled engine command requests", "Gameplay lifecycle integration", "Server-side execution"] },
-  { ver: "v0.3", name: "Typed Inter-System Events", state: "done", commit: "2a01521ee", icon: "events",
+  { ver: "v0.3", name: "Typed event bus and deterministic dispatch", state: "done", commit: "2a01521ee", icon: "events",
     summary: "Systems can talk to each other through typed events.",
     items: ["Typed inter-system events", "Independent publishers and consumers", "Deterministic same-stage delivery", "Bounded 64-event dispatch batches", "Deferred reentrant events", "Session lifecycle cleanup", "Integrated and dedicated server validation"],
     validation: ["18/18 Nexus runtime tests passed"] },
-  { ver: "v0.4a", name: "Manifest Validation and Dependency Resolution", state: "done", commit: "fb43e5954", icon: "package",
+  { ver: "v0.4a", name: "Manifest discovery and dependency resolution", state: "done", commit: "fb43e5954", icon: "package",
     summary: "A library that reads, checks and orders .nmod packages. It does not yet install or run mods.",
     items: ["horizon-nexus-loader crate", "Schema-1 .nmod manifest parser", "Strict TOML validation", "Mod discovery", "Dependency resolution", "Conflict detection", "Semantic version validation", "Nexus API compatibility checks", "Client/server stage validation", "Deterministic dependency ordering", "Filesystem path and symlink checks", "Explicit native-code trust assumptions"],
     validation: ["14 loader tests passing", "18 Nexus runtime tests passing", "32/32 total tests passing", "Strict Clippy clean", "Default and Nexus-feature client checks passed", "Locked workspace validation passed"],
@@ -32,29 +32,43 @@ export const MILESTONES = [
     summary: "A review and hardening pass over everything through v0.4a, before v0.4b work starts.",
     items: ["Fixed an event-queue resource issue", "Added regression coverage"],
     validation: ["33/33 tests passed"] },
-  { ver: "v0.4b.1", name: "Native Registration Foundation", state: "done", commit: "9198d320e", icon: "framework",
+  { ver: "v0.4b.1", name: "Native mod registration foundations", state: "done", commit: "9198d320e", icon: "framework",
     title: "feat(nexus): add native registration seam and capability metadata", date: "30 October 2026",
-    summary: "A dedicated way for future native mods to register their systems with Nexus. It does not install .nmod packages yet.",
+    summary: "Native Rust registration interfaces, mod capability metadata, and foundations for Nexus runtime and loader integration. It does not install .nmod packages yet.",
     items: ["Native Nexus registration interface for future external mods", "NexusRegistrar: registration without unrestricted runtime access", "Deterministic system registration", "Rejects duplicate identities and invalid side or stage", "Versioned capability metadata for registered systems", "Per-Game runtime ownership and lifecycle preserved", "Compatible with existing native hooks, without unnecessary API changes"],
     validation: ["35/35 distinct tests passing", "Strict Clippy clean", "Default and Nexus-enabled client checks passing"],
     note: "Registration infrastructure is implemented, but external .nmod package installation is not available yet. Capability metadata is declarative: command-boundary enforcement is still planned." },
-  { ver: "v0.4b.2", name: "Secure .nmod package staging and generated registration", state: "current", icon: "package",
-    summary: "In development. Secure mod packaging, verified staging and automatic native mod registration.",
-    items: ["Secure .nmod package validation and staging", "ZIP and development-directory package support", "Dependency-aware mod installation preparation", "SHA-256 content integrity verification", "Deterministic automatic mod registration", "Integration testing with horizon-mixins", "Preparing the foundation for native launcher compilation"],
-    note: "In development, not finished. Standalone mod installation and native compilation do not work yet." },
-  { ver: "v0.4b.3", name: "Launcher integration and native compilation", state: "planned", icon: "workflow",
-    summary: "Planned. Building mods through Horizon Launcher.", items: [] },
-  { ver: "v0.4b.4", name: "First real gameplay-changing .nmod", state: "planned", icon: "engine",
-    summary: "Planned. The first mod package that changes how the game plays.", items: [] },
-  { ver: "v0.4c to d", name: "Broader framework APIs, SDK, mod management and developer tooling", state: "planned", icon: "tools",
-    summary: "Planned. Wider APIs, an SDK, mod management and tools for mod makers.", items: [] },
+  { ver: "v0.4b.2", name: "Secure package loading and installation foundations", state: "current", icon: "package",
+    summary: "In development. Safe .nmod package processing: archive validation, source staging and, later, installation.",
+    items: ["ZIP 9.0.5 dependency migration", "ZIP structural integrity checks", "Unsafe filenames, unsupported compression, encryption and special-file checks", "Cross-entry filename collision and manifest validation", "Deterministic archive metadata report", "Archive entry count and declared decompressed-size limits", "Encoded archive input-size limit", "Nonzero-size directory entries rejected", "Security review"],
+    validation: ["84 passing tests at the latest reported checkpoint", "Strict Clippy clean"],
+    note: "v0.4b.2 is not finished. The secure ZIP preflight exists, but complete .nmod installation is not available. Archive extraction and source staging are still planned." },
+  { ver: "v0.4c", name: "Expanded gameplay and engine modding APIs", state: "planned", icon: "engine",
+    summary: "Planned. Wider APIs for gameplay and engine modding.", items: [] },
+  { ver: "v0.4d", name: "SDK, package tooling, mod profiles, versioning, rollback and broader extensibility", state: "planned", icon: "tools",
+    summary: "Planned. Tools for mod makers and for managing installed mods.", items: [] },
+  { ver: "Final", name: "Final hardening", state: "planned", icon: "shield",
+    summary: "Planned. Comprehensive security, integration, regression and performance hardening.", items: [] },
 ];
 export const LATEST = MILESTONES.filter((m) => m.state === "done").at(-1);
 export const AUDIT = MILESTONES.find((m) => m.ver === "Audit");
 export const UPDATED = "30 October 2026";
 export const CURRENT_MS = MILESTONES.find((m) => m.state === "current");
-export const HIGHLIGHT = { title: "v0.4b.1 Complete: Native Mod Registration Foundation", body: "Nexus can now expose a dedicated registration interface for future native mods. Next up: secure package staging and automatic registration." };
-export const BUILDING = { title: "CRISIS AVERTED. BACK TO BUILDING: NEXUS v0.4b.2", body: "The code went for a little wander. We found it, gave it a stern talking-to, and put it back to work.", joke: "No blocks were harmed.", sub: "Secure mod packaging, verified staging and automatic native mod registration are back in development." };
+export const HIGHLIGHT = { title: "v0.4b.1 complete: native mod registration foundations", body: "Native Rust registration interfaces, mod capability metadata, and foundations for runtime and loader integration. Now in development: secure package loading (v0.4b.2)." };
+// v0.4b.2 checkpoint checklist (developer-reported). state: done | next | planned
+export const CHECKPOINTS = [
+  ["3.1", "ZIP dependency migration", "done"], ["3.2", "Archive consistency gate", "done"], ["3.3", "Entry metadata security validation", "done"],
+  ["3.4a", "Collision and manifest checks", "done"], ["3.4b", "Resource limits and preflight report", "done"], ["4.0", "Security review", "done"],
+  ["4.1a", "Archive-size cap and directory rules", "done"], ["4.1b", "SHA-256 archive identity", "next"],
+  ["", "Bounded extraction", "planned"], ["", "Snapshot validation", "planned"], ["", "Explicit trust approval", "planned"], ["", "Source compilation and installation integration", "planned"],
+];
+export const NEXT_CHECKPOINT = { id: "4.1b", body: "Add SHA-256 archive identity verification and bind preflight results to the inspected archive. Authorised, not yet reported as passing." };
+export const STATUS = [["Latest completed", "v0.4b.1"], ["In development", "v0.4b.2"], ["Internal tests", "84 passing at latest verified checkpoint"], ["Public availability", "Not yet released"]];
+export const AVAILABILITY = "Currently in active development. Public downloads will become available after installation support and security validation are complete.";
+export const TESTS_NOTE = "Passing internal tests show the finished checkpoints work as reported. They do not mean Nexus is ready for public use.";
+export const SECURITY_PLAIN = [".nmod packages are inspected and their structure is checked before anything else happens.", "You must make an explicit trust decision before any native code is compiled or run.", "Native Rust mods are real programs. They are not sandboxed, so only use mods from people you trust."];
+export const DEV_NOTES = ["The broader Horizon workspace still has older ZIP dependencies under security review."];
+export const SCOPE = ["Blocks, items and entities", "World generation and AI", "Physics and gameplay systems", "Shaders, rendering and camera systems", "HUD and UI extensions", "Audio and input", "Networking and persistence", "Native registration hooks and advanced source-based extensions"];
 export const STABILIZATION = ["Review all code and architecture", "Fix defects", "Improve existing implementations", "Strengthen security", "Benchmark performance", "Test real mod workflows", "Test client/server behaviour", "Improve documentation", "Verify future maintainability"];
 
 export const IMPLEMENTED = [

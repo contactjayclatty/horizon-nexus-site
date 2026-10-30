@@ -618,3 +618,38 @@ a.button:active, button.button:active { transform: translateY(2px); }
 .docs-search { display: flex; align-items: center; min-height: 40px; margin-top: 8px; padding: 4px 12px; font: 600 14px/1 var(--pixel); color: var(--highlight); background: var(--well); border: 2px solid var(--outline); text-decoration: none; }
 .docs-search::before { content: "\2315"; margin-right: 8px; }
 .docs-search:hover { background: var(--raised); }
+
+/* v6: calm status card, checkpoint list (no animation) */
+.hero-tag { font: 600 clamp(20px, 2.4vw, 28px)/1.25 var(--pixel); color: var(--highlight); margin: 8px 0 12px; }
+.hero-display { text-transform: none; max-width: none; }
+.status-card { background: var(--panel); border: 2px solid var(--outline); box-shadow: var(--panel-edges); padding: 18px 20px; display: grid; gap: 12px; align-self: center; }
+.status-head { display: flex; align-items: center; gap: 10px; }
+.status-icon { line-height: 0; }
+.status-title { margin: 0; font: 600 18px/1.2 var(--pixel); color: var(--ink); }
+.status-list { margin: 0; display: grid; gap: 0; }
+.status-list > div { display: grid; grid-template-columns: minmax(0, 11em) minmax(0, 1fr); gap: 12px; padding: 9px 0; border-top: 1px solid var(--outline); }
+.status-list dt { color: var(--muted); font-size: 14px; }
+.status-list dd { margin: 0; color: var(--ink); font-weight: 600; font-size: 15px; }
+.status-note { margin: 0; font-size: 14px; color: var(--ink-soft); line-height: 1.5; }
+.status-link { font: 600 14px/1 var(--pixel); color: var(--highlight); padding: 6px 0; display: inline-flex; min-height: 28px; align-items: center; }
+@media (max-width: 480px) { .status-list > div { grid-template-columns: 1fr; gap: 2px; } }
+.checklist { list-style: none; margin: 8px 0 12px; padding: 0; display: grid; gap: 4px; }
+.checklist li { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 8px 12px; background: var(--well); border: 2px solid var(--outline); font-size: 15px; }
+.ck-mark { width: 12px; height: 12px; box-sizing: border-box; }
+.ck-done .ck-mark { background: var(--success); }
+.ck-next .ck-mark { background: var(--warn); }
+.ck-planned .ck-mark { border: 2px dashed var(--border); }
+.ck-state { font: 600 12px/1 var(--pixel); text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.ck-done .ck-state { color: var(--success); } .ck-next .ck-state { color: var(--warn); }
+.ck-next { border-color: var(--warn) !important; }
+.next-ck { margin: 0 0 12px; }
+.plain-points { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; max-width: 70ch; }
+.plain-points li { line-height: 1.55; }
+.link-grid { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 8px; }
+.link-grid a { display: grid; gap: 4px; padding: 12px 14px; min-height: 44px; background: var(--panel); border: 2px solid var(--outline); text-decoration: none; color: var(--ink-soft); }
+.link-grid a:hover { background: var(--raised); }
+.link-grid b { font: 600 15px/1.2 var(--pixel); color: var(--ink); }
+/* The pixel font joins "fi" into a glyph that misreads (e.g. "first" looks like "Arst"). Turn ligatures off everywhere. */
+*, *::before, *::after { font-variant-ligatures: none; font-feature-settings: "liga" 0, "clig" 0, "dlig" 0; }
+.for-devs h3 + ul, .for-devs ul + h3 { margin-top: 12px; }
+.for-devs h3 { margin-top: 20px; }

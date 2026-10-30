@@ -31,7 +31,7 @@ const { mkdir } = await import("node:fs/promises");
 await mkdir(join(pub, "og"), { recursive: true });
 const unesc = (t) => t.replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
 const htmlEsc = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;");
-for (const path of ["features/", "architecture/", "roadmap/", "releases/", "downloads/", "docs/", "faq/", "contributing/", "search/"]) {
+for (const path of ["features/", "development/", "architecture/", "roadmap/", "releases/", "downloads/", "docs/", "faq/", "contributing/", "search/"]) {
   const h = await readFile(join(root, "dist", path, "index.html"), "utf8");
   const title = unesc(h.match(/<title>([^<]*)<\/title>/)[1]).replace(/ · Horizon Nexus$/, "");
   const desc = unesc(h.match(/<meta name="description" content="([^"]*)"/)[1]);
