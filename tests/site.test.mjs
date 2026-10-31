@@ -114,7 +114,7 @@ test("home is short, has the exact hero copy, the status card and the primary na
   const home = html.find(([f]) => f.endsWith("dist-test/index.html"))[1];
   const main = home.slice(home.indexOf("<main"), home.indexOf("</main>"));
   assert.ok((main.match(/<section class="(?:hero|section)/g) || []).length <= 7, "too many home sections");
-  for (const s of ["Horizon Nexus", "Native Rust modding for Horizon.", "A source-compiled modding framework and package loader built to extend Horizon through native Rust APIs, events and engine integration.", "Latest committed milestone", "v0.4b.1", "In development", "v0.4b.2 (not released)", "Latest completed work", "4.4c-b1: launcher to loader seam", "Final planned feature milestone", "v0.4d", "Internal tests", "174 passing, plus 13 regression tests (reported)", "Horizon Nexus can validate native mod packages, preserve verified archives, safely extract their contents, independently audit extracted files, verify their cryptographic provenance, and publish versioned integrity manifests. Native mod installation, user trust approval and runtime activation remain in development.", "Public availability", "Not yet released", "Currently in active development. Public downloads will become available after installation support and security validation are complete."]) assert.ok(main.includes(s), s);
+  for (const s of ["Horizon Nexus", "Native Rust modding for Horizon.", "A source-compiled modding framework and package loader built to extend Horizon through native Rust APIs, events and engine integration.", "Development version", "v0.4b.2 (in progress, temporarily paused)", "Latest completed milestone", "v0.4b.1", "Latest committed revision", "8da4cfbc3", "Native mod loading", "Not finished. No native mod has run inside Horizon yet.", "Next milestones", "v0.4c and v0.4d planned, not started", "Horizon Nexus can check and safely unpack .nmod packages. In the launcher you can review a package, then approve, deny or revoke it. An approved package can be compiled with Cargo after a separate build approval. Loading a native mod inside Horizon is not finished: it is on hold for security fixes, and no native Nexus mod has run in the game yet.", "Public availability", "Not yet released", "Development is temporarily paused. Public downloads will become available after installation support and security validation are complete."]) assert.ok(main.includes(s), s);
   assert.doesNotMatch(main, /18\/18|32\/32|fb43e5954|0fcc557b1|3\.4b|ZIP 9/, "home shows engineering detail");
   assert.doesNotMatch(main, /production[- ]ready|100% secure|fully sandboxed|safe to run any mod/i);
   const nav = home.slice(home.indexOf('class="nav-links"'), home.indexOf("</ul>", home.indexOf('class="nav-links"')));
@@ -178,7 +178,7 @@ test("v4.0: docs list folds on phones, footer shows live status, social meta is 
     if (f.includes("/docs/") && !f.includes("redirect") && s.includes('class="docs-nav"')) assert.match(s, /<details class="docs-toc" data-docs-toc><summary>[^]*?All docs \(\d+\)/, f);
     if (/http-equiv="refresh"/.test(s)) continue;
     for (const m of ["twitter:title", "twitter:description", "twitter:image", 'name="color-scheme"']) assert.ok(s.includes(m), `${f} missing ${m}`);
-    assert.match(s, /class="foot-status"[^]*?Now building v0\.4b\.2/, f);
+    assert.match(s, /class="foot-status"[^]*?v0\.4b\.2 in progress, temporarily paused/, f);
     assert.doesNotMatch(s, /\d+\s*%\s*(?:done|complete)/i, f);
   }
 });
@@ -246,43 +246,50 @@ test("v6: calm home, checkpoint list, new roadmap, development page", () => {
   assert.doesNotMatch(home, /build-banner|CRISIS AVERTED|wander|No blocks were harmed|role="progressbar"|class="buddy"/);
   for (const [f, s] of html) assert.doesNotMatch(s.replace(/<[^>]+>/g, " "), /v0\.4b\.[34]\b|went for a little wander|CRISIS AVERTED/, f);
   const road = get("roadmap/index.html"), dev = get("development/index.html");
-  const want = [["3.1", "ZIP dependency migration", "Complete"], ["3.2", "Archive consistency gate", "Complete"], ["3.3", "Entry metadata security validation", "Complete"], ["3.4a", "Collision and manifest checks", "Complete"], ["3.4b", "Resource limits and preflight report", "Complete"], ["4.0", "Security review", "Complete"], ["4.1a", "Archive-size cap and directory rules", "Complete"], ["4.1b", "SHA-256 archive identity", "Complete"], ["4.2a", "CRC-32 and compressed size", "Complete"], ["4.2b", "Private archive custody", "Complete"], ["4.2c-a", "Extraction path planning", "Complete"], ["4.2c-b", "Capability-based filesystem security", "Complete"], ["4.2c-c", "Streaming content verification", "Complete"], ["4.2c-d", "Secure mod extraction", "Complete"], ["4.3a", "Snapshot integrity audit", "Complete"], ["4.3b", "Cryptographic provenance", "Complete"], ["4.3c", "Unicode filename security", "Complete"], ["4.3d", "Versioned snapshot manifests", "Complete"], ["4.3e", "Atomic manifest publication", "Complete"], ["4.4c-b1", "Launcher to Nexus loader integration seam", "Complete"], ["", "Select a local .nmod, verify and stage it through the loader", "Planned"], ["", "Separate Nexus consent dialog with verified package details and risks", "Planned"], ["", "Explicit Approve, Deny and Cancel", "Planned"], ["", "Securely persist exact approvals and revocations, reverified before use", "Planned"], ["", "Native build, installation and first real native mod loading", "Planned"]];
+  const want = [["3.1", "ZIP dependency migration", "Complete"], ["3.2", "Archive consistency gate", "Complete"], ["3.3", "Entry metadata security validation", "Complete"], ["3.4a", "Collision and manifest checks", "Complete"], ["3.4b", "Resource limits and preflight report", "Complete"], ["4.0", "Security review", "Complete"], ["4.1a", "Archive-size cap and directory rules", "Complete"], ["4.1b", "SHA-256 archive identity", "Complete"], ["4.2a", "CRC-32 and compressed size", "Complete"], ["4.2b", "Private archive custody", "Complete"], ["4.2c-a", "Extraction path planning", "Complete"], ["4.2c-b", "Capability-based filesystem security", "Complete"], ["4.2c-c", "Streaming content verification", "Complete"], ["4.2c-d", "Secure mod extraction", "Complete"], ["4.3a", "Snapshot integrity audit", "Complete"], ["4.3b", "Cryptographic provenance", "Complete"], ["4.3c", "Unicode filename security", "Complete"], ["4.3d", "Versioned snapshot manifests", "Complete"], ["4.3e", "Atomic manifest publication", "Complete"], ["4.4c-b1", "Launcher to Nexus loader integration seam", "Complete"], ["", "Verified package staging and launcher review dialog", "Complete"], ["", "Persistent trust and revocation", "Complete"], ["", "Snapshot retention and re-verification", "Complete"], ["", "Native build authorization gate", "Complete"], ["", "Verified Nexus dependency resolution", "Complete"], ["", "Cargo dependency inspection", "Complete"], ["", "Controlled Cargo build executor", "Complete"], ["", "First authorized Cargo build (compiled, never run, not a Nexus mod)", "Complete"], ["", "Native artifact validation boundary", "Complete"], ["", "Game-process native plugin integration (loading on hold for a security fix)", "Complete"], ["", "Finish the replacement load authorization and restore compilation", "Planned"], ["", "Test trust, expiry, revocation, replay and artifact integrity", "Planned"], ["", "Repackage and retest the hello-horizon example with its corrected ID", "Planned"], ["", "Build, load and show a genuinely authorized native mod inside Horizon", "Planned"], ["", "Security and regression testing, then commit verified changes", "Planned"]];
   for (const page of [road, dev]) {
     const items = [...page.slice(page.indexOf('<ol class="checklist">')).split("</ol>")[0].matchAll(/<li class="ck-[a-z]+">[^]*?<\/li>/g)].map((m) => m[0].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
     assert.deepEqual(items, want.map(([id, n, st]) => [id, n, st].filter(Boolean).join(" ")));
   }
-  assert.match(dev, /174 passing Nexus and adapter tests: loader 151\/151, runtime 21\/21, new launcher Nexus adapter 2\/2/);
-  assert.match(dev, /13\/13 existing launcher native-mods regression tests/);
-  assert.match(dev, /returns Unavailable unconditionally/);
-  assert.match(road + dev, /not listed one by one[^<]*None of it is finished\./);
+  // 31 Oct 2026 handoff
+  for (const s of ["Horizon Launcher library: 316 passed, 3 ignored", "Horizon Nexus runtime: 21 passed", "Nexus loader: 165 library and 5 integration tests passed", "Genuine native plugin load: not performed", "In-game lifecycle callback: not demonstrated"]) assert.ok(dev.includes(s), s);
+  assert.match(dev, /earlier test results reported by the development agent[^<]*does not compile right now[^<]*not a released regression/);
+  for (const c of ["0fcc557b1", "2609b3631", "5042bf15c", "317c2a19b", "fde6a6d55", "dd8544627", "bf325baf1", "8da4cfbc3"]) assert.match(dev, new RegExp(`<tr><td[^>]*><code>${c}</code></td>`), c);
+  assert.match(dev, /These are not published releases and have no release dates/);
+  assert.match(road + dev, /Development is temporarily paused\.[^<]*None of that is finished\./);
   for (const p of [road, dev]) {
-    assert.match(p, /<li class="ck-done"><span class="ck-mark"[^>]*><\/span><span class="ck-name"><b>4\.4c-b1<\/b>/, "4.4c-b1 complete");
     assert.doesNotMatch(p, /ck-next|<b>4\.4[ab]<\/b>/, "no invented 4.4a/4.4b rows");
     const ids = [...p.slice(p.indexOf('<ol class="checklist">')).split("</ol>")[0].matchAll(/<b>([^<]+)<\/b>/g)].map((m) => m[1]);
     assert.equal(new Set(ids).size, ids.length, "no duplicate checkpoints");
     assert.equal((p.match(/class="tl-step tl-/g) || []).length, 3);
-    for (const n of ["Atomic manifest publication", "Actual bounded file extraction", "v0.4c: Expanded gameplay and engine APIs", "Final audit, then a development pause"]) assert.ok(p.includes(n), n);
+    for (const n of ["First authorized Cargo build (compiled, never run)", "v0.4c: Gameplay and engine modding APIs (not started)", "Final audit after v0.4d, then a development pause", "Fix the high-severity native loading authorization finding"]) assert.ok(p.includes(n), n);
   }
-  assert.match(road, /174 passing Nexus and adapter tests/);
   const rel = get("releases/index.html");
-  for (const p of [home, road, dev, rel]) { assert.doesNotMatch(p, /\b(?:84|115|156)(?:\/(?:115|156))? (?:passing|tests)|\b156\/156|\d+% (?:complete|done)/); }
-  for (const p of [home, rel, road, dev]) { assert.match(p, /174/); assert.match(p, /4\.4c-b1/); assert.match(p, /v0\.4b\.2/); assert.match(p, /cannot (?:install or )?run \.nmod packages/); assert.doesNotMatch(p.replace(/<[^>]+>/g, " "), /v0\.4b\.2 (?:is )?(?:released|complete)\b|launcher can (?:install|run)|now sandboxed|are sandboxed/i); }
+  for (const p of [home, road, dev, rel]) {
+    const txt = p.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+    assert.doesNotMatch(p, /\b(?:84|115|156|174)(?:\/(?:115|156))? (?:passing|tests)|\d+% (?:complete|done)|4\.4c-b1: launcher to loader seam/);
+    assert.match(txt, /v0\.4b\.2/); assert.match(txt, /paused/);
+    assert.match(txt, /no native Nexus mod has (?:been loaded or )?run (?:inside Horizon|in the game)/i);
+    assert.doesNotMatch(txt, /v0\.4b\.2 (?:is )?(?:released|complete)\b|launcher can (?:install|run|load)|(?<!No |no )native (?:Nexus )?(?:mods?|plugins?) (?:has|have) (?:run|loaded)|first (?:working|functioning) (?:Nexus )?(?:gameplay )?mod|busy[- ]loop defect|now sandboxed|are sandboxed|native loading is (?:complete|secure|ready)/i);
+    assert.doesNotMatch(txt, /environment variable|env var|NEXUS_[A-Z_]+=|load\.toml/i, "no exploit mechanics on public pages");
+  }
   for (const s of ["v0.1", "v0.2", "v0.3", "v0.4a", "v0.4b.1", "v0.4b.2", "v0.4c", "v0.4d", "Final audit"]) assert.ok(home.includes(`<span class="mr-ver">${s}</span>`), `home mini roadmap ${s}`);
-  assert.match(home, /<li class="mr-done"><span class="mr-ver">v0\.4b\.1<\/span><span class="mr-state">Committed/);
-  assert.match(home, /<li class="mr-current"><span class="mr-ver">v0\.4b\.2<\/span><span class="mr-state">In development/);
-  assert.match(home, /<span class="mr-ver">v0\.4d<\/span><span class="mr-state">Final feature milestone/);
-  assert.match(home, /This does not mean Nexus mods can be installed or run through the launcher yet\./);
+  assert.match(home, /<li class="mr-done"><span class="mr-ver">v0\.4b\.1<\/span><span class="mr-state">Complete/);
+  assert.match(home, /<li class="mr-current"><span class="mr-ver">v0\.4b\.2<\/span><span class="mr-state">In progress, paused/);
+  assert.match(home, /<span class="mr-ver">v0\.4c<\/span><span class="mr-state">Not started/);
+  assert.match(home, /<span class="mr-ver">v0\.4d<\/span><span class="mr-state">Not started \(final feature milestone\)/);
+  assert.match(home, /No native Nexus mod has been loaded or run inside Horizon yet\./);
+  assert.match(home, /reserved horizon namespace\. It was not a hang or a busy loop\./);
   assert.match(home, /What is a \.nmod\?/);
   assert.doesNotMatch((home + road).replace("No v0.5 or v1.0 features are planned", ""), /v0\.5|v1\.0/);
   assert.doesNotMatch(home + road + dev, /Bounded extraction \(|Snapshot validation<|not actually unpacked|Unpacking and installing mods are not done yet/);
-  for (const v of ["v0.4c: Expanded gameplay and engine modding APIs", "v0.4d", "Final planned feature milestone. Modding SDK", "Final audit"]) assert.ok(road.includes(v), v);
+  for (const v of ["v0.4c: Expanded gameplay and engine modding APIs", "Planned, not started. Gameplay and engine modding APIs", "Final planned feature milestone, not started", "Final audit", "Planned after v0.4d"]) assert.ok(road.includes(v), v);
   assert.match(road, /feature development is planned to pause pending further direction/);
-  assert.match(dev, /older ZIP dependencies under security review/);
+  for (const s of ["not tamperproof", "and cannot protect you from harmful software already running as you", "does not prove their code is safe", "not sandboxed"]) assert.ok((dev + home).includes(s) || (dev + home).replace(/&#39;/g, "'").includes(s), s);
   assert.doesNotMatch(home, /older ZIP dependencies/);
-  assert.match(dev, /not sandboxed/);
   for (const [f, s] of html) assert.doesNotMatch(s, /\/home\/|\/Users\/|C:\\|recover(?:y|ed) (?:procedure|branch)/i, `${f} workstation path or recovery detail`);
   const dl = get("downloads/index.html");
-  assert.ok(dl.includes("Currently in active development. Public downloads will become available after installation support and security validation are complete."));
+  assert.ok(dl.includes("Development is temporarily paused. Public downloads will become available after installation support and security validation are complete."));
   assert.doesNotMatch(dl, /<a [^>]*class="button[^"]*"[^>]*>\s*Download/i);
 });
 
